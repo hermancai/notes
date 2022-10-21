@@ -1,19 +1,17 @@
+import { config } from "dotenv";
 import express, { Request, Response } from "express";
+import connectToDatabase from "./dbConnect";
 
+config();
 const app = express();
 
-app.get("/", async (req: Request, res: Response) => {
-  console.log("get /");
-  res.json({ message: "hello" });
-});
-
 app.get("/get", async (req: Request, res: Response) => {
-  console.log("get /get");
   res.json({ message: "hello" });
 });
 
-const port = 5000;
+connectToDatabase();
 
-app.listen(port, (): void => {
+app.listen(process.env.PORT || 5000, (): void => {
+  const port = process.env.PORT ? process.env.PORT : 5000;
   console.log(`Listening at http://localhost:${port}`);
 });
