@@ -1,28 +1,37 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User";
 import Token from "../models/Token";
+import { TokenPayload } from "../interfaces/interfaces";
 
-// Create an access token and a refresh token
-const generateTokens = async (user: User) => {
-  // Sign tokens
-  const payload = {userId: user.userId};
-  const accessToken = jwt.sign(
-    payload, process.env.ACCESS_TOKEN_SECRET!,
-    {expiresIn: "1m"}
+const ACCESS_EXP = "15m";
+const REFRESH_EXP = "30d";
+
+// Generate an access token
+const generateAccessToken = (payload: TokenPayload) => {
+  return jwt.sign(
+    { username: payload.username },
+    process.env.ACCESS_TOKEN_SECRET!,
+    { expiresIn: ACCESS_EXP }
   );
-  const refreshToken = jwt.sign(
-    payload, process.env.REFRESH_TOKEN_SECRET!,
-    {expiresIn: "10m"}
+};
+
+// Generate a refresh token and replace token in database
+const generateRefreshToken = async (payload: TokenPayload, userId: string) => {
+  const newToken = jwt.sign(
+    { username: payload.username },
+    process.env.REFRESH_TOKEN_SECRET!,
+    { expiresIn: REFRESH_EXP }
   );
 
-  // Update refresh token in database
-  const existingRefreshToken = await Token.findOne({where: {"userId": user.userId}});
+  const existingRefreshToken = await Token.findOne({
+    where: { userId: userId },
+  });
   if (existingRefreshToken !== null) {
     await existingRefreshToken.destroy();
   }
-  await Token.create({"userId": user.userId, "token": refreshToken});
-  
-  return {accessToken, refreshToken};
-}
+  await Token.create({ userId: userId, token: newToken });
 
-export default generateTokens;
+  return newToken;
+};
+
+export { generateAccessToken, generateRefreshToken };
