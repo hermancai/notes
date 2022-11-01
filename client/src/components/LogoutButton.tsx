@@ -1,28 +1,22 @@
 import React from "react";
-import type { RootState } from "../app/store";
+import type { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
-import { resetUser } from "../features/user/userSlice";
+import { logout } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
-import { ServerResponse } from "../interfaces/interfaces";
 import { Button } from "@mui/material";
 
 export default function LogoutButton() {
   const navigate = useNavigate();
   const loggedIn = useSelector((state: RootState) => state.user.loggedIn);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleClick = async () => {
-    const response = await fetch("/api/token", {
-      method: "DELETE",
-      credentials: "include",
-    });
-    const res = (await response.json()) as ServerResponse;
-    if (res.error) {
-      alert("Internal server error: logout failed");
-      return console.log(res.message);
+    try {
+      await dispatch(logout());
+      navigate("/login");
+    } catch (err) {
+      console.log("Error logging out: ", err);
     }
-    dispatch(resetUser());
-    navigate("/login");
   };
 
   return loggedIn ? (

@@ -5,4 +5,9 @@ interface ServerResponse {
   username?: string;
 }
 
-export type { ServerResponse };
+interface Credentials {
+  username: string;
+  password: string;
+}
+
+export type { ServerResponse, Credentials };

@@ -1,14 +1,43 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import userService from "./userService";
+import { Credentials } from "../../interfaces/interfaces";
 
 export interface UserState {
   username?: string;
   loggedIn: boolean;
+  loading: boolean;
 }
 
 const initialState: UserState = {
   loggedIn: false,
+  loading: false,
 };
+
+export const verifyAccessToken = createAsyncThunk(
+  "user/verifyAccessToken",
+  async (_, thunkAPI) => {
+    return await userService.verifyAccessToken();
+  }
+);
+
+export const login = createAsyncThunk(
+  "user/login",
+  async (credentials: Credentials, thunkAPI) => {
+    return await userService.login(credentials);
+  }
+);
+
+export const signup = createAsyncThunk(
+  "user/signup",
+  async (credentials: Credentials, thunkAPI) => {
+    return await userService.signup(credentials);
+  }
+);
+
+export const logout = createAsyncThunk("user/logout", async (_, thunkAPI) => {
+  return await userService.logout();
+});
 
 export const userSlice = createSlice({
   name: "user",
@@ -26,7 +55,66 @@ export const userSlice = createSlice({
       localStorage.removeItem("accessToken");
       state.loggedIn = false;
       state.username = undefined;
+      state.loggedIn = false;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(verifyAccessToken.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(verifyAccessToken.fulfilled, (state, { payload }) => {
+        localStorage.setItem("accessToken", payload.accessToken!);
+        state.loading = false;
+        state.username = payload.username;
+        state.loggedIn = true;
+      })
+      .addCase(verifyAccessToken.rejected, (state) => {
+        state.loading = false;
+        state.username = undefined;
+        state.loggedIn = false;
+      })
+      .addCase(login.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(login.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        if (!payload.error) {
+          localStorage.setItem("accessToken", payload.accessToken!);
+          state.username = payload.username;
+          state.loggedIn = true;
+        }
+      })
+      .addCase(login.rejected, (state) => {
+        localStorage.removeItem("accessToken");
+        state.loading = false;
+        state.username = undefined;
+        state.loggedIn = false;
+      })
+      .addCase(signup.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(signup.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.username = undefined;
+        state.loggedIn = false;
+      })
+      .addCase(signup.rejected, (state) => {
+        state.loading = false;
+        state.username = undefined;
+        state.loggedIn = false;
+      })
+      .addCase(logout.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.loading = false;
+        state.username = undefined;
+        state.loggedIn = false;
+      })
+      .addCase(logout.rejected, (state) => {
+        state.loading = false;
+      });
   },
 });
 

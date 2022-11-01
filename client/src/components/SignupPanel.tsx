@@ -1,8 +1,8 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { setUser } from "../features/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../app/store";
+import { signup, login } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
-import { ServerResponse } from "../interfaces/interfaces";
 import { Container, Box, Input, Button } from "@mui/material";
 import { Person, Lock, ErrorOutlineOutlined } from "@mui/icons-material";
 import GuestLoginButton from "./GuestLoginButton";
@@ -11,55 +11,36 @@ export default function SignupPanel(props: {
   setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const loading = useSelector((state: RootState) => state.user.loading);
   const [inputs, setInputs] = React.useState({ username: "", password: "" });
   const [errorMessage, setErrorMessage] = React.useState("");
 
+  // Handle input changes in form
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
   };
 
+  // Submit using enter key
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (!loading && e.key === "Enter") {
       handleSubmit();
     }
   };
 
+  // Attempt signup and login
   const handleSubmit = async () => {
-    const response = await fetch("/api/user/signup", {
-      method: "POST",
-      body: JSON.stringify(inputs),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const res = (await response.json()) as ServerResponse;
-
-    if (res.error) {
-      return setErrorMessage(res.message);
+    const signupRes = await dispatch(signup(inputs)).unwrap();
+    if (signupRes.error) {
+      return setErrorMessage(signupRes.message);
     }
 
-    const loginResponse = await fetch("/api/user/login", {
-      method: "POST",
-      body: JSON.stringify(inputs),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const loginRes = (await loginResponse.json()) as ServerResponse;
-
+    const loginRes = await dispatch(login(inputs)).unwrap();
     if (loginRes.error) {
-      return setErrorMessage(res.message);
+      return setErrorMessage(loginRes.message);
     }
-
-    setErrorMessage("");
-    dispatch(
-      setUser({
-        accessToken: loginRes.accessToken!,
-        username: loginRes.username!,
-      })
-    );
-    return navigate("/home");
+    navigate("/");
   };
 
   return (
@@ -141,6 +122,7 @@ export default function SignupPanel(props: {
           variant="text"
           onClick={handleSubmit}
           sx={{ border: "solid 1px black", flex: "1", borderRadius: "99px" }}
+          disabled={loading}
         >
           SIGN UP
         </Button>
@@ -148,6 +130,7 @@ export default function SignupPanel(props: {
           variant="text"
           onClick={() => props.setShowLogin(true)}
           sx={{ border: "solid 1px black", flex: "1", borderRadius: "99px" }}
+          disabled={loading}
         >
           LOGIN
         </Button>

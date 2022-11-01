@@ -1,6 +1,4 @@
 import * as React from "react";
-import { RootState } from "../app/store";
-import { useSelector } from "react-redux";
 import {
   AppBar,
   Box,
@@ -16,7 +14,6 @@ export default function Sidebar(props: {
   drawerWidth: number;
   children: React.ReactNode;
 }) {
-  const loggedIn = useSelector((state: RootState) => state.user.loggedIn);
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -44,7 +41,6 @@ export default function Sidebar(props: {
             sx={{
               mr: 2,
               display: { lg: "none" },
-              visibility: loggedIn ? "visible" : "hidden",
             }}
           >
             <Menu />
@@ -57,7 +53,6 @@ export default function Sidebar(props: {
         sx={{
           width: { lg: props.drawerWidth },
           flexShrink: { lg: 0 },
-          visibility: loggedIn ? "visible" : "hidden",
         }}
         aria-label="mailbox folders"
       >

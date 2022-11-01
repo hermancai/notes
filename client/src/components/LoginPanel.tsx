@@ -1,8 +1,9 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { setUser } from "../features/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../app/store";
+import { login } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
-import { ServerResponse } from "../interfaces/interfaces";
+import { Credentials } from "../interfaces/interfaces";
 import { Container, Box, Input, Button } from "@mui/material";
 import { Person, Lock, ErrorOutlineOutlined } from "@mui/icons-material";
 import GuestLoginButton from "./GuestLoginButton";
@@ -11,39 +12,38 @@ export default function LoginPanel(props: {
   setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [inputs, setInputs] = React.useState({ username: "", password: "" });
+  const dispatch = useDispatch<AppDispatch>();
+
+  const loading = useSelector((state: RootState) => state.user.loading);
+  const [inputs, setInputs] = React.useState<Credentials>({
+    username: "",
+    password: "",
+  });
   const [errorMessage, setErrorMessage] = React.useState("");
 
+  // Handle input changes in form
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
   };
 
+  // Submit using enter key
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (!loading && e.key === "Enter") {
       handleSubmit();
     }
   };
 
+  // Attempt login
   const handleSubmit = async () => {
-    const response = await fetch("/api/user/login", {
-      method: "POST",
-      body: JSON.stringify(inputs),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const res = (await response.json()) as ServerResponse;
-
-    if (res.error) {
-      return setErrorMessage(res.message);
+    try {
+      const res = await dispatch(login(inputs)).unwrap();
+      if (!res.error) {
+        navigate("/");
+      }
+      setErrorMessage(res.message);
+    } catch (err) {
+      console.log("An error occurred while logging in:\n", err);
     }
-
-    setErrorMessage("");
-    dispatch(
-      setUser({ accessToken: res.accessToken!, username: res.username! })
-    );
-    return navigate("/home");
   };
 
   return (
@@ -125,6 +125,7 @@ export default function LoginPanel(props: {
           variant="text"
           onClick={handleSubmit}
           sx={{ border: "solid 1px black", flex: "1", borderRadius: "99px" }}
+          disabled={loading}
         >
           LOGIN
         </Button>
@@ -132,6 +133,7 @@ export default function LoginPanel(props: {
           variant="text"
           onClick={() => props.setShowLogin(false)}
           sx={{ border: "solid 1px black", flex: "1", borderRadius: "99px" }}
+          disabled={loading}
         >
           SIGN UP
         </Button>
