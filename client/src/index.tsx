@@ -7,6 +7,8 @@ import Root from "./routes/Root";
 import ErrorPage from "./ErrorPage";
 import LoginPage from "./routes/LoginPage";
 import HomePage from "./routes/HomePage";
+import AccountPage from "./routes/AccountPage";
+import ImagesPage from "./routes/ImagesPage";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +19,16 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/account",
+        element: <AccountPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/images",
+        element: <ImagesPage />,
         errorElement: <ErrorPage />,
       },
     ],

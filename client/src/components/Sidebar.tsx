@@ -8,7 +8,6 @@ import {
   Toolbar,
 } from "@mui/material";
 import { Menu, ChevronLeft } from "@mui/icons-material";
-import LogoutButton from "./LogoutButton";
 
 export default function Sidebar(props: {
   drawerWidth: number;
@@ -45,7 +44,6 @@ export default function Sidebar(props: {
           >
             <Menu />
           </IconButton>
-          <LogoutButton />
         </Toolbar>
       </AppBar>
       <Box
@@ -97,6 +95,8 @@ export default function Sidebar(props: {
           }}
           open
         >
+          <Toolbar />
+          <Divider />
           {props.children}
         </Drawer>
       </Box>
