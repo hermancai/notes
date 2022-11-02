@@ -103,4 +103,27 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { signUpUser, loginUser };
+// @desc   Delete user account
+// @route  DELETE /api/user/
+const deleteAccount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (req.user === "Guest") {
+    return res
+      .status(400)
+      .json({ error: true, message: "Deleting guest account not allowed" });
+  }
+  const user = await User.findOne({ where: { username: req.user } });
+  if (!user) {
+    return res.status(400).json({ error: true, message: "User not found" });
+  }
+  await user.destroy();
+  res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict" });
+  return res
+    .status(200)
+    .json({ error: false, message: "Account deleted successfully" });
+};
+
+export { signUpUser, loginUser, deleteAccount };

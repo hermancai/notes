@@ -66,5 +66,34 @@ const logout = async () => {
   return (await response.json()) as ServerResponse;
 };
 
-const userService = { verifyAccessToken, login, signup, logout };
+// DELETE /api/user
+const deleteAccount = async () => {
+  const response = await fetch("/api/user", {
+    method: "DELETE",
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+    },
+  });
+  const res = (await response.json()) as ServerResponse;
+  res.status = response.status;
+  return res;
+};
+
+// PUT /api/token
+const refreshAccessToken = async () => {
+  const response = await fetch("/api/token", {
+    method: "PUT",
+    credentials: "include",
+  });
+  return (await response.json()) as ServerResponse;
+};
+
+const userService = {
+  verifyAccessToken,
+  login,
+  signup,
+  logout,
+  deleteAccount,
+  refreshAccessToken,
+};
 export default userService;

@@ -8,20 +8,27 @@ import jwt from "jsonwebtoken";
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   const headerToken = req.headers.authorization;
   if (headerToken === undefined || !headerToken.startsWith("Bearer")) {
+    console.log("missing access token", new Date().toISOString());
+
     return res
       .status(400)
       .json({ error: true, message: "Missing access token" });
   }
 
   try {
+    const accessToken = headerToken.split(" ")[1];
     const decoded = jwt.verify(
-      headerToken.split(" ")[1],
+      accessToken,
       process.env.ACCESS_TOKEN_SECRET!
     ) as TokenPayload;
+
+    console.log("valid access token", new Date().toISOString());
+
     return res.status(200).json({
       error: false,
       message: "Valid access token",
       username: decoded.username,
+      accessToken: accessToken,
     });
   } catch (err) {
     return next(err);
@@ -38,6 +45,8 @@ const refreshAccessToken = async (
   const reqRefreshToken = req.cookies["refreshToken"] as string;
 
   if (!reqRefreshToken) {
+    console.log("refresh token not found in request", new Date().toISOString());
+
     return res
       .status(400)
       .json({ error: true, message: "Refresh token not found" });
@@ -48,6 +57,11 @@ const refreshAccessToken = async (
     where: { token: reqRefreshToken },
   });
   if (!storedRefreshToken) {
+    console.log(
+      "refresh token does not exist in database",
+      new Date().toISOString()
+    );
+
     return res
       .status(400)
       .json({ error: true, message: "Refresh token does not exist" });
@@ -66,6 +80,8 @@ const refreshAccessToken = async (
       { expiresIn: "15m" }
     );
 
+    console.log("send new access token", new Date().toISOString());
+
     res.status(200).json({
       error: false,
       accessToken,
@@ -73,6 +89,8 @@ const refreshAccessToken = async (
       username: decoded.username,
     });
   } catch (err) {
+    console.log("error sending new access token: ", err);
+
     return next(err);
   }
 };

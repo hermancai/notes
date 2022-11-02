@@ -7,7 +7,7 @@ import {
   AllowNull,
   ForeignKey,
 } from "sequelize-typescript";
-import User from './User'
+import User from "./User";
 
 @Table
 class Token extends Model {

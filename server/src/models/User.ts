@@ -7,7 +7,9 @@ import {
   PrimaryKey,
   AllowNull,
   Unique,
+  HasOne,
 } from "sequelize-typescript";
+import Token from "./Token";
 
 @Table
 class User extends Model {
@@ -30,6 +32,13 @@ class User extends Model {
   @CreatedAt
   @Column(DataType.DATE)
   createdAt!: Date;
+
+  @HasOne(() => Token, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+    hooks: true,
+  })
+  token!: Token;
 }
 
 export default User;

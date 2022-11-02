@@ -39,6 +39,20 @@ export const logout = createAsyncThunk("user/logout", async (_, thunkAPI) => {
   return await userService.logout();
 });
 
+export const deleteAccount = createAsyncThunk(
+  "user/deleteAccount",
+  async (_, thunkAPI) => {
+    return await userService.deleteAccount();
+  }
+);
+
+export const refreshAccessToken = createAsyncThunk(
+  "user/refreshAccessToken",
+  async (_, thunkAPI) => {
+    return await userService.refreshAccessToken();
+  }
+);
+
 export const userSlice = createSlice({
   name: "user",
   initialState,
@@ -114,6 +128,32 @@ export const userSlice = createSlice({
       })
       .addCase(logout.rejected, (state) => {
         state.loading = false;
+      })
+      .addCase(deleteAccount.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteAccount.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteAccount.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(refreshAccessToken.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(refreshAccessToken.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        if (!payload.error) {
+          localStorage.setItem("accessToken", payload.accessToken!);
+          state.loggedIn = true;
+          state.username = payload.username!;
+        }
+      })
+      .addCase(refreshAccessToken.rejected, (state) => {
+        localStorage.removeItem("accessToken");
+        state.loading = false;
+        state.loggedIn = false;
+        state.username = undefined;
       });
   },
 });

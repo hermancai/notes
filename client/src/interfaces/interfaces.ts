@@ -3,6 +3,7 @@ interface ServerResponse {
   message: string;
   accessToken?: string;
   username?: string;
+  status?: number;
 }
 
 interface Credentials {
