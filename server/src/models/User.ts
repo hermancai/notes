@@ -8,8 +8,10 @@ import {
   AllowNull,
   Unique,
   HasOne,
+  HasMany,
 } from "sequelize-typescript";
 import Token from "./Token";
+import Note from "./Note";
 
 @Table
 class User extends Model {
@@ -39,6 +41,13 @@ class User extends Model {
     hooks: true,
   })
   token!: Token;
+
+  @HasMany(() => Note, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+    hooks: true,
+  })
+  notes!: Note[];
 }
 
 export default User;

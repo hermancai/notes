@@ -4,14 +4,17 @@ import {
   Model,
   DataType,
   CreatedAt,
+  PrimaryKey,
   AllowNull,
+  Unique,
+  HasOne,
   ForeignKey,
   BelongsTo,
 } from "sequelize-typescript";
 import User from "./User";
 
 @Table
-class Token extends Model {
+class Note extends Model {
   @ForeignKey(() => User)
   @Column({
     type: DataType.UUID,
@@ -24,11 +27,14 @@ class Token extends Model {
 
   @AllowNull(false)
   @Column
-  token!: string;
+  title!: string;
+
+  @Column
+  text!: string;
 
   @CreatedAt
   @Column(DataType.DATE)
   createdAt!: Date;
 }
 
-export default Token;
+export default Note;

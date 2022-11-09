@@ -9,6 +9,8 @@ import LoginPage from "./routes/LoginPage";
 import HomePage from "./routes/HomePage";
 import AccountPage from "./routes/AccountPage";
 import ImagesPage from "./routes/ImagesPage";
+import NewNotePage from "./routes/NewNotePage";
+import UpdateNotePage from "./routes/UpdateNotePage";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +21,16 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/notes/new",
+        element: <NewNotePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/notes/update",
+        element: <UpdateNotePage />,
         errorElement: <ErrorPage />,
       },
       {

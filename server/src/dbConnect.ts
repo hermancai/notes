@@ -2,6 +2,7 @@ import { config } from "dotenv";
 import { Sequelize } from "sequelize-typescript";
 import Token from "./models/Token";
 import User from "./models/User";
+import Note from "./models/Note";
 
 config();
 
@@ -14,7 +15,7 @@ const connectToDatabase = async () => {
 
   // Connect to database
   const sequelize = new Sequelize(dbURI);
-  sequelize.addModels([User, Token]);
+  sequelize.addModels([User, Token, Note]);
 
   // Test connection
   try {

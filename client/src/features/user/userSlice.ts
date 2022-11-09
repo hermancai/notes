@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import userService from "./userService";
-import { Credentials } from "../../interfaces/interfaces";
+import { Credentials, DecodedToken } from "../../interfaces/interfaces";
+import jwt_decode from "jwt-decode";
 
 export interface UserState {
   username?: string;
@@ -46,30 +47,16 @@ export const deleteAccount = createAsyncThunk(
   }
 );
 
-export const refreshAccessToken = createAsyncThunk(
-  "user/refreshAccessToken",
-  async (_, thunkAPI) => {
-    return await userService.refreshAccessToken();
-  }
-);
-
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser: (
-      state,
-      action: PayloadAction<{ accessToken: string; username: string }>
-    ) => {
-      localStorage.setItem("accessToken", action.payload.accessToken);
-      state.loggedIn = true;
-      state.username = action.payload.username;
-    },
-    resetUser: (state) => {
-      localStorage.removeItem("accessToken");
-      state.loggedIn = false;
-      state.username = undefined;
-      state.loggedIn = false;
+    setUsername: (state) => {
+      const accessToken = localStorage.getItem("accessToken");
+      if (accessToken !== null) {
+        const decoded = jwt_decode(accessToken) as DecodedToken;
+        state.username = decoded.username;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -122,6 +109,7 @@ export const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(logout.fulfilled, (state) => {
+        localStorage.removeItem("accessToken");
         state.loading = false;
         state.username = undefined;
         state.loggedIn = false;
@@ -133,30 +121,14 @@ export const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(deleteAccount.fulfilled, (state) => {
+        localStorage.removeItem("accessToken");
         state.loading = false;
       })
       .addCase(deleteAccount.rejected, (state) => {
         state.loading = false;
-      })
-      .addCase(refreshAccessToken.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(refreshAccessToken.fulfilled, (state, { payload }) => {
-        state.loading = false;
-        if (!payload.error) {
-          localStorage.setItem("accessToken", payload.accessToken!);
-          state.loggedIn = true;
-          state.username = payload.username!;
-        }
-      })
-      .addCase(refreshAccessToken.rejected, (state) => {
-        localStorage.removeItem("accessToken");
-        state.loading = false;
-        state.loggedIn = false;
-        state.username = undefined;
       });
   },
 });
 
-export const { setUser, resetUser } = userSlice.actions;
+export const { setUsername } = userSlice.actions;
 export default userSlice.reducer;

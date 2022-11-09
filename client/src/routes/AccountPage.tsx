@@ -1,7 +1,11 @@
 import React from "react";
 import { AppDispatch, RootState } from "../app/store";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteAccount, refreshAccessToken } from "../features/user/userSlice";
+import {
+  deleteAccount,
+  setUsername,
+  verifyAccessToken,
+} from "../features/user/userSlice";
 import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -11,26 +15,35 @@ export default function AccountPage() {
 
   const { username } = useSelector((state: RootState) => state.user);
 
-  const handleClick = async () => {
-    const initialRes = await dispatch(deleteAccount()).unwrap();
-    if (initialRes.error) {
-      if (initialRes.status === 401) {
-        await dispatch(refreshAccessToken());
-        const retryRes = await dispatch(deleteAccount()).unwrap();
-        if (!retryRes.error) {
-          return navigate("/login");
-        }
-        return alert(retryRes.message);
+  React.useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        await dispatch(verifyAccessToken());
+      } catch (err) {
+        alert(err);
+        navigate("/login");
       }
-      return alert(initialRes.message);
+    };
+    verifyUser();
+  }, []);
+
+  const handleClick = async () => {
+    try {
+      await dispatch(deleteAccount()).unwrap();
+      navigate("/login");
+    } catch (err) {
+      alert(err);
     }
-    navigate("/login");
   };
 
   return (
     <Box>
       <p>Username: {username}</p>
-      <Button variant="contained" onClick={handleClick}>
+      <Button
+        variant="contained"
+        onClick={handleClick}
+        disabled={!username || username === "Guest"}
+      >
         Delete Account
       </Button>
     </Box>

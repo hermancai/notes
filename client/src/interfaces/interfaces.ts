@@ -11,4 +11,23 @@ interface Credentials {
   password: string;
 }
 
-export type { ServerResponse, Credentials };
+interface NewNotePayload {
+  title: string;
+  text: string;
+}
+
+interface Note {
+  id: number;
+  text: string;
+  title: string;
+  updatedAt: string;
+  createdAt: string;
+  userId: string;
+}
+
+interface DecodedToken {
+  username: string;
+  userId: string;
+}
+
+export type { ServerResponse, Credentials, NewNotePayload, Note, DecodedToken };

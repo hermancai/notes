@@ -75,7 +75,7 @@ const refreshAccessToken = async (
     ) as TokenPayload;
 
     const accessToken = jwt.sign(
-      { username: decoded.username },
+      { username: decoded.username, userId: decoded.userId },
       process.env.ACCESS_TOKEN_SECRET!,
       { expiresIn: "15m" }
     );
@@ -106,6 +106,7 @@ const deleteToken = async (req: Request, res: Response, next: NextFunction) => {
       .json({ error: true, message: "Refresh token not found" });
   }
 
+  // Remove refresh token from database and remove cookie
   try {
     await Token.destroy({ where: { token: reqRefreshToken } });
     res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict" });

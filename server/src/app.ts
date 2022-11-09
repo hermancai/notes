@@ -1,8 +1,9 @@
 import { config } from "dotenv";
-import express, { Request, Response } from "express";
+import express from "express";
 import cookieParser from "cookie-parser";
 import connectToDatabase from "./dbConnect";
 import userRouter from "./routes/userRoute";
+import noteRouter from "./routes/noteRoute";
 import refreshRouter from "./routes/refreshRoute";
 import errorHandler from "./middleware/errorHandler";
 
@@ -12,12 +13,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.get("/get", async (req: Request, res: Response) => {
-  res.json({ message: "hello" });
-});
-
 app.use("/api/user", userRouter);
 app.use("/api/token", refreshRouter);
+app.use("/api/note", noteRouter);
 
 connectToDatabase();
 

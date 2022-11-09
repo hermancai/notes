@@ -5,12 +5,12 @@ import { logout } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { Box, CssBaseline, Toolbar, Divider } from "@mui/material";
+import { Box, CssBaseline, Toolbar, Divider, Skeleton } from "@mui/material";
 import {
   PersonOutlineOutlined,
   Logout,
-  Notes,
-  InsertPhotoOutlined,
+  StickyNote2Outlined,
+  CameraAltOutlined,
 } from "@mui/icons-material";
 import SidebarLink from "../components/SidebarLink";
 
@@ -47,7 +47,13 @@ export default function Root() {
             }}
           >
             <PersonOutlineOutlined />
-            <p>{username}</p>
+            <p>
+              {!username ? (
+                <Skeleton sx={{ backgroundColor: "transparent" }} />
+              ) : (
+                username
+              )}
+            </p>
           </SidebarLink>
           <SidebarLink onClick={handleLogout}>
             <Logout />
@@ -59,7 +65,7 @@ export default function Root() {
               navigate("/");
             }}
           >
-            <Notes />
+            <StickyNote2Outlined />
             <p>Notes</p>
           </SidebarLink>
           <SidebarLink
@@ -67,7 +73,7 @@ export default function Root() {
               navigate("/images");
             }}
           >
-            <InsertPhotoOutlined />
+            <CameraAltOutlined />
             <p>Images</p>
           </SidebarLink>
         </Box>

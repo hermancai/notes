@@ -1,4 +1,5 @@
 import { ServerResponse, Credentials } from "../../interfaces/interfaces";
+import refreshAccessToken from "../shared/refreshAccessToken";
 
 // POST /api/token
 const verifyAccessToken = async () => {
@@ -19,18 +20,7 @@ const verifyAccessToken = async () => {
     }
   }
 
-  // Get new access token using refresh token
-  const refreshResponse = await fetch("/api/token", {
-    method: "PUT",
-    credentials: "include",
-  });
-  const refreshRes = (await refreshResponse.json()) as ServerResponse;
-
-  if (refreshRes.error) {
-    throw new Error("Client: " + refreshRes.message);
-  }
-
-  return refreshRes;
+  return await refreshAccessToken();
 };
 
 // POST /api/user/login
@@ -68,24 +58,28 @@ const logout = async () => {
 
 // DELETE /api/user
 const deleteAccount = async () => {
-  const response = await fetch("/api/user", {
-    method: "DELETE",
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem("accessToken"),
-    },
-  });
-  const res = (await response.json()) as ServerResponse;
-  res.status = response.status;
-  return res;
-};
+  const fetchRequest = async () => {
+    return await fetch("/api/user", {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      },
+    });
+  };
 
-// PUT /api/token
-const refreshAccessToken = async () => {
-  const response = await fetch("/api/token", {
-    method: "PUT",
-    credentials: "include",
-  });
-  return (await response.json()) as ServerResponse;
+  const initialResponse = await fetchRequest();
+  if (initialResponse.status === 401) {
+    const refreshResponse = await refreshAccessToken();
+    if (refreshResponse.error) {
+      throw new Error(refreshResponse.message);
+    }
+    const retryResponse = await fetchRequest();
+    const retryRes = (await retryResponse.json()) as ServerResponse;
+    if (retryRes.error) {
+      throw new Error(retryRes.message);
+    }
+    return retryRes;
+  }
 };
 
 const userService = {
@@ -94,6 +88,5 @@ const userService = {
   signup,
   logout,
   deleteAccount,
-  refreshAccessToken,
 };
 export default userService;
