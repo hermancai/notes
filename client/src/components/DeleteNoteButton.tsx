@@ -25,7 +25,7 @@ export default function DeleteNoteButton(props: { id: number }) {
   };
 
   return (
-    <Button variant="text" onClick={handleClick}>
+    <Button variant="text" onClick={handleClick} color="error">
       DELETE
     </Button>
   );

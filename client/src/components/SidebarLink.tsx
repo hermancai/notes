@@ -1,28 +1,33 @@
 import React from "react";
-import { Box, Button } from "@mui/material";
+import { Button, alpha } from "@mui/material";
+import { green } from "@mui/material/colors";
 
 interface Props {
   children: React.ReactNode;
   onClick: () => void;
+  isActive: boolean;
 }
 
-export default function SidebarLink({ children, onClick }: Props) {
+export default function SidebarLink({ children, onClick, isActive }: Props) {
   return (
-    <Box
+    <Button
+      onClick={onClick}
       sx={{
         display: "flex",
-        alignItems: "center",
+        justifyContent: "start",
         gap: "1rem",
-        padding: "0 0.5rem",
-        border: "solid 1px black",
-        color: "theme",
+        width: "100%",
+        backgroundColor: isActive ? alpha(green[500], 0.1) : null,
+        color: isActive ? "primary.light" : "text.primary",
         "&:hover": {
-          cursor: "pointer",
+          color: "primary.light",
+          backgroundColor: isActive
+            ? alpha(green[500], 0.2)
+            : alpha(green[500], 0.1),
         },
       }}
-      onClick={onClick}
     >
       {children}
-    </Box>
+    </Button>
   );
 }

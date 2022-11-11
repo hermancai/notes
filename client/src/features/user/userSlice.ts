@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
 import userService from "./userService";
 import { Credentials, DecodedToken } from "../../interfaces/interfaces";
 import jwt_decode from "jwt-decode";
@@ -8,11 +7,13 @@ export interface UserState {
   username?: string;
   loggedIn: boolean;
   loading: boolean;
+  colorMode: "light" | "dark";
 }
 
 const initialState: UserState = {
   loggedIn: false,
   loading: false,
+  colorMode: "dark",
 };
 
 export const verifyAccessToken = createAsyncThunk(
@@ -57,6 +58,19 @@ export const userSlice = createSlice({
         const decoded = jwt_decode(accessToken) as DecodedToken;
         state.username = decoded.username;
       }
+    },
+    getColorMode: (state) => {
+      const mode = localStorage.getItem("colorMode");
+      if (mode === "light") {
+        state.colorMode = "light";
+      } else {
+        state.colorMode = "dark";
+      }
+    },
+    setColorMode: (state) => {
+      const newMode = state.colorMode === "light" ? "dark" : "light";
+      state.colorMode = newMode;
+      localStorage.setItem("colorMode", newMode);
     },
   },
   extraReducers: (builder) => {
@@ -130,5 +144,5 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUsername } = userSlice.actions;
+export const { setUsername, getColorMode, setColorMode } = userSlice.actions;
 export default userSlice.reducer;

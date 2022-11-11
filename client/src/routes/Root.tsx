@@ -2,10 +2,10 @@ import React from "react";
 import type { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/user/userSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { Box, CssBaseline, Toolbar, Divider, Skeleton } from "@mui/material";
+import { Box, Toolbar, Divider, Skeleton } from "@mui/material";
 import {
   PersonOutlineOutlined,
   Logout,
@@ -13,6 +13,7 @@ import {
   CameraAltOutlined,
 } from "@mui/icons-material";
 import SidebarLink from "../components/SidebarLink";
+import ColorModeToggle from "../components/ColorModeToggle";
 
 const drawerWidth = 250;
 
@@ -32,7 +33,6 @@ export default function Root() {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
       <Sidebar drawerWidth={drawerWidth}>
         <Box
           sx={{
@@ -41,41 +41,49 @@ export default function Root() {
             padding: "1rem",
           }}
         >
-          <SidebarLink
-            onClick={() => {
-              navigate("/account");
-            }}
-          >
-            <PersonOutlineOutlined />
-            <p>
-              {!username ? (
-                <Skeleton sx={{ backgroundColor: "transparent" }} />
-              ) : (
-                username
-              )}
-            </p>
-          </SidebarLink>
-          <SidebarLink onClick={handleLogout}>
+          <ColorModeToggle />
+
+          <Divider sx={{ margin: "1rem 0" }} />
+
+          <NavLink to="/account" style={{ textDecoration: "none" }}>
+            {({ isActive }) => (
+              <SidebarLink onClick={() => {}} isActive={isActive}>
+                <PersonOutlineOutlined />
+                <p>
+                  {!username ? (
+                    <Skeleton sx={{ backgroundColor: "transparent" }} />
+                  ) : (
+                    username
+                  )}
+                </p>
+              </SidebarLink>
+            )}
+          </NavLink>
+
+          <SidebarLink onClick={handleLogout} isActive={false}>
             <Logout />
             <p>Log Out</p>
           </SidebarLink>
+
           <Divider sx={{ margin: "1rem 0" }} />
-          <SidebarLink
-            onClick={() => {
-              navigate("/");
-            }}
-          >
-            <StickyNote2Outlined />
-            <p>Notes</p>
-          </SidebarLink>
-          <SidebarLink
-            onClick={() => {
-              navigate("/images");
-            }}
-          >
-            <CameraAltOutlined />
-            <p>Images</p>
-          </SidebarLink>
+
+          <NavLink to="/" end style={{ textDecoration: "none" }}>
+            {({ isActive }) => (
+              <SidebarLink onClick={() => {}} isActive={isActive}>
+                <StickyNote2Outlined />
+                <p>Notes</p>
+              </SidebarLink>
+            )}
+          </NavLink>
+
+          <NavLink to="/images" style={{ textDecoration: "none" }}>
+            {({ isActive }) => (
+              <SidebarLink onClick={() => {}} isActive={isActive}>
+                <CameraAltOutlined />
+                <p>Images</p>
+              </SidebarLink>
+            )}
+          </NavLink>
         </Box>
       </Sidebar>
       <Box

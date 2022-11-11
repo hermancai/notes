@@ -4,7 +4,14 @@ import { RootState, AppDispatch } from "../app/store";
 import { login } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import { Credentials } from "../interfaces/interfaces";
-import { Container, Box, Input, Button } from "@mui/material";
+import {
+  Container,
+  Box,
+  Button,
+  TextField,
+  InputAdornment,
+  Typography,
+} from "@mui/material";
 import { Person, Lock, ErrorOutlineOutlined } from "@mui/icons-material";
 import GuestLoginButton from "./GuestLoginButton";
 
@@ -53,52 +60,58 @@ export default function LoginPanel(props: {
         flexDirection: "column",
         alignItems: "center",
         gap: "1.5rem",
-        mt: "3rem",
+        mt: "2rem",
       }}
     >
-      <h1>LOGIN</h1>
+      <Typography variant="h3" component="h1">
+        Login
+      </Typography>
       <Box
         sx={{
           display: "flex",
-          alignItems: "flex-start",
+          flexDirection: "column",
+          gap: "1.5rem",
           width: { xs: "100%", sm: "300px" },
-          border: "solid 1px black",
-          borderRadius: "99px",
-          padding: "5px 15px",
         }}
       >
-        <Person sx={{ color: "action.active", mr: 1, my: 0.5 }} />
-        <Input
+        <TextField
           placeholder="Username"
           name="username"
           type="text"
-          disableUnderline
           onChange={handleChange}
           onKeyUp={handleKeyPress}
-          inputProps={{ "aria-label": "username" }}
-          fullWidth
+          sx={{
+            "& legend": { display: "none" },
+            "& fieldset": { top: 0 },
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Person />
+              </InputAdornment>
+            ),
+            "aria-label": "username",
+            className: `input: {backgroundColor: "blue"}`,
+          }}
         />
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "flex-start",
-          width: { xs: "100%", sm: "300px" },
-          border: "solid 1px black",
-          borderRadius: "99px",
-          padding: "5px 15px",
-        }}
-      >
-        <Lock sx={{ color: "action.active", mr: 1, my: 0.5 }} />
-        <Input
+        <TextField
           placeholder="Password"
           name="password"
           type="password"
-          disableUnderline
           onChange={handleChange}
           onKeyUp={handleKeyPress}
-          inputProps={{ "aria-label": "password" }}
-          fullWidth
+          sx={{
+            "& legend": { display: "none" },
+            "& fieldset": { top: 0 },
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Lock />
+              </InputAdornment>
+            ),
+            "aria-label": "password",
+          }}
         />
       </Box>
       {errorMessage === "" ? null : (
@@ -107,10 +120,11 @@ export default function LoginPanel(props: {
             display: "flex",
             alignItems: "center",
             gap: "0.25rem",
+            color: "error.light",
           }}
         >
           <ErrorOutlineOutlined />
-          <p>{errorMessage}</p>
+          {errorMessage}
         </Box>
       )}
       <Box
@@ -122,17 +136,22 @@ export default function LoginPanel(props: {
         }}
       >
         <Button
-          variant="text"
+          variant="contained"
           onClick={handleSubmit}
-          sx={{ border: "solid 1px black", flex: "1", borderRadius: "99px" }}
+          sx={{
+            flex: "1",
+            boxShadow: "none",
+            "&:hover": { boxShadow: "none" },
+            color: "white",
+          }}
           disabled={loading}
         >
           LOGIN
         </Button>
         <Button
-          variant="text"
+          variant="outlined"
           onClick={() => props.setShowLogin(false)}
-          sx={{ border: "solid 1px black", flex: "1", borderRadius: "99px" }}
+          sx={{ flex: "1" }}
           disabled={loading}
         >
           SIGN UP

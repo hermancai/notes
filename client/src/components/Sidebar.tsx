@@ -23,12 +23,15 @@ export default function Sidebar(props: {
     <Box sx={{ display: "flex" }}>
       <AppBar
         position="fixed"
+        enableColorOnDark
+        color="inherit"
         sx={{
           width: { lg: `calc(100% - ${props.drawerWidth}px)` },
           ml: { lg: `${props.drawerWidth}px` },
           boxShadow: "none",
-          backgroundColor: "transparent",
-          color: "black",
+          borderBottom: "solid 1px",
+          borderColor: "divider",
+          backgroundImage: "unset",
         }}
       >
         <Toolbar>
