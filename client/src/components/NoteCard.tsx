@@ -2,7 +2,7 @@ import React from "react";
 import { Note } from "../interfaces/interfaces";
 import DeleteNoteButton from "./DeleteNoteButton";
 import EditNoteButton from "./EditNoteButton";
-import { Box, Card, Button, CardHeader } from "@mui/material";
+import { Box, Card, CardHeader } from "@mui/material";
 import { StickyNote2Outlined as NoteIcon } from "@mui/icons-material";
 
 interface CardProps {

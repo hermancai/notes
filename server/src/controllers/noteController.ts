@@ -30,7 +30,11 @@ const createNewNote = async (
 // @desc   Get all notes belonging to user
 // @route  GET /api/note
 const getNotes = async (req: Request, res: Response, next: NextFunction) => {
-  const notes = await Note.findAll({ where: { userId: req.userId } });
+  const notes = await Note.findAll({
+    where: { userId: req.userId },
+    order: [["updatedAt", "DESC"]],
+  });
+
   if (notes === null) {
     return res
       .status(400)

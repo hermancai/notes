@@ -24,7 +24,7 @@ export default function NewNotePage() {
       }
     };
     verifyUser();
-  }, [dispatch]);
+  }, [dispatch, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });

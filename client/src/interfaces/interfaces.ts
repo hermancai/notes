@@ -20,8 +20,8 @@ interface Note {
   id: number;
   text: string;
   title: string;
-  updatedAt: string;
-  createdAt: string;
+  updatedAt: string | number;
+  createdAt: string | number;
   userId: string;
 }
 

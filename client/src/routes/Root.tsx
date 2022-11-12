@@ -32,7 +32,7 @@ export default function Root() {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", minWidth: `${drawerWidth + 50}px` }}>
       <Sidebar drawerWidth={drawerWidth}>
         <Box
           sx={{

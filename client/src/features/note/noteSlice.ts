@@ -65,6 +65,22 @@ export const noteSlice = createSlice({
         allNotes: [...state.allNotes].filter((note) => note.id !== payload.id),
       };
     },
+    sortNoteList: (
+      state,
+      { payload }: PayloadAction<"old" | "new" | "update">
+    ) => {
+      switch (payload) {
+        case "old":
+          state.allNotes.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
+          break;
+        case "new":
+          state.allNotes.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+          break;
+        case "update":
+          state.allNotes.sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1));
+          break;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -74,6 +90,10 @@ export const noteSlice = createSlice({
       .addCase(getNotes.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.allNotes = payload.notes;
+        state.allNotes.forEach((note) => {
+          note.createdAt = new Date(note.createdAt).getTime();
+          note.updatedAt = new Date(note.updatedAt).getTime();
+        });
       })
       .addCase(getNotes.rejected, (state) => {
         state.loading = false;
@@ -106,5 +126,6 @@ export const noteSlice = createSlice({
   },
 });
 
-export const { setNote, resetNote, removeNoteFromList } = noteSlice.actions;
+export const { setNote, resetNote, removeNoteFromList, sortNoteList } =
+  noteSlice.actions;
 export default noteSlice.reducer;
