@@ -11,7 +11,10 @@ interface CardProps {
 
 export default function NoteCard({ note }: CardProps) {
   return (
-    <Card variant="outlined">
+    <Card
+      variant="outlined"
+      sx={{ "&:hover": { borderColor: "text.secondary" } }}
+    >
       <CardHeader
         title={
           <Box

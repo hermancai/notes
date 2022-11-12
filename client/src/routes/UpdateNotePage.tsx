@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { resetNote, updateNote } from "../features/note/noteSlice";
 import { NewNotePayload } from "../interfaces/interfaces";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import DeleteNoteButton from "../components/DeleteNoteButton";
 
 export default function UpdateNotePage() {
@@ -43,12 +43,14 @@ export default function UpdateNotePage() {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <p>new note page</p>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+      <Typography component="h1" variant="h4">
+        Edit Note
+      </Typography>
       <TextField
         label="Title"
         type="text"
-        variant="standard"
+        variant="outlined"
         name="title"
         InputLabelProps={{ shrink: true }}
         onChange={handleChange}
@@ -56,11 +58,11 @@ export default function UpdateNotePage() {
         value={inputs.title}
       />
       <TextField
-        label="Text"
+        label="Content"
         name="text"
         multiline
         minRows={4}
-        variant="standard"
+        variant="outlined"
         InputLabelProps={{ shrink: true }}
         onChange={handleChange}
         value={inputs.text}
@@ -69,13 +71,23 @@ export default function UpdateNotePage() {
         variant="contained"
         onClick={handleSubmit}
         disabled={inputs.title.trim() === ""}
+        sx={{ color: "white" }}
       >
         Save
       </Button>
-      <Button variant="contained" onClick={() => navigate("/")}>
+      <Button variant="outlined" color="error" onClick={() => navigate("/")}>
         Cancel
       </Button>
-      <DeleteNoteButton id={id!} />
+      <Box
+        sx={{
+          marginTop: "2rem",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <DeleteNoteButton id={id!} />
+      </Box>
     </Box>
   );
 }

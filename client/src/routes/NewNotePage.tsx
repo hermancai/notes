@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { verifyAccessToken } from "../features/user/userSlice";
 import { createNewNote } from "../features/note/noteSlice";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { NewNotePayload } from "../interfaces/interfaces";
 
 export default function NewNotePage() {
@@ -40,34 +40,39 @@ export default function NewNotePage() {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <p>new note page</p>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+      <Typography component="h1" variant="h4">
+        New Note
+      </Typography>
       <TextField
         label="Title"
         type="text"
-        variant="standard"
+        variant="outlined"
         name="title"
         InputLabelProps={{ shrink: true }}
         onChange={handleChange}
         required
+        value={inputs.title}
       />
       <TextField
-        label="Text"
+        label="Content"
         name="text"
         multiline
         minRows={4}
-        variant="standard"
+        variant="outlined"
         InputLabelProps={{ shrink: true }}
         onChange={handleChange}
+        value={inputs.text}
       />
       <Button
         variant="contained"
         onClick={handleSubmit}
         disabled={inputs.title.trim() === ""}
+        sx={{ color: "white" }}
       >
         Save
       </Button>
-      <Button variant="contained" onClick={() => navigate("/")}>
+      <Button variant="outlined" color="error" onClick={() => navigate("/")}>
         Cancel
       </Button>
     </Box>
