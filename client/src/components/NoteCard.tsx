@@ -4,6 +4,7 @@ import DeleteNoteButton from "./DeleteNoteButton";
 import EditNoteButton from "./EditNoteButton";
 import { Box, Card, CardHeader } from "@mui/material";
 import { StickyNote2Outlined as NoteIcon } from "@mui/icons-material";
+import LinkifyWrapper from "../components/LinkifyWrapper";
 
 interface CardProps {
   note: Note;
@@ -25,7 +26,7 @@ export default function NoteCard({ note }: CardProps) {
             }}
           >
             <NoteIcon color="primary" fontSize="small" />
-            {note.title}
+            <LinkifyWrapper content={note.title} />
           </Box>
         }
         action={
@@ -44,7 +45,9 @@ export default function NoteCard({ note }: CardProps) {
         sx={{ backgroundColor: "action.hover", padding: "0.5rem" }}
         titleTypographyProps={{ fontSize: 16 }}
       />
-      <Box sx={{ padding: "0.5rem", whiteSpace: "pre-wrap" }}>{note.text}</Box>
+      <Box sx={{ padding: "0.5rem", whiteSpace: "pre-wrap" }}>
+        <LinkifyWrapper content={note.text} />
+      </Box>
     </Card>
   );
 }
