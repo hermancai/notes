@@ -5,13 +5,11 @@ import jwt_decode from "jwt-decode";
 
 export interface UserState {
   username?: string;
-  loggedIn: boolean;
   loading: boolean;
   colorMode: "light" | "dark";
 }
 
 const initialState: UserState = {
-  loggedIn: false,
   loading: false,
   colorMode: "dark",
 };
@@ -82,12 +80,10 @@ export const userSlice = createSlice({
         localStorage.setItem("accessToken", payload.accessToken!);
         state.loading = false;
         state.username = payload.username;
-        state.loggedIn = true;
       })
       .addCase(verifyAccessToken.rejected, (state) => {
         state.loading = false;
         state.username = undefined;
-        state.loggedIn = false;
       })
       .addCase(login.pending, (state) => {
         state.loading = true;
@@ -97,14 +93,12 @@ export const userSlice = createSlice({
         if (!payload.error) {
           localStorage.setItem("accessToken", payload.accessToken!);
           state.username = payload.username;
-          state.loggedIn = true;
         }
       })
       .addCase(login.rejected, (state) => {
         localStorage.removeItem("accessToken");
         state.loading = false;
         state.username = undefined;
-        state.loggedIn = false;
       })
       .addCase(signup.pending, (state) => {
         state.loading = true;
@@ -112,12 +106,10 @@ export const userSlice = createSlice({
       .addCase(signup.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.username = undefined;
-        state.loggedIn = false;
       })
       .addCase(signup.rejected, (state) => {
         state.loading = false;
         state.username = undefined;
-        state.loggedIn = false;
       })
       .addCase(logout.pending, (state) => {
         state.loading = true;
@@ -126,7 +118,6 @@ export const userSlice = createSlice({
         localStorage.removeItem("accessToken");
         state.loading = false;
         state.username = undefined;
-        state.loggedIn = false;
       })
       .addCase(logout.rejected, (state) => {
         state.loading = false;

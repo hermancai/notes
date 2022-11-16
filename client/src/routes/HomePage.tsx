@@ -14,7 +14,7 @@ export default function HomePage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { allNotes } = useSelector((state: RootState) => state.note);
+  const { allNotes, loading } = useSelector((state: RootState) => state.note);
 
   React.useEffect(() => {
     const getAllNotes = async () => {
@@ -61,7 +61,7 @@ export default function HomePage() {
     setAnchorEl(null);
   };
 
-  return (
+  return loading ? null : (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <Button
         variant="contained"

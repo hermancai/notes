@@ -2,6 +2,7 @@ import React from "react";
 import type { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/user/userSlice";
+import { clearAllNotes } from "../features/note/noteSlice";
 import { useNavigate, NavLink } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
@@ -25,6 +26,7 @@ export default function Root() {
   const handleLogout = async () => {
     try {
       await dispatch(logout());
+      dispatch(clearAllNotes());
       navigate("/login");
     } catch (err) {
       console.log("Error logging out: ", err);

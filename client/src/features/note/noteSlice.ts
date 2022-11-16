@@ -81,6 +81,9 @@ export const noteSlice = createSlice({
           break;
       }
     },
+    clearAllNotes: (state) => {
+      state.allNotes = [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -126,6 +129,11 @@ export const noteSlice = createSlice({
   },
 });
 
-export const { setNote, resetNote, removeNoteFromList, sortNoteList } =
-  noteSlice.actions;
+export const {
+  setNote,
+  resetNote,
+  removeNoteFromList,
+  sortNoteList,
+  clearAllNotes,
+} = noteSlice.actions;
 export default noteSlice.reducer;
