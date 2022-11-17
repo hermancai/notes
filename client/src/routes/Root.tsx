@@ -21,7 +21,7 @@ const drawerWidth = 250;
 export default function Root() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { username } = useSelector((state: RootState) => state.user);
+  const { username, loading } = useSelector((state: RootState) => state.user);
 
   const handleLogout = async () => {
     try {
@@ -34,7 +34,13 @@ export default function Root() {
   };
 
   return (
-    <Box sx={{ display: "flex", minWidth: `${drawerWidth + 50}px` }}>
+    <Box
+      sx={{
+        display: "flex",
+        minWidth: `${drawerWidth + 50}px`,
+        visibility: loading ? "hidden" : "visible",
+      }}
+    >
       <Sidebar drawerWidth={drawerWidth}>
         <Box
           sx={{

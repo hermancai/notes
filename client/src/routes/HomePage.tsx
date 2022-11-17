@@ -1,7 +1,7 @@
 import React from "react";
 import { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
-import { setUsername } from "../features/user/userSlice";
+import { setUsername, stopLoading } from "../features/user/userSlice";
 import { getNotes, sortNoteList } from "../features/note/noteSlice";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography, MenuItem, Menu } from "@mui/material";
@@ -21,7 +21,9 @@ export default function HomePage() {
       try {
         await dispatch(getNotes()).unwrap();
         dispatch(setUsername());
+        dispatch(stopLoading());
       } catch (err) {
+        dispatch(stopLoading());
         navigate("/login");
       }
     };

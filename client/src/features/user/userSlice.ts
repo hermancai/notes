@@ -10,7 +10,7 @@ export interface UserState {
 }
 
 const initialState: UserState = {
-  loading: false,
+  loading: true,
   colorMode: "dark",
 };
 
@@ -69,6 +69,9 @@ export const userSlice = createSlice({
       const newMode = state.colorMode === "light" ? "dark" : "light";
       state.colorMode = newMode;
       localStorage.setItem("colorMode", newMode);
+    },
+    stopLoading: (state) => {
+      state.loading = false;
     },
   },
   extraReducers: (builder) => {
@@ -135,5 +138,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUsername, getColorMode, setColorMode } = userSlice.actions;
+export const { setUsername, getColorMode, setColorMode, stopLoading } =
+  userSlice.actions;
 export default userSlice.reducer;
