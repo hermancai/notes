@@ -1,7 +1,11 @@
 import Linkify from "react-linkify";
 import { useTheme } from "@mui/material/styles";
 
-export default function LinkifyWrapper(props: { content: string }) {
+interface Props {
+  children: React.ReactNode;
+}
+
+export default function LinkifyWrapper({ children }: Props) {
   const theme = useTheme();
 
   return (
@@ -20,7 +24,7 @@ export default function LinkifyWrapper(props: { content: string }) {
         );
       }}
     >
-      {props.content}
+      {children}
     </Linkify>
   );
 }
