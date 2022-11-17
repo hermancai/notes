@@ -31,9 +31,8 @@ export default function AccountPage() {
   React.useEffect(() => {
     const verifyUser = async () => {
       try {
-        await dispatch(verifyAccessToken());
+        await dispatch(verifyAccessToken()).unwrap();
       } catch (err) {
-        alert(err);
         navigate("/login");
       }
     };
