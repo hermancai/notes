@@ -35,7 +35,7 @@ export default function NewNotePage() {
       await dispatch(createNewNote(inputs)).unwrap();
       navigate("/");
     } catch (err) {
-      alert(err);
+      console.log(err);
     }
   };
 

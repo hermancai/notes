@@ -26,10 +26,10 @@ class Note extends Model {
   user!: User;
 
   @AllowNull(false)
-  @Column
+  @Column(DataType.TEXT)
   title!: string;
 
-  @Column
+  @Column(DataType.TEXT)
   text!: string;
 
   @CreatedAt
