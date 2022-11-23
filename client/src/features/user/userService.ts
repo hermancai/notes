@@ -82,11 +82,16 @@ const deleteAccount = async () => {
   }
 };
 
+// PUT /api/token
+// For accessing protected pages when no default fetch is used
+const getUsername = async () => {};
+
 const userService = {
   verifyAccessToken,
   login,
   signup,
   logout,
   deleteAccount,
+  getUsername,
 };
 export default userService;

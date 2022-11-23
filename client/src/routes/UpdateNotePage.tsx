@@ -2,7 +2,11 @@ import React from "react";
 import { RootState, AppDispatch } from "../app/store";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { resetNote, updateNote } from "../features/note/noteSlice";
+import {
+  resetNote,
+  updateNote,
+  sortNoteList,
+} from "../features/note/noteSlice";
 import { NewNotePayload } from "../interfaces/interfaces";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import DeleteNoteButton from "../components/DeleteNoteButton";
@@ -11,7 +15,9 @@ export default function UpdateNotePage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { id, title, text } = useSelector((state: RootState) => state.note);
+  const { id, title, text, sortMode } = useSelector(
+    (state: RootState) => state.note
+  );
 
   React.useEffect(() => {
     if (id === undefined) {
@@ -36,6 +42,7 @@ export default function UpdateNotePage() {
     try {
       await dispatch(updateNote({ ...inputs, id })).unwrap();
       dispatch(resetNote());
+      dispatch(sortNoteList(sortMode));
       navigate("/");
     } catch (err) {
       console.log(err);

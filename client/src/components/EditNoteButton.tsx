@@ -1,12 +1,10 @@
 import React from "react";
-import { AppDispatch, RootState } from "../app/store";
-import { useDispatch, useSelector } from "react-redux";
-import { setUsername } from "../features/user/userSlice";
-import { getNotes, setNote } from "../features/note/noteSlice";
+import { AppDispatch } from "../app/store";
+import { useDispatch } from "react-redux";
+import { setNote } from "../features/note/noteSlice";
 import { Note } from "../interfaces/interfaces";
 import { useNavigate } from "react-router-dom";
-import { Box, Button } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { Button } from "@mui/material";
 
 export default function EditNoteButton(props: { note: Note }) {
   const dispatch = useDispatch<AppDispatch>();

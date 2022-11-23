@@ -1,7 +1,8 @@
 import React from "react";
 import { AppDispatch, RootState } from "../app/store";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteAccount, verifyAccessToken } from "../features/user/userSlice";
+import { deleteAccount } from "../features/user/userSlice";
+import useSetUsername from "../hooks/useSetUsername";
 import {
   Box,
   Button,
@@ -17,8 +18,9 @@ export default function AccountPage() {
   const navigate = useNavigate();
 
   const { username } = useSelector((state: RootState) => state.user);
-
   const [open, setOpen] = React.useState<boolean>(false);
+
+  useSetUsername();
 
   const handleOpen = () => {
     setOpen(true);
@@ -28,23 +30,12 @@ export default function AccountPage() {
     setOpen(false);
   };
 
-  React.useEffect(() => {
-    const verifyUser = async () => {
-      try {
-        await dispatch(verifyAccessToken()).unwrap();
-      } catch (err) {
-        navigate("/login");
-      }
-    };
-    verifyUser();
-  }, [dispatch, navigate]);
-
   const handleDeleteAccount = async () => {
     try {
       await dispatch(deleteAccount()).unwrap();
       navigate("/login");
     } catch (err) {
-      alert(err);
+      console.log(err);
     }
   };
 

@@ -17,14 +17,19 @@ const createNewNote = async (
   }
 
   // Add new note to database
-  const newNote = await Note.create({ title, text, userId: req.userId });
+  const newNote = await Note.create(
+    { title, text, userId: req.userId },
+    { returning: true }
+  );
   if (!newNote) {
     return res
       .status(400)
       .json({ error: true, message: "Error occurred while creating new note" });
   }
 
-  res.status(200).json({ error: false, message: "Note creation successful" });
+  res
+    .status(200)
+    .json({ error: false, message: "Note creation successful", ...newNote });
 };
 
 // @desc   Get all notes belonging to user
@@ -74,7 +79,7 @@ const updateNote = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const updatedNote = await Note.update(
       { title, text },
-      { where: { userId, id } }
+      { where: { userId, id }, returning: true }
     );
     if (!updatedNote) {
       return res
@@ -82,9 +87,11 @@ const updateNote = async (req: Request, res: Response, next: NextFunction) => {
         .json({ error: true, message: "Update Error: Note not found" });
     }
 
-    res
-      .status(200)
-      .json({ error: false, message: "Note updated successfully" });
+    res.status(200).json({
+      error: false,
+      message: "Note updated successfully",
+      note: updatedNote[1][0],
+    });
   } catch (err) {
     next(err);
   }

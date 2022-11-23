@@ -25,9 +25,19 @@ interface Note {
   userId: string;
 }
 
-interface DecodedToken {
-  username: string;
-  userId: string;
+interface NewNoteResponse extends ServerResponse {
+  dataValues: Note;
 }
 
-export type { ServerResponse, Credentials, NewNotePayload, Note, DecodedToken };
+interface UpdateNoteResponse extends ServerResponse {
+  note: Note;
+}
+
+export type {
+  ServerResponse,
+  Credentials,
+  NewNotePayload,
+  Note,
+  NewNoteResponse,
+  UpdateNoteResponse,
+};

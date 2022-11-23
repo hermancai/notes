@@ -1,62 +1,58 @@
 import React from "react";
 import { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
-import { setUsername, stopLoading } from "../features/user/userSlice";
-import { getNotes, sortNoteList } from "../features/note/noteSlice";
+import { stopLoading } from "../features/user/userSlice";
+import useSetUsername from "../hooks/useSetUsername";
+import { getNotes, sortNoteList, NoteState } from "../features/note/noteSlice";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography, MenuItem, Menu } from "@mui/material";
 import { Add, KeyboardArrowDown } from "@mui/icons-material";
 import NoteCard from "../components/NoteCard";
 
-const sortOptions = ["Newest", "Oldest", "Last Updated"];
+const sortOptions: Array<NoteState["sortMode"]> = [
+  "Newest",
+  "Oldest",
+  "Last Updated",
+];
 
 export default function HomePage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { allNotes, loading } = useSelector((state: RootState) => state.note);
+  const { username } = useSelector((state: RootState) => state.user);
+
+  const { allNotes, loading, initialFetch, sortMode } = useSelector(
+    (state: RootState) => state.note
+  );
+
+  useSetUsername();
 
   React.useEffect(() => {
     const getAllNotes = async () => {
       try {
-        await dispatch(getNotes()).unwrap();
-        dispatch(setUsername());
-        dispatch(stopLoading());
+        // Only make one GET request to server
+        if (username !== undefined && !initialFetch) {
+          await dispatch(getNotes()).unwrap();
+        }
       } catch (err) {
-        dispatch(stopLoading());
         navigate("/login");
       }
     };
 
     getAllNotes();
-  }, [navigate, dispatch]);
+    dispatch(stopLoading());
+  }, [navigate, dispatch, initialFetch, username]);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [selectedIndex, setSelectedIndex] = React.useState<number>(2);
   const open = Boolean(anchorEl);
 
   const handleClickSortMenu = (e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
   };
 
-  const handleClickSortOption = (
-    e: React.MouseEvent<HTMLElement>,
-    index: number
-  ) => {
-    setSelectedIndex(index);
+  const handleClickSortOption = (sortMode: NoteState["sortMode"]) => {
     setAnchorEl(null);
-
-    switch (index) {
-      case 0:
-        dispatch(sortNoteList("new"));
-        break;
-      case 1:
-        dispatch(sortNoteList("old"));
-        break;
-      case 2:
-        dispatch(sortNoteList("update"));
-        break;
-    }
+    dispatch(sortNoteList(sortMode));
   };
 
   const handleCloseSortMenu = () => {
@@ -86,14 +82,14 @@ export default function HomePage() {
         {allNotes.length < 2 ? null : (
           <Box>
             <Button variant="outlined" onClick={handleClickSortMenu}>
-              {sortOptions[selectedIndex]} <KeyboardArrowDown />
+              {sortMode} <KeyboardArrowDown />
             </Button>
             <Menu anchorEl={anchorEl} open={open} onClose={handleCloseSortMenu}>
-              {sortOptions.map((option, index) => (
+              {sortOptions.map((option: NoteState["sortMode"]) => (
                 <MenuItem
                   key={option}
-                  selected={index === selectedIndex}
-                  onClick={(e) => handleClickSortOption(e, index)}
+                  selected={option === sortMode}
+                  onClick={() => handleClickSortOption(option)}
                 >
                   {option}
                 </MenuItem>

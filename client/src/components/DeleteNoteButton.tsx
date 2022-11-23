@@ -1,11 +1,7 @@
 import React from "react";
 import { AppDispatch } from "../app/store";
 import { useDispatch } from "react-redux";
-import {
-  resetNote,
-  deleteNote,
-  removeNoteFromList,
-} from "../features/note/noteSlice";
+import { resetNote, deleteNote } from "../features/note/noteSlice";
 import {
   Button,
   Dialog,
@@ -32,7 +28,6 @@ export default function DeleteNoteButton(props: { id: number }) {
   const handleDelete = async () => {
     try {
       await dispatch(deleteNote(props.id)).unwrap();
-      dispatch(removeNoteFromList({ id: props.id }));
       dispatch(resetNote());
       handleClose();
       navigate("/");

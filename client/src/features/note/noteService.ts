@@ -2,6 +2,8 @@ import {
   ServerResponse,
   NewNotePayload,
   Note,
+  NewNoteResponse,
+  UpdateNoteResponse,
 } from "../../interfaces/interfaces";
 import { UpdateNoteBody } from "./noteSlice";
 import refreshAccessToken from "../shared/refreshAccessToken";
@@ -30,13 +32,13 @@ const createNewNote = async (contents: NewNotePayload) => {
       throw new Error(refreshRes.message);
     }
     const retryResponse = await fetchRequest(contents);
-    const retryRes = (await retryResponse.json()) as ServerResponse;
+    const retryRes = (await retryResponse.json()) as NewNoteResponse;
     if (retryRes.error) {
       throw new Error(retryRes.message);
     }
     return retryRes;
   }
-  const initialRes = (await initialResponse.json()) as ServerResponse;
+  const initialRes = (await initialResponse.json()) as NewNoteResponse;
   if (initialRes.error) {
     throw new Error(initialRes.message);
   }
@@ -94,13 +96,13 @@ const updateNote = async (body: UpdateNoteBody) => {
       throw new Error(refreshResponse.message);
     }
     const retryResponse = await fetchRequest(body);
-    const retryRes = (await retryResponse.json()) as ServerResponse;
+    const retryRes = (await retryResponse.json()) as UpdateNoteResponse;
     if (retryRes.error) {
       throw new Error(retryRes.message);
     }
     return retryRes;
   }
-  const initialRes = (await initialResponse.json()) as ServerResponse;
+  const initialRes = (await initialResponse.json()) as UpdateNoteResponse;
   if (initialRes.error) {
     throw new Error(initialRes.message);
   }
