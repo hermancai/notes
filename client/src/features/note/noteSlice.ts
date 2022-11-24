@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { Note, NewNotePayload } from "../../interfaces/interfaces";
+import { NoteInterfaces } from "../../interfaces/NoteInterfaces";
 import noteService from "./noteService";
 
 export interface NoteState {
-  allNotes: Note[];
+  allNotes: NoteInterfaces.Note[];
   id?: number;
   title?: string;
   text?: string;
@@ -13,7 +13,7 @@ export interface NoteState {
   sortMode: "Oldest" | "Newest" | "Last Updated";
 }
 
-export interface UpdateNoteBody extends NewNotePayload {
+export interface UpdateNoteBody extends NoteInterfaces.NewNotePayload {
   id: number;
 }
 
@@ -26,7 +26,7 @@ const initialState: NoteState = {
 
 export const createNewNote = createAsyncThunk(
   "note/createNewNote",
-  async (contents: NewNotePayload, thunkAPI) => {
+  async (contents: NoteInterfaces.NewNotePayload, thunkAPI) => {
     return await noteService.createNewNote(contents);
   }
 );
@@ -57,7 +57,7 @@ export const noteSlice = createSlice({
   name: "note",
   initialState,
   reducers: {
-    setNote: (state, { payload }: PayloadAction<Note>) => {
+    setNote: (state, { payload }: PayloadAction<NoteInterfaces.Note>) => {
       state.id = payload.id;
       state.title = payload.title;
       state.text = payload.text;

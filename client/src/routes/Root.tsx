@@ -5,7 +5,7 @@ import { logout } from "../features/user/userSlice";
 import { resetAllNotes } from "../features/note/noteSlice";
 import { useNavigate, NavLink } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/shared/Sidebar";
 import { Box, Toolbar, Divider, Skeleton } from "@mui/material";
 import {
   PersonOutlineOutlined,
@@ -13,8 +13,8 @@ import {
   StickyNote2Outlined,
   CameraAltOutlined,
 } from "@mui/icons-material";
-import SidebarLink from "../components/SidebarLink";
-import ColorModeToggle from "../components/ColorModeToggle";
+import SidebarLink from "../components/shared/SidebarLink";
+import ColorModeToggle from "../components/shared/ColorModeToggle";
 
 const drawerWidth = 250;
 

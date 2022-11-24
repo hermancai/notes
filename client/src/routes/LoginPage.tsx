@@ -1,10 +1,10 @@
 import React from "react";
-import LoginPanel from "../components/LoginPanel";
+import LoginPanel from "../components/login/LoginPanel";
 import { AppDispatch } from "../app/store";
 import { useDispatch } from "react-redux";
 import { resetUser } from "../features/user/userSlice";
-import SignupPanel from "../components/SignupPanel";
-import ColorModeToggle from "../components/ColorModeToggle";
+import SignupPanel from "../components/login/SignupPanel";
+import ColorModeToggle from "../components/shared/ColorModeToggle";
 import { Box } from "@mui/material";
 
 export default function LoginPage() {

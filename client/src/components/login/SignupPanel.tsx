@@ -1,9 +1,9 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "../app/store";
-import { login } from "../features/user/userSlice";
+import { AppDispatch, RootState } from "../../app/store";
+import { signup, login } from "../../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
-import { Credentials } from "../interfaces/interfaces";
+import { UserInterfaces } from "../../interfaces/UserInterfaces";
 import {
   Container,
   Box,
@@ -15,14 +15,14 @@ import {
 import { Person, Lock, ErrorOutlineOutlined } from "@mui/icons-material";
 import GuestLoginButton from "./GuestLoginButton";
 
-export default function LoginPanel(props: {
+export default function SignupPanel(props: {
   setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
   const loading = useSelector((state: RootState) => state.user.loading);
-  const [inputs, setInputs] = React.useState<Credentials>({
+  const [inputs, setInputs] = React.useState<UserInterfaces.UserCredentials>({
     username: "",
     password: "",
   });
@@ -40,17 +40,18 @@ export default function LoginPanel(props: {
     }
   };
 
-  // Attempt login
+  // Attempt signup and login
   const handleSubmit = async () => {
-    try {
-      const res = await dispatch(login(inputs)).unwrap();
-      if (!res.error) {
-        navigate("/");
-      }
-      setErrorMessage(res.message);
-    } catch (err) {
-      console.log("An error occurred while logging in:\n", err);
+    const signupRes = await dispatch(signup(inputs)).unwrap();
+    if (signupRes.error) {
+      return setErrorMessage(signupRes.message);
     }
+
+    const loginRes = await dispatch(login(inputs)).unwrap();
+    if (loginRes.error) {
+      return setErrorMessage(loginRes.message);
+    }
+    navigate("/");
   };
 
   return (
@@ -64,7 +65,7 @@ export default function LoginPanel(props: {
       }}
     >
       <Typography variant="h3" component="h1">
-        Login
+        Sign Up
       </Typography>
       <Box
         sx={{
@@ -146,18 +147,17 @@ export default function LoginPanel(props: {
           }}
           disabled={loading}
         >
-          LOGIN
+          Sign Up
         </Button>
         <Button
           variant="outlined"
-          onClick={() => props.setShowLogin(false)}
+          onClick={() => props.setShowLogin(true)}
           sx={{ flex: "1" }}
           disabled={loading}
         >
-          SIGN UP
+          Login
         </Button>
       </Box>
-
       <GuestLoginButton />
     </Container>
   );

@@ -5,14 +5,14 @@ import useSetUsername from "../hooks/useSetUsername";
 import { createNewNote, sortNoteList } from "../features/note/noteSlice";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { NewNotePayload } from "../interfaces/interfaces";
+import { NoteInterfaces } from "../interfaces/NoteInterfaces";
 
 export default function NewNotePage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const { sortMode } = useSelector((state: RootState) => state.note);
-  const [inputs, setInputs] = React.useState<NewNotePayload>({
+  const [inputs, setInputs] = React.useState<NoteInterfaces.NewNotePayload>({
     title: "",
     text: "",
   });

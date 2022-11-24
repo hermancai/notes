@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../app/store";
-import { login } from "../features/user/userSlice";
+import { AppDispatch, RootState } from "../../app/store";
+import { login } from "../../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import userService from "./userService";
-import { Credentials } from "../../interfaces/interfaces";
+import { UserInterfaces } from "../../interfaces/UserInterfaces";
 
 export interface UserState {
   username?: string;
@@ -22,14 +22,14 @@ export const verifyAccessToken = createAsyncThunk(
 
 export const login = createAsyncThunk(
   "user/login",
-  async (credentials: Credentials, thunkAPI) => {
+  async (credentials: UserInterfaces.UserCredentials, thunkAPI) => {
     return await userService.login(credentials);
   }
 );
 
 export const signup = createAsyncThunk(
   "user/signup",
-  async (credentials: Credentials, thunkAPI) => {
+  async (credentials: UserInterfaces.UserCredentials, thunkAPI) => {
     return await userService.signup(credentials);
   }
 );

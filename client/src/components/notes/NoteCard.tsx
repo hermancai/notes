@@ -1,7 +1,7 @@
 import React from "react";
-import { Note } from "../interfaces/interfaces";
+import { NoteInterfaces } from "../../interfaces/NoteInterfaces";
 import DeleteNoteButton from "./DeleteNoteButton";
-import EditNoteButton from "./EditNoteButton";
+import EditNoteButton from "./UpdateNoteButton";
 import {
   Box,
   Card,
@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { StickyNote2Outlined, ExpandMore } from "@mui/icons-material";
-import LinkifyWrapper from "../components/LinkifyWrapper";
+import LinkifyWrapper from "../shared/LinkifyWrapper";
 
 // HOC for delaying re-renders when tracking window size as state
 const throttle = (func: () => void, delay: number) => {
@@ -37,7 +37,7 @@ const LINE_CLAMP = 4;
 const COLLAPSED_SIZE = "6em";
 
 interface CardProps {
-  note: Note;
+  note: NoteInterfaces.Note;
 }
 
 interface ExpandWrapperProps extends IconButtonProps {

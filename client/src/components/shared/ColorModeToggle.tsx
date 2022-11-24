@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Switch } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { LightMode, DarkMode } from "@mui/icons-material";
-import { ColorModeContext } from "../App";
+import { ColorModeContext } from "../../App";
 
 export default function ColorModeToggle() {
   const theme = useTheme();

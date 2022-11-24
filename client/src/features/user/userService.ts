@@ -1,4 +1,5 @@
-import { ServerResponse, Credentials } from "../../interfaces/interfaces";
+import { SharedInterfaces } from "../../interfaces/SharedInterfaces";
+import { UserInterfaces } from "../../interfaces/UserInterfaces";
 import refreshAccessToken from "../shared/refreshAccessToken";
 
 // POST /api/token
@@ -12,7 +13,8 @@ const verifyAccessToken = async () => {
         Authorization: "Bearer " + accessToken,
       },
     });
-    const verifyRes = (await verifyResponse.json()) as ServerResponse;
+    const verifyRes =
+      (await verifyResponse.json()) as SharedInterfaces.ServerResponse;
 
     // Exit if current access token is valid
     if (!verifyRes.error) {
@@ -24,7 +26,7 @@ const verifyAccessToken = async () => {
 };
 
 // POST /api/user/login
-const login = async (credentials: Credentials) => {
+const login = async (credentials: UserInterfaces.UserCredentials) => {
   const response = await fetch("/api/user/login", {
     method: "POST",
     headers: {
@@ -32,11 +34,11 @@ const login = async (credentials: Credentials) => {
     },
     body: JSON.stringify(credentials),
   });
-  return (await response.json()) as ServerResponse;
+  return (await response.json()) as SharedInterfaces.ServerResponse;
 };
 
 // POST /api/user/signup
-const signup = async (credentials: Credentials) => {
+const signup = async (credentials: UserInterfaces.UserCredentials) => {
   const response = await fetch("/api/user/signup", {
     method: "POST",
     headers: {
@@ -44,7 +46,7 @@ const signup = async (credentials: Credentials) => {
     },
     body: JSON.stringify(credentials),
   });
-  return (await response.json()) as ServerResponse;
+  return (await response.json()) as SharedInterfaces.ServerResponse;
 };
 
 // DELETE /api/token
@@ -53,7 +55,7 @@ const logout = async () => {
     method: "DELETE",
     credentials: "include",
   });
-  return (await response.json()) as ServerResponse;
+  return (await response.json()) as SharedInterfaces.ServerResponse;
 };
 
 // DELETE /api/user
@@ -74,7 +76,8 @@ const deleteAccount = async () => {
       throw new Error(refreshResponse.message);
     }
     const retryResponse = await fetchRequest();
-    const retryRes = (await retryResponse.json()) as ServerResponse;
+    const retryRes =
+      (await retryResponse.json()) as SharedInterfaces.ServerResponse;
     if (retryRes.error) {
       throw new Error(retryRes.message);
     }

@@ -1,20 +1,11 @@
-import {
-  ServerResponse,
-  NewNotePayload,
-  Note,
-  NewNoteResponse,
-  UpdateNoteResponse,
-} from "../../interfaces/interfaces";
+import { SharedInterfaces } from "../../interfaces/SharedInterfaces";
+import { NoteInterfaces } from "../../interfaces/NoteInterfaces";
 import { UpdateNoteBody } from "./noteSlice";
 import refreshAccessToken from "../shared/refreshAccessToken";
 
-interface GetNotesResponse extends ServerResponse {
-  notes: Note[];
-}
-
 // POST /api/note
-const createNewNote = async (contents: NewNotePayload) => {
-  const fetchRequest = async (contents: NewNotePayload) => {
+const createNewNote = async (contents: NoteInterfaces.NewNotePayload) => {
+  const fetchRequest = async (contents: NoteInterfaces.NewNotePayload) => {
     return await fetch("/api/note", {
       method: "POST",
       headers: {
@@ -32,13 +23,15 @@ const createNewNote = async (contents: NewNotePayload) => {
       throw new Error(refreshRes.message);
     }
     const retryResponse = await fetchRequest(contents);
-    const retryRes = (await retryResponse.json()) as NewNoteResponse;
+    const retryRes =
+      (await retryResponse.json()) as NoteInterfaces.NewNoteResponse;
     if (retryRes.error) {
       throw new Error(retryRes.message);
     }
     return retryRes;
   }
-  const initialRes = (await initialResponse.json()) as NewNoteResponse;
+  const initialRes =
+    (await initialResponse.json()) as NoteInterfaces.NewNoteResponse;
   if (initialRes.error) {
     throw new Error(initialRes.message);
   }
@@ -63,13 +56,15 @@ const getNotes = async () => {
       throw new Error(refreshResponse.message);
     }
     const retryResponse = await fetchRequest();
-    const retryRes = (await retryResponse.json()) as GetNotesResponse;
+    const retryRes =
+      (await retryResponse.json()) as NoteInterfaces.GetNotesResponse;
     if (retryRes.error) {
       throw new Error(retryRes.message);
     }
     return retryRes;
   }
-  const initialRes = (await initialResponse.json()) as GetNotesResponse;
+  const initialRes =
+    (await initialResponse.json()) as NoteInterfaces.GetNotesResponse;
   if (initialRes.error) {
     throw new Error(initialRes.message);
   }
@@ -96,13 +91,15 @@ const updateNote = async (body: UpdateNoteBody) => {
       throw new Error(refreshResponse.message);
     }
     const retryResponse = await fetchRequest(body);
-    const retryRes = (await retryResponse.json()) as UpdateNoteResponse;
+    const retryRes =
+      (await retryResponse.json()) as NoteInterfaces.UpdateNoteResponse;
     if (retryRes.error) {
       throw new Error(retryRes.message);
     }
     return retryRes;
   }
-  const initialRes = (await initialResponse.json()) as UpdateNoteResponse;
+  const initialRes =
+    (await initialResponse.json()) as NoteInterfaces.UpdateNoteResponse;
   if (initialRes.error) {
     throw new Error(initialRes.message);
   }
@@ -129,13 +126,15 @@ const deleteNote = async (id: number) => {
       throw new Error(refreshResponse.message);
     }
     const retryResponse = await fetchRequest(id);
-    const retryRes = (await retryResponse.json()) as ServerResponse;
+    const retryRes =
+      (await retryResponse.json()) as SharedInterfaces.ServerResponse;
     if (retryRes.error) {
       throw new Error(retryRes.message);
     }
     return retryRes;
   }
-  const initialRes = (await initialResponse.json()) as ServerResponse;
+  const initialRes =
+    (await initialResponse.json()) as SharedInterfaces.ServerResponse;
   if (initialRes.error) {
     throw new Error(initialRes.message);
   }

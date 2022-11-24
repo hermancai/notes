@@ -1,13 +1,12 @@
 import React from "react";
 import { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
-import { stopLoading } from "../features/user/userSlice";
 import useSetUsername from "../hooks/useSetUsername";
 import { getNotes, sortNoteList, NoteState } from "../features/note/noteSlice";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography, MenuItem, Menu } from "@mui/material";
 import { Add, KeyboardArrowDown } from "@mui/icons-material";
-import NoteCard from "../components/NoteCard";
+import NoteCard from "../components/notes/NoteCard";
 
 const sortOptions: Array<NoteState["sortMode"]> = [
   "Newest",
@@ -40,7 +39,6 @@ export default function HomePage() {
     };
 
     getAllNotes();
-    dispatch(stopLoading());
   }, [navigate, dispatch, initialFetch, username]);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

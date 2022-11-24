@@ -1,4 +1,4 @@
-import { ServerResponse } from "../../interfaces/interfaces";
+import { SharedInterfaces } from "../../interfaces/SharedInterfaces";
 
 // PUT /api/token
 const refreshAccessToken = async () => {
@@ -6,7 +6,7 @@ const refreshAccessToken = async () => {
     method: "PUT",
     credentials: "include",
   });
-  const res = (await response.json()) as ServerResponse;
+  const res = (await response.json()) as SharedInterfaces.ServerResponse;
   if (res.error) {
     localStorage.removeItem("accessToken");
     throw new Error(res.message);

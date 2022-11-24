@@ -1,7 +1,7 @@
 import React from "react";
-import { AppDispatch } from "../app/store";
+import { AppDispatch } from "../../app/store";
 import { useDispatch } from "react-redux";
-import { resetNote, deleteNote } from "../features/note/noteSlice";
+import { resetNote, deleteNote } from "../../features/note/noteSlice";
 import {
   Button,
   Dialog,
