@@ -7,6 +7,7 @@ import {
   updateNote,
   sortNoteList,
 } from "../features/note/noteSlice";
+import { makeToast } from "../features/toast/toastSlice";
 import { NoteInterfaces } from "../interfaces/NoteInterfaces";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import DeleteNoteButton from "../components/notes/DeleteNoteButton";
@@ -43,6 +44,7 @@ export default function UpdateNotePage() {
       await dispatch(updateNote({ ...inputs, id })).unwrap();
       dispatch(resetNote());
       dispatch(sortNoteList(sortMode));
+      dispatch(makeToast("Updated note"));
       navigate("/");
     } catch (err) {
       console.log(err);

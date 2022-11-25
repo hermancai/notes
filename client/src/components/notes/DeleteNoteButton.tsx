@@ -2,6 +2,7 @@ import React from "react";
 import { AppDispatch } from "../../app/store";
 import { useDispatch } from "react-redux";
 import { resetNote, deleteNote } from "../../features/note/noteSlice";
+import { makeToast } from "../../features/toast/toastSlice";
 import {
   Button,
   Dialog,
@@ -30,6 +31,7 @@ export default function DeleteNoteButton(props: { id: number }) {
       await dispatch(deleteNote(props.id)).unwrap();
       dispatch(resetNote());
       handleClose();
+      dispatch(makeToast("Deleted note"));
       navigate("/");
     } catch (err) {
       console.log(err);

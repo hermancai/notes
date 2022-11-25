@@ -3,6 +3,7 @@ import { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import useSetUsername from "../hooks/useSetUsername";
 import { createNewNote, sortNoteList } from "../features/note/noteSlice";
+import { makeToast } from "../features/toast/toastSlice";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { NoteInterfaces } from "../interfaces/NoteInterfaces";
@@ -27,6 +28,7 @@ export default function NewNotePage() {
     try {
       await dispatch(createNewNote(inputs)).unwrap();
       dispatch(sortNoteList(sortMode));
+      dispatch(makeToast("Created new note"));
       navigate("/");
     } catch (err) {
       console.log(err);

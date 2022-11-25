@@ -3,6 +3,7 @@ import type { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/user/userSlice";
 import { resetAllNotes } from "../features/note/noteSlice";
+import { clearAllToasts } from "../features/toast/toastSlice";
 import { useNavigate, NavLink } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/shared/Sidebar";
@@ -15,6 +16,7 @@ import {
 } from "@mui/icons-material";
 import SidebarLink from "../components/shared/SidebarLink";
 import ColorModeToggle from "../components/shared/ColorModeToggle";
+import Toast from "../components/shared/Toast";
 
 const drawerWidth = 250;
 
@@ -27,6 +29,7 @@ export default function Root() {
     try {
       await dispatch(logout());
       dispatch(resetAllNotes());
+      dispatch(clearAllToasts());
       navigate("/login");
     } catch (err) {
       console.log("Error logging out: ", err);
@@ -105,6 +108,7 @@ export default function Root() {
       >
         <Toolbar />
         <Outlet />
+        <Toast />
       </Box>
     </Box>
   );
