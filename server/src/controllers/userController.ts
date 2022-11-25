@@ -17,7 +17,7 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
   if (!username || !password) {
     return res
       .status(400)
-      .json({ error: true, message: "Enter a username and password" });
+      .json({ error: true, message: "Enter username and password" });
   }
 
   // Check valid username and password
@@ -31,9 +31,7 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
   // Check username taken
   const existingUser = await User.findOne({ where: { username } });
   if (existingUser !== null) {
-    return res
-      .status(400)
-      .json({ error: true, message: "The username is taken" });
+    return res.status(400).json({ error: true, message: "Username is taken" });
   }
 
   // Store user and password in database
@@ -61,7 +59,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   if (!username || !password) {
     return res
       .status(400)
-      .json({ error: true, message: "Enter a username and password" });
+      .json({ error: true, message: "Enter username and password" });
   }
 
   // Check username exists
@@ -69,7 +67,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   if (user === null) {
     return res
       .status(400)
-      .json({ error: true, message: "The username does not exist" });
+      .json({ error: true, message: "Username does not exist" });
   }
 
   // Compare given password with stored password
