@@ -1,6 +1,7 @@
 import React from "react";
 import { AppDispatch } from "../../app/store";
 import { useDispatch } from "react-redux";
+import { setSearchQuery } from "../../features/user/userSlice";
 import { setNote } from "../../features/note/noteSlice";
 import { NoteInterfaces } from "../../interfaces/NoteInterfaces";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +13,7 @@ export default function EditNoteButton(props: { note: NoteInterfaces.Note }) {
 
   const handleEdit = (note: NoteInterfaces.Note) => {
     dispatch(setNote(note));
+    dispatch(setSearchQuery(""));
     navigate("/notes/update");
   };
 

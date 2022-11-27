@@ -1,4 +1,6 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { setSearchQuery } from "../../features/user/userSlice";
 import { Button, alpha } from "@mui/material";
 import { green } from "@mui/material/colors";
 
@@ -9,9 +11,17 @@ interface Props {
 }
 
 export default function SidebarLink({ children, onClick, isActive }: Props) {
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    // Clear search bar to remove search results overlay
+    dispatch(setSearchQuery(""));
+    onClick();
+  };
+
   return (
     <Button
-      onClick={onClick}
+      onClick={handleClick}
       sx={{
         display: "flex",
         justifyContent: "start",

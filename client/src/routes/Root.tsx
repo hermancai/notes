@@ -17,13 +17,16 @@ import {
 import SidebarLink from "../components/shared/SidebarLink";
 import ColorModeToggle from "../components/shared/ColorModeToggle";
 import Toast from "../components/shared/Toast";
+import SearchResults from "../components/shared/SearchResults";
 
 const drawerWidth = 250;
 
 export default function Root() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { username, loading } = useSelector((state: RootState) => state.user);
+  const { username, loading, searchQuery } = useSelector(
+    (state: RootState) => state.user
+  );
 
   const handleLogout = async () => {
     try {
@@ -107,7 +110,7 @@ export default function Root() {
         }}
       >
         <Toolbar />
-        <Outlet />
+        {searchQuery === "" ? <Outlet /> : <SearchResults />}
         <Toast />
       </Box>
     </Box>

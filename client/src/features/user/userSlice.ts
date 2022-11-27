@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import userService from "./userService";
 import { UserInterfaces } from "../../interfaces/UserInterfaces";
 
@@ -6,11 +6,13 @@ export interface UserState {
   username?: string;
   loading: boolean;
   colorMode: "light" | "dark";
+  searchQuery: string;
 }
 
 const initialState: UserState = {
   loading: true,
   colorMode: "dark",
+  searchQuery: "",
 };
 
 export const verifyAccessToken = createAsyncThunk(
@@ -69,6 +71,9 @@ export const userSlice = createSlice({
       state.loading = false;
       state.username = undefined;
       localStorage.removeItem("accessToken");
+    },
+    setSearchQuery: (state, { payload }: PayloadAction<string>) => {
+      state.searchQuery = payload;
     },
   },
   extraReducers: (builder) => {
@@ -135,6 +140,11 @@ export const userSlice = createSlice({
   },
 });
 
-export const { getColorMode, setColorMode, stopLoading, resetUser } =
-  userSlice.actions;
+export const {
+  getColorMode,
+  setColorMode,
+  stopLoading,
+  resetUser,
+  setSearchQuery,
+} = userSlice.actions;
 export default userSlice.reducer;

@@ -62,6 +62,9 @@ export default function NoteCard({ note }: CardProps) {
   const [expanded, setExpanded] = React.useState(false);
   const [windowWidth, setWindowWidth] = React.useState<number>(0);
 
+  // For hiding flash of uncollapsed note while waiting for ref
+  const [loading, setLoading] = React.useState(true);
+
   // Track window resize
   React.useEffect(() => {
     const handleResize = throttle(() => {
@@ -80,6 +83,7 @@ export default function NoteCard({ note }: CardProps) {
       } else {
         setShowCollapse(false);
       }
+      setLoading(false);
     }
   }, [ref, windowWidth]);
 
@@ -90,7 +94,10 @@ export default function NoteCard({ note }: CardProps) {
   return (
     <Card
       variant="outlined"
-      sx={{ "&:hover": { borderColor: "text.secondary" } }}
+      sx={{
+        "&:hover": { borderColor: "text.secondary" },
+        visibility: loading ? "hidden" : "visible",
+      }}
     >
       <CardHeader
         title={

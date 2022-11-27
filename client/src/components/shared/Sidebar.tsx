@@ -1,4 +1,7 @@
 import * as React from "react";
+import { RootState } from "../../app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchQuery } from "../../features/user/userSlice";
 import {
   AppBar,
   Box,
@@ -6,18 +9,35 @@ import {
   Drawer,
   IconButton,
   Toolbar,
+  InputBase,
 } from "@mui/material";
-import { Menu, ChevronLeft } from "@mui/icons-material";
+import {
+  Menu,
+  ChevronLeft,
+  SearchRounded,
+  ClearRounded,
+} from "@mui/icons-material";
 
 export default function Sidebar(props: {
   drawerWidth: number;
   children: React.ReactNode;
 }) {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const dispatch = useDispatch();
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { searchQuery } = useSelector((state: RootState) => state.user);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSearchQuery(e.target.value));
   };
+
+  const clearSearch = React.useCallback(() => {
+    dispatch(setSearchQuery(""));
+  }, [dispatch]);
+
+  const handleDrawerToggle = React.useCallback(() => {
+    setMobileOpen(!mobileOpen);
+  }, [mobileOpen]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -34,19 +54,61 @@ export default function Sidebar(props: {
           backgroundImage: "unset",
         }}
       >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{
-              mr: 2,
-              display: { lg: "none" },
-            }}
-          >
-            <Menu />
-          </IconButton>
+        <Toolbar
+          sx={{
+            marginRight: { lg: `${props.drawerWidth}px` },
+            padding: "0.75rem 1.5rem",
+          }}
+        >
+          <>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{
+                mr: 2,
+                display: { lg: "none" },
+              }}
+            >
+              <Menu />
+            </IconButton>
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "nowrap",
+                width: "100%",
+                backgroundColor: "action.hover",
+                "&:hover": { backgroundColor: "action.selected" },
+                alignItems: "center",
+                padding: "0.25rem 1rem",
+                gap: "0.5rem",
+                borderRadius: "5px",
+              }}
+            >
+              <SearchRounded />
+              <InputBase
+                placeholder="Search..."
+                inputProps={{ "aria-label": "search" }}
+                sx={{ width: "100%" }}
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+              <Box
+                onClick={clearSearch}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": { backgroundColor: "action.hover" },
+                  display: searchQuery === "" ? "none" : "flex",
+                  borderRadius: "99px",
+                  padding: "0.25rem",
+                }}
+              >
+                <ClearRounded />
+              </Box>
+            </Box>
+          </>
         </Toolbar>
       </AppBar>
       <Box
