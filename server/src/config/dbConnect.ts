@@ -1,8 +1,9 @@
 import { config } from "dotenv";
 import { Sequelize } from "sequelize-typescript";
-import Token from "./models/Token";
-import User from "./models/User";
-import Note from "./models/Note";
+import Token from "../models/Token";
+import User from "../models/User";
+import Note from "../models/Note";
+import Image from "../models/Image";
 
 config();
 
@@ -15,7 +16,7 @@ const connectToDatabase = async () => {
 
   // Connect to database
   const sequelize = new Sequelize(dbURI);
-  sequelize.addModels([User, Token, Note]);
+  sequelize.addModels([User, Token, Note, Image]);
 
   // Test connection
   try {
@@ -24,7 +25,7 @@ const connectToDatabase = async () => {
     console.log(err);
   }
 
-  // // Resets database to match new models.
+  // Reset database to match new models
   // await sequelize.sync({ force: true });
 };
 

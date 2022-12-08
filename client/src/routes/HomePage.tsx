@@ -15,16 +15,15 @@ const sortOptions: Array<NoteState["sortMode"]> = [
 ];
 
 export default function HomePage() {
+  useSetUsername();
+
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const { username } = useSelector((state: RootState) => state.user);
-
   const { allNotes, loading, initialFetch, sortMode } = useSelector(
     (state: RootState) => state.note
   );
-
-  useSetUsername();
 
   React.useEffect(() => {
     const getAllNotes = async () => {
@@ -57,11 +56,15 @@ export default function HomePage() {
     setAnchorEl(null);
   };
 
+  const handleClickNewNote = () => {
+    navigate("/notes/new");
+  };
+
   return loading ? null : (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <Button
         variant="contained"
-        onClick={() => navigate("/notes/new")}
+        onClick={handleClickNewNote}
         sx={{ color: "white" }}
       >
         <Add />

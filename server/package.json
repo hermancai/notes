@@ -12,6 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.218.0",
+    "@aws-sdk/s3-request-presigner": "^3.218.0",
+    "@types/uuid": "^9.0.0",
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
@@ -21,7 +24,8 @@
     "pg": "^8.8.0",
     "sequelize": "^6.25.3",
     "sequelize-typescript": "^2.1.5",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
