@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllImages } from "../features/image/imageSlice";
 import { useNavigate } from "react-router-dom";
 import useSetUsername from "../hooks/useSetUsername";
-import { Box, Button, Input, InputLabel, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { Add } from "@mui/icons-material";
+import ImageCard from "../components/images/ImageCard";
 
 export default function ImagesPage() {
   useSetUsername();
@@ -14,7 +15,7 @@ export default function ImagesPage() {
   const navigate = useNavigate();
 
   const { username } = useSelector((state: RootState) => state.user);
-  const { initialFetch, allImages, loading, sortMode } = useSelector(
+  const { initialFetch, allImages } = useSelector(
     (state: RootState) => state.image
   );
 
@@ -60,9 +61,17 @@ export default function ImagesPage() {
             : `Images (${allImages.length}):`}
         </Typography>
       </Box>
-      {allImages.map((image) => {
-        return <img src={image.presignedURL} key={image.id}></img>;
-      })}
+      <Box
+        sx={{
+          display: "flex",
+          gap: "1.5rem",
+          flexWrap: "wrap",
+        }}
+      >
+        {allImages.map((image) => {
+          return <ImageCard key={image.id} image={image} />;
+        })}
+      </Box>
     </Box>
   );
 }
