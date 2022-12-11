@@ -1,4 +1,7 @@
 import React from "react";
+import { AppDispatch } from "../../app/store";
+import { useDispatch } from "react-redux";
+import { getFullImage } from "../../features/image/imageSlice";
 import {
   Card,
   CardActions,
@@ -18,10 +21,19 @@ interface ImageCardProps {
 }
 
 export default function ImageCard({ image }: ImageCardProps) {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [openModal, setOpenModal] = React.useState(false);
 
   const toggleOpenModal = () => {
     setOpenModal((prev) => !prev);
+  };
+
+  const openFullImage = async () => {
+    const fullImageURL = await dispatch(getFullImage(image.fileName)).unwrap();
+    if (window !== null) {
+      window.open(fullImageURL, "_blank", "noreferrer");
+    }
   };
 
   return (
@@ -32,8 +44,9 @@ export default function ImageCard({ image }: ImageCardProps) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          width: { xs: "100%", md: 400 },
-          flexShrink: 0,
+          minWidth: 300,
+          flexGrow: 1,
+          flexBasis: 0,
           backgroundColor: "action.hover",
           "&:hover": { borderColor: "text.secondary" },
         }}
@@ -87,6 +100,7 @@ export default function ImageCard({ image }: ImageCardProps) {
               display: "flex",
               gap: "0.25rem",
             }}
+            onClick={openFullImage}
           >
             Full Size
             <OpenInNewRounded fontSize="small" />

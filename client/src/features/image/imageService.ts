@@ -1,4 +1,3 @@
-import { SharedInterfaces } from "../../interfaces/SharedInterfaces";
 import { ImageInterfaces } from "../../interfaces/ImageInterfaces";
 
 // GET /api/image/getUploadPresign
@@ -56,4 +55,18 @@ const getAllImages = async () => {
   return (await response.json()) as ImageInterfaces.GetImagesResponse;
 };
 
-export const imageService = { uploadImage, getAllImages };
+// POST /api/image/full
+const getFullImageURL = async (imageKey: ImageInterfaces.Image["fileName"]) => {
+  const response = await fetch("/api/image/full", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+    },
+    body: JSON.stringify({ imageKey }),
+  });
+  const res = (await response.json()) as ImageInterfaces.FullImageResponse;
+  return res.presignedURL;
+};
+
+export const imageService = { uploadImage, getAllImages, getFullImageURL };

@@ -4,8 +4,8 @@ export namespace ImageInterfaces {
   export interface Image {
     id: number;
     description: string;
-    s3Key: string;
-    s3KeyResized: string;
+    fileName: string;
+    fileNameResized: string;
     updatedAt: string | number;
     createdAt: string | number;
     userId: string;
@@ -27,5 +27,9 @@ export namespace ImageInterfaces {
 
   export interface GetImagesResponse extends SharedInterfaces.ServerResponse {
     images: ImageWithPresignedURL[];
+  }
+
+  export interface FullImageResponse extends SharedInterfaces.ServerResponse {
+    presignedURL: string;
   }
 }

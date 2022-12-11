@@ -33,6 +33,13 @@ export const uploadImage = createAsyncThunk(
   }
 );
 
+export const getFullImage = createAsyncThunk(
+  "image/getFullImage",
+  async (imageKey: ImageInterfaces.Image["fileName"], thunkAPI) => {
+    return await imageService.getFullImageURL(imageKey);
+  }
+);
+
 export const imageSlice = createSlice({
   name: "image",
   initialState,

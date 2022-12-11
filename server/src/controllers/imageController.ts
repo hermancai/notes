@@ -22,14 +22,18 @@ interface ImageWithPresignedURL {
   presignedURL: string;
 }
 
-const generateGetPresignedURL = async (fileName: string) => {
+const generateGetPresignedURL = async (
+  fileName: string,
+  bucketSuffix: string
+) => {
   const bucketParams: GetObjectCommandInput = {
-    Bucket: BUCKET_NAME + "-resized",
+    Bucket: BUCKET_NAME + bucketSuffix,
     Key: fileName,
   };
 
   const command = new GetObjectCommand(bucketParams);
-  return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+  // presigned URL expires in 24 hours
+  return await getSignedUrl(s3Client, command, { expiresIn: 86400 });
 };
 
 // @desc   Send presigned URLs of thumbnails belonging to user
@@ -61,7 +65,10 @@ const getAllImages = async (
       updatedAt: image.updatedAt,
       createdAt: image.createdAt,
       userId: image.userId,
-      presignedURL: await generateGetPresignedURL(image.fileNameResized),
+      presignedURL: await generateGetPresignedURL(
+        image.fileNameResized,
+        "-resized"
+      ),
     });
   }
 
@@ -125,4 +132,23 @@ const saveImage = async (req: Request, res: Response, next: NextFunction) => {
     .json({ error: false, message: "Image save successful", ...newImage });
 };
 
-export { getAllImages, getUploadPresignedURL, saveImage };
+// @desc   Get presigned URL for one full sized image
+// @route  POST /api/image/full
+const getFullImageURL = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const presignedURL = await generateGetPresignedURL(req.body.imageKey, "");
+    res.status(200).json({
+      error: false,
+      message: "URL created successfully",
+      presignedURL,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export { getAllImages, getUploadPresignedURL, saveImage, getFullImageURL };
