@@ -15,6 +15,7 @@ import {
 import { OpenInNewRounded } from "@mui/icons-material";
 import { ImageInterfaces } from "../../interfaces/ImageInterfaces";
 import LinkifyWrapper from "../../components/shared/LinkifyWrapper";
+import DeleteImageButton from "../../components/images/DeleteImageButton";
 
 interface ImageCardProps {
   image: ImageInterfaces.ImageWithPresignedURL;
@@ -105,9 +106,7 @@ export default function ImageCard({ image }: ImageCardProps) {
             Full Size
             <OpenInNewRounded fontSize="small" />
           </Button>
-          <Button size="small" color="error">
-            Delete
-          </Button>
+          <DeleteImageButton imageKey={image.fileName} />
         </CardActions>
       </Card>
       <Modal

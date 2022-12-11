@@ -69,4 +69,23 @@ const getFullImageURL = async (imageKey: ImageInterfaces.Image["fileName"]) => {
   return res.presignedURL;
 };
 
-export const imageService = { uploadImage, getAllImages, getFullImageURL };
+// DELETE /api/image
+const deleteImage = async (
+  fileName: ImageInterfaces.ImageWithPresignedURL["fileName"]
+) => {
+  await fetch("/api/image", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+    },
+    body: JSON.stringify({ fileName }),
+  });
+};
+
+export const imageService = {
+  uploadImage,
+  getAllImages,
+  getFullImageURL,
+  deleteImage,
+};

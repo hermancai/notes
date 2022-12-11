@@ -1,7 +1,7 @@
 import React from "react";
 import { AppDispatch } from "../../app/store";
 import { useDispatch } from "react-redux";
-import { resetNote, deleteNote } from "../../features/note/noteSlice";
+import { deleteImage } from "../../features/image/imageSlice";
 import { makeToast } from "../../features/toast/toastSlice";
 import {
   Button,
@@ -11,13 +11,13 @@ import {
   DialogContentText,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { NoteInterfaces } from "../../interfaces/NoteInterfaces";
+import { ImageInterfaces } from "../../interfaces/ImageInterfaces";
 
 interface ButtonProps {
-  id: NoteInterfaces.Note["id"];
+  imageKey: ImageInterfaces.ImageWithPresignedURL["fileName"];
 }
 
-export default function DeleteNoteButton({ id }: ButtonProps) {
+export default function DeleteImageButton({ imageKey }: ButtonProps) {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -33,11 +33,10 @@ export default function DeleteNoteButton({ id }: ButtonProps) {
 
   const handleDelete = async () => {
     try {
-      await dispatch(deleteNote(id)).unwrap();
-      dispatch(resetNote());
+      await dispatch(deleteImage(imageKey)).unwrap();
       handleClose();
-      dispatch(makeToast("Deleted note"));
-      navigate("/");
+      dispatch(makeToast("Deleted image"));
+      navigate("/images");
     } catch (err) {
       console.log(err);
     }
@@ -45,7 +44,7 @@ export default function DeleteNoteButton({ id }: ButtonProps) {
 
   return (
     <div>
-      <Button variant="text" onClick={handleOpen} color="error">
+      <Button size="small" variant="text" onClick={handleOpen} color="error">
         DELETE
       </Button>
       <Dialog
@@ -55,7 +54,7 @@ export default function DeleteNoteButton({ id }: ButtonProps) {
       >
         <DialogContent sx={{ padding: "1rem" }}>
           <DialogContentText id="delete-confirm-description">
-            Delete this note?
+            Delete this image?
           </DialogContentText>
         </DialogContent>
         <DialogActions

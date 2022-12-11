@@ -5,8 +5,7 @@ import { ImageInterfaces } from "../../interfaces/ImageInterfaces";
 
 export interface ImageState {
   allImages: ImageInterfaces.ImageWithPresignedURL[];
-  id?: number;
-  description?: string;
+  activeImage?: ImageInterfaces.ImageWithPresignedURL;
   loading: boolean;
   initialFetch: boolean;
   sortMode: "Oldest" | "Newest" | "Last Updated";
@@ -40,10 +39,26 @@ export const getFullImage = createAsyncThunk(
   }
 );
 
+export const deleteImage = createAsyncThunk(
+  "image/deleteImage",
+  async (
+    fileName: ImageInterfaces.ImageWithPresignedURL["fileName"],
+    thunkAPI
+  ) => {
+    await imageService.deleteImage(fileName);
+    return fileName;
+  }
+);
+
 export const imageSlice = createSlice({
   name: "image",
   initialState,
-  reducers: {},
+  reducers: {
+    resetImageState: (state) => {
+      state.allImages = [];
+      state.activeImage = undefined;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllImages.pending, (state) => {
@@ -68,9 +83,22 @@ export const imageSlice = createSlice({
       })
       .addCase(uploadImage.rejected, (state) => {
         state.loading = false;
+      })
+      .addCase(deleteImage.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteImage.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.activeImage = undefined;
+        state.allImages = state.allImages.filter(
+          (image) => image.fileName !== payload
+        );
+      })
+      .addCase(deleteImage.rejected, (state) => {
+        state.loading = false;
       });
   },
 });
 
-export const {} = imageSlice.actions;
+export const { resetImageState } = imageSlice.actions;
 export default imageSlice.reducer;

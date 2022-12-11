@@ -4,6 +4,8 @@ import {
   GetObjectCommand,
   GetObjectCommandInput,
   PutObjectCommand,
+  DeleteObjectCommand,
+  DeleteObjectCommandInput,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid";
@@ -151,4 +153,46 @@ const getFullImageURL = async (
   }
 };
 
-export { getAllImages, getUploadPresignedURL, saveImage, getFullImageURL };
+// @desc   Delete user image from S3 and database
+// @route  DELETE /api/image/
+const deleteImage = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.userId;
+  const { fileName } = req.body;
+
+  if (!fileName) {
+    return next(new Error("Missing file name"));
+  }
+
+  try {
+    const bucketParams: DeleteObjectCommandInput = {
+      Bucket: BUCKET_NAME,
+      Key: fileName,
+    };
+    const command = new DeleteObjectCommand(bucketParams);
+    await s3Client.send(command);
+  } catch (err) {
+    next(err);
+  }
+
+  try {
+    const deletedImage = await Image.destroy({ where: { fileName, userId } });
+    if (deletedImage === 0) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Image deletion failed" });
+    }
+    return res
+      .status(200)
+      .json({ error: false, message: "Image deletion successful" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export {
+  getAllImages,
+  getUploadPresignedURL,
+  saveImage,
+  getFullImageURL,
+  deleteImage,
+};
