@@ -116,7 +116,7 @@ const saveImage = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(400).json({ error: true, message: "Missing file name" });
   }
 
-  const newImage = await Image.create(
+  const savedImage = await Image.create(
     {
       userId: req.userId,
       description,
@@ -125,13 +125,27 @@ const saveImage = async (req: Request, res: Response, next: NextFunction) => {
     },
     { returning: true }
   );
-  if (!newImage) {
+  if (!savedImage) {
     return res.status(400).json({ error: true, message: "Image save failed" });
   }
 
+  const newImage: ImageWithPresignedURL = {
+    id: savedImage.id,
+    description: savedImage.description,
+    fileName: savedImage.fileName,
+    fileNameResized: savedImage.fileNameResized,
+    createdAt: savedImage.createdAt,
+    updatedAt: savedImage.updatedAt,
+    userId: savedImage.userId,
+    presignedURL: await generateGetPresignedURL(
+      savedImage.fileNameResized,
+      "-resized"
+    ),
+  };
+
   res
     .status(200)
-    .json({ error: false, message: "Image save successful", ...newImage });
+    .json({ error: false, message: "Image save successful", newImage });
 };
 
 // @desc   Get presigned URL for one full sized image

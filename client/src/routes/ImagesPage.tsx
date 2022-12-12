@@ -1,12 +1,14 @@
 import React from "react";
 import { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllImages } from "../features/image/imageSlice";
+import { getAllImages, sortImageList } from "../features/image/imageSlice";
 import { useNavigate } from "react-router-dom";
 import useSetUsername from "../hooks/useSetUsername";
 import { Box, Button, Typography } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import ImageCard from "../components/images/ImageCard";
+import SortDropdown from "../components/shared/SortDropdown";
+import { SharedInterfaces } from "../interfaces/SharedInterfaces";
 
 export default function ImagesPage() {
   useSetUsername();
@@ -15,9 +17,13 @@ export default function ImagesPage() {
   const navigate = useNavigate();
 
   const { username } = useSelector((state: RootState) => state.user);
-  const { initialFetch, allImages } = useSelector(
+  const { initialFetch, allImages, sortMode } = useSelector(
     (state: RootState) => state.image
   );
+
+  const handleSortList = (sortMode: SharedInterfaces.SortModes["sortMode"]) => {
+    dispatch(sortImageList(sortMode));
+  };
 
   React.useEffect(() => {
     const getImages = async () => {
@@ -60,6 +66,9 @@ export default function ImagesPage() {
             ? "Images (0)"
             : `Images (${allImages.length}):`}
         </Typography>
+        {allImages.length < 2 ? null : (
+          <SortDropdown sortMode={sortMode} handleSortList={handleSortList} />
+        )}
       </Box>
       <Box
         sx={{

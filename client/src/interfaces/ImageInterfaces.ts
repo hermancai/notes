@@ -20,9 +20,13 @@ export namespace ImageInterfaces {
     description: string;
   }
 
-  export interface NewImageResponse extends SharedInterfaces.ServerResponse {
+  export interface UploadURLResponse extends SharedInterfaces.ServerResponse {
     presignedURL: string;
-    fileName: string;
+    fileName: Image["fileName"];
+  }
+
+  export interface NewImageResponse extends SharedInterfaces.ServerResponse {
+    newImage: ImageWithPresignedURL;
   }
 
   export interface GetImagesResponse extends SharedInterfaces.ServerResponse {
@@ -31,5 +35,14 @@ export namespace ImageInterfaces {
 
   export interface FullImageResponse extends SharedInterfaces.ServerResponse {
     presignedURL: string;
+  }
+
+  export interface UpdateImageRequest {
+    fileName: Image["fileName"];
+    newDescription: Image["description"];
+  }
+
+  export interface UpdateImageResponse extends SharedInterfaces.ServerResponse {
+    newDetails: Image;
   }
 }

@@ -1,7 +1,7 @@
 import React from "react";
-import { AppDispatch } from "../app/store";
-import { useDispatch } from "react-redux";
-import { uploadImage } from "../features/image/imageSlice";
+import { AppDispatch, RootState } from "../app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { uploadImage, sortImageList } from "../features/image/imageSlice";
 import useSetUsername from "../hooks/useSetUsername";
 import { makeToast } from "../features/toast/toastSlice";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +22,7 @@ export default function NewImagePage() {
   const navigate = useNavigate();
 
   const fileInputRef = React.useRef<HTMLInputElement>();
+  const { sortMode } = useSelector((state: RootState) => state.image);
   const [inputs, setInputs] = React.useState<ImageInterfaces.NewImagePayload>({
     file: undefined,
     description: "",
@@ -47,7 +48,7 @@ export default function NewImagePage() {
   const handleSubmit = async () => {
     try {
       await dispatch(uploadImage(inputs)).unwrap();
-      // TODO dispatch(sortNoteList(sortMode));
+      dispatch(sortImageList(sortMode));
       dispatch(makeToast("Saved new image"));
       navigate("/images");
     } catch (err) {

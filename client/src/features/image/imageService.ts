@@ -10,7 +10,7 @@ const getUploadPresignedURL = async (fileType: string) => {
     },
     body: JSON.stringify({ fileType }),
   });
-  const res = (await response.json()) as ImageInterfaces.NewImageResponse;
+  const res = (await response.json()) as ImageInterfaces.UploadURLResponse;
 
   // TODO handle 403 errors
 
@@ -33,7 +33,7 @@ const uploadImage = async (body: ImageInterfaces.NewImagePayload) => {
   await fetch(response.presignedURL, { method: "PUT", body: body.file });
 
   // Save image entry to own database
-  await fetch("/api/image", {
+  const serverResponse = await fetch("/api/image", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -44,6 +44,8 @@ const uploadImage = async (body: ImageInterfaces.NewImagePayload) => {
       description: body.description,
     }),
   });
+
+  return (await serverResponse.json()) as ImageInterfaces.NewImageResponse;
 };
 
 // GET /api/image
@@ -83,9 +85,13 @@ const deleteImage = async (
   });
 };
 
+// PUT /api/image
+const updateImage = async (body: ImageInterfaces.UpdateImageRequest) => {};
+
 export const imageService = {
   uploadImage,
   getAllImages,
   getFullImageURL,
   deleteImage,
+  updateImage,
 };

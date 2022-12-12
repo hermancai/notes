@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { NoteInterfaces } from "../../interfaces/NoteInterfaces";
+import { SharedInterfaces } from "../../interfaces/SharedInterfaces";
 import noteService from "./noteService";
 
 export interface NoteState {
@@ -10,7 +11,7 @@ export interface NoteState {
   text?: string;
   loading: boolean;
   initialFetch: boolean;
-  sortMode: "Oldest" | "Newest" | "Last Updated";
+  sortMode: SharedInterfaces.SortModes["sortMode"];
 }
 
 export interface UpdateNoteBody extends NoteInterfaces.NewNotePayload {
@@ -69,7 +70,7 @@ export const noteSlice = createSlice({
     },
     sortNoteList: (
       state,
-      { payload }: PayloadAction<NoteState["sortMode"]>
+      { payload }: PayloadAction<SharedInterfaces.SortModes["sortMode"]>
     ) => {
       state.sortMode = payload;
       switch (payload) {
@@ -92,6 +93,7 @@ export const noteSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getNotes.pending, (state) => {
+        state.initialFetch = true;
         state.loading = true;
       })
       .addCase(getNotes.fulfilled, (state, { payload }) => {
@@ -105,7 +107,7 @@ export const noteSlice = createSlice({
       })
       .addCase(getNotes.rejected, (state) => {
         state.loading = false;
-        state.allNotes = [];
+        state.initialFetch = false;
       })
       .addCase(updateNote.pending, (state) => {
         state.loading = true;

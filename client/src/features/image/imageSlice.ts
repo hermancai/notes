@@ -2,13 +2,14 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { imageService } from "./imageService";
 import { ImageInterfaces } from "../../interfaces/ImageInterfaces";
+import { SharedInterfaces } from "../../interfaces/SharedInterfaces";
 
 export interface ImageState {
   allImages: ImageInterfaces.ImageWithPresignedURL[];
   activeImage?: ImageInterfaces.ImageWithPresignedURL;
   loading: boolean;
   initialFetch: boolean;
-  sortMode: "Oldest" | "Newest" | "Last Updated";
+  sortMode: SharedInterfaces.SortModes["sortMode"];
 }
 
 const initialState: ImageState = {
@@ -50,13 +51,44 @@ export const deleteImage = createAsyncThunk(
   }
 );
 
+export const updateImage = createAsyncThunk(
+  "image/updateImage",
+  async (body: ImageInterfaces.UpdateImageRequest, thunkAPI) => {
+    // TODO return full image details
+    return await imageService.updateImage(body);
+  }
+);
+
 export const imageSlice = createSlice({
   name: "image",
   initialState,
   reducers: {
+    setImage: (
+      state,
+      { payload }: PayloadAction<ImageInterfaces.ImageWithPresignedURL>
+    ) => {
+      state.activeImage = payload;
+    },
     resetImageState: (state) => {
       state.allImages = [];
       state.activeImage = undefined;
+    },
+    sortImageList: (
+      state,
+      { payload }: PayloadAction<SharedInterfaces.SortModes["sortMode"]>
+    ) => {
+      state.sortMode = payload;
+      switch (payload) {
+        case "Oldest":
+          state.allImages.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
+          break;
+        case "Newest":
+          state.allImages.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+          break;
+        case "Last Updated":
+          state.allImages.sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1));
+          break;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -67,6 +99,10 @@ export const imageSlice = createSlice({
       })
       .addCase(getAllImages.fulfilled, (state, { payload }) => {
         state.allImages = payload.images;
+        state.allImages.forEach((image) => {
+          image.createdAt = new Date(image.createdAt).getTime();
+          image.updatedAt = new Date(image.updatedAt).getTime();
+        });
         state.loading = false;
         state.initialFetch = true;
       })
@@ -79,7 +115,13 @@ export const imageSlice = createSlice({
       })
       .addCase(uploadImage.fulfilled, (state, { payload }) => {
         state.loading = false;
-        // TODO
+        payload.newImage.createdAt = new Date(
+          payload.newImage.createdAt
+        ).getTime();
+        payload.newImage.updatedAt = new Date(
+          payload.newImage.updatedAt
+        ).getTime();
+        state.allImages.push(payload.newImage);
       })
       .addCase(uploadImage.rejected, (state) => {
         state.loading = false;
@@ -100,5 +142,5 @@ export const imageSlice = createSlice({
   },
 });
 
-export const { resetImageState } = imageSlice.actions;
+export const { resetImageState, sortImageList } = imageSlice.actions;
 export default imageSlice.reducer;

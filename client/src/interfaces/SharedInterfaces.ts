@@ -6,4 +6,8 @@ export namespace SharedInterfaces {
     username?: string;
     status?: number;
   }
+
+  export interface SortModes {
+    sortMode: "Oldest" | "Newest" | "Last Updated";
+  }
 }

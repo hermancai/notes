@@ -2,17 +2,13 @@ import React from "react";
 import { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import useSetUsername from "../hooks/useSetUsername";
-import { getNotes, sortNoteList, NoteState } from "../features/note/noteSlice";
+import { getNotes, sortNoteList } from "../features/note/noteSlice";
+import { SharedInterfaces } from "../interfaces/SharedInterfaces";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Typography, MenuItem, Menu } from "@mui/material";
-import { Add, KeyboardArrowDown } from "@mui/icons-material";
+import { Box, Button, Typography } from "@mui/material";
+import { Add } from "@mui/icons-material";
 import NoteCard from "../components/notes/NoteCard";
-
-const sortOptions: Array<NoteState["sortMode"]> = [
-  "Newest",
-  "Oldest",
-  "Last Updated",
-];
+import SortDropdown from "../components/shared/SortDropdown";
 
 export default function HomePage() {
   useSetUsername();
@@ -40,24 +36,12 @@ export default function HomePage() {
     getAllNotes();
   }, [navigate, dispatch, initialFetch, username]);
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleClickSortMenu = (e: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(e.currentTarget);
-  };
-
-  const handleClickSortOption = (sortMode: NoteState["sortMode"]) => {
-    setAnchorEl(null);
-    dispatch(sortNoteList(sortMode));
-  };
-
-  const handleCloseSortMenu = () => {
-    setAnchorEl(null);
-  };
-
   const handleClickNewNote = () => {
     navigate("/notes/new");
+  };
+
+  const handleSortList = (sortMode: SharedInterfaces.SortModes["sortMode"]) => {
+    dispatch(sortNoteList(sortMode));
   };
 
   return loading ? null : (
@@ -81,22 +65,7 @@ export default function HomePage() {
           {allNotes.length === 0 ? "Notes (0)" : `Notes (${allNotes.length}):`}
         </Typography>
         {allNotes.length < 2 ? null : (
-          <Box>
-            <Button variant="outlined" onClick={handleClickSortMenu}>
-              {sortMode} <KeyboardArrowDown />
-            </Button>
-            <Menu anchorEl={anchorEl} open={open} onClose={handleCloseSortMenu}>
-              {sortOptions.map((option: NoteState["sortMode"]) => (
-                <MenuItem
-                  key={option}
-                  selected={option === sortMode}
-                  onClick={() => handleClickSortOption(option)}
-                >
-                  {option}
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+          <SortDropdown sortMode={sortMode} handleSortList={handleSortList} />
         )}
       </Box>
       {allNotes.map((note) => {
