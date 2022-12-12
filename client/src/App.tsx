@@ -15,6 +15,7 @@ import { CssBaseline } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { green } from "@mui/material/colors";
 import NewImagePage from "./routes/NewImagePage";
+import UpdateImagePage from "./routes/UpdateImagePage";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,11 @@ const router = createBrowserRouter([
       {
         path: "/images/new",
         element: <NewImagePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/images/update",
+        element: <UpdateImagePage />,
         errorElement: <ErrorPage />,
       },
     ],

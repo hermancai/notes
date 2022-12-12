@@ -1,7 +1,7 @@
 import React from "react";
 import { AppDispatch } from "../../app/store";
 import { useDispatch } from "react-redux";
-import { getFullImage } from "../../features/image/imageSlice";
+import { getFullImage, setImage } from "../../features/image/imageSlice";
 import {
   Card,
   CardActions,
@@ -16,6 +16,7 @@ import { OpenInNewRounded } from "@mui/icons-material";
 import { ImageInterfaces } from "../../interfaces/ImageInterfaces";
 import LinkifyWrapper from "../../components/shared/LinkifyWrapper";
 import DeleteImageButton from "../../components/images/DeleteImageButton";
+import { useNavigate } from "react-router-dom";
 
 interface ImageCardProps {
   image: ImageInterfaces.ImageWithPresignedURL;
@@ -23,6 +24,7 @@ interface ImageCardProps {
 
 export default function ImageCard({ image }: ImageCardProps) {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const [openModal, setOpenModal] = React.useState(false);
 
@@ -51,6 +53,11 @@ export default function ImageCard({ image }: ImageCardProps) {
       }, 1000);
       setLoadCounter(loadCounter + 1);
     }
+  };
+
+  const handleClickEdit = () => {
+    dispatch(setImage(image));
+    navigate("/images/update");
   };
 
   return (
@@ -84,7 +91,7 @@ export default function ImageCard({ image }: ImageCardProps) {
           onError={handleLoadError}
         />
 
-        <CardContent sx={{ flexGrow: 1 }}>
+        <CardContent sx={{ flexGrow: 1, whiteSpace: "pre-wrap" }}>
           <LinkifyWrapper>
             {image.description === "" ? (
               <Typography
@@ -110,7 +117,9 @@ export default function ImageCard({ image }: ImageCardProps) {
             borderColor: "action.disabledBackground",
           }}
         >
-          <Button size="small">Edit</Button>
+          <Button size="small" onClick={handleClickEdit}>
+            Edit
+          </Button>
           <Button
             size="small"
             color="info"

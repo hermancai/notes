@@ -24,16 +24,12 @@ interface ImageWithPresignedURL {
   presignedURL: string;
 }
 
-const generateGetPresignedURL = async (
-  fileName: string,
-  bucketSuffix: string
-) => {
-  const bucketParams: GetObjectCommandInput = {
-    Bucket: BUCKET_NAME + bucketSuffix,
+// Create presigned URL for getting image from AWS S3
+const generateGetPresignedURL = async (fileName: string, bucket: string) => {
+  const command = new GetObjectCommand({
+    Bucket: bucket,
     Key: fileName,
-  };
-
-  const command = new GetObjectCommand(bucketParams);
+  });
   // presigned URL expires in 24 hours
   return await getSignedUrl(s3Client, command, { expiresIn: 86400 });
 };
@@ -69,7 +65,7 @@ const getAllImages = async (
       userId: image.userId,
       presignedURL: await generateGetPresignedURL(
         image.fileNameResized,
-        "-resized"
+        BUCKET_NAME + "-resized"
       ),
     });
   }
@@ -139,7 +135,7 @@ const saveImage = async (req: Request, res: Response, next: NextFunction) => {
     userId: savedImage.userId,
     presignedURL: await generateGetPresignedURL(
       savedImage.fileNameResized,
-      "-resized"
+      BUCKET_NAME + "-resized"
     ),
   };
 
@@ -156,7 +152,10 @@ const getFullImageURL = async (
   next: NextFunction
 ) => {
   try {
-    const presignedURL = await generateGetPresignedURL(req.body.imageKey, "");
+    const presignedURL = await generateGetPresignedURL(
+      req.body.imageKey,
+      BUCKET_NAME
+    );
     res.status(200).json({
       error: false,
       message: "URL created successfully",
@@ -203,10 +202,54 @@ const deleteImage = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+// @desc   Update existing image's description
+// @route  PUT /api/image/
+const updateImage = async (req: Request, res: Response, next: NextFunction) => {
+  const { userId } = req;
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Update Error: Unknown user" });
+  }
+
+  const { fileName, description } = req.body;
+  if (!fileName) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Update Error: Missing file name" });
+  }
+
+  try {
+    const updatedImage = await Image.update(
+      { description },
+      { where: { userId, fileName }, returning: true }
+    );
+    if (!updatedImage) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Update Error: Image not found" });
+    }
+
+    const image = updatedImage[1][0];
+    res.status(200).json({
+      error: false,
+      message: "Image update successful",
+      newDetails: {
+        id: image.id,
+        description: image.description,
+        updatedAt: image.updatedAt,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export {
   getAllImages,
   getUploadPresignedURL,
   saveImage,
   getFullImageURL,
   deleteImage,
+  updateImage,
 };

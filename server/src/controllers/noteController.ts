@@ -27,9 +27,18 @@ const createNewNote = async (
       .json({ error: true, message: "Error occurred while creating new note" });
   }
 
+  const note = {
+    id: newNote.id,
+    userId: newNote.userId,
+    title: newNote.title,
+    text: newNote.text,
+    createdAt: newNote.createdAt,
+    updatedAt: newNote.updatedAt,
+  };
+
   res
     .status(200)
-    .json({ error: false, message: "Note creation successful", ...newNote });
+    .json({ error: false, message: "Note creation successful", note });
 };
 
 // @desc   Get all notes belonging to user
@@ -87,10 +96,17 @@ const updateNote = async (req: Request, res: Response, next: NextFunction) => {
         .json({ error: true, message: "Update Error: Note not found" });
     }
 
+    const note = updatedNote[1][0];
+
     res.status(200).json({
       error: false,
       message: "Note updated successfully",
-      note: updatedNote[1][0],
+      note: {
+        title: note.title,
+        text: note.text,
+        updatedAt: note.updatedAt,
+        id: note.id,
+      },
     });
   } catch (err) {
     next(err);

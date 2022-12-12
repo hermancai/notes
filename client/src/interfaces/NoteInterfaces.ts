@@ -20,10 +20,15 @@ export namespace NoteInterfaces {
   }
 
   export interface NewNoteResponse extends SharedInterfaces.ServerResponse {
-    dataValues: Note;
+    note: Note;
   }
 
   export interface UpdateNoteResponse extends SharedInterfaces.ServerResponse {
-    note: Note;
+    note: {
+      text: Note["text"];
+      title: Note["title"];
+      updatedAt: Note["updatedAt"];
+      id: Note["id"];
+    };
   }
 }

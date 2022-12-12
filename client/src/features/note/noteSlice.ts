@@ -143,13 +143,9 @@ export const noteSlice = createSlice({
       })
       .addCase(createNewNote.fulfilled, (state, { payload }) => {
         state.loading = false;
-        payload.dataValues.createdAt = new Date(
-          payload.dataValues.createdAt
-        ).getTime();
-        payload.dataValues.updatedAt = new Date(
-          payload.dataValues.updatedAt
-        ).getTime();
-        state.allNotes.push(payload.dataValues);
+        payload.note.createdAt = new Date(payload.note.createdAt).getTime();
+        payload.note.updatedAt = new Date(payload.note.updatedAt).getTime();
+        state.allNotes.push(payload.note);
       })
       .addCase(createNewNote.rejected, (state) => {
         state.loading = false;

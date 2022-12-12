@@ -39,10 +39,14 @@ export namespace ImageInterfaces {
 
   export interface UpdateImageRequest {
     fileName: Image["fileName"];
-    newDescription: Image["description"];
+    description: Image["description"];
   }
 
   export interface UpdateImageResponse extends SharedInterfaces.ServerResponse {
-    newDetails: Image;
+    newDetails: {
+      id: Image["id"];
+      updatedAt: Image["updatedAt"];
+      description: Image["description"];
+    };
   }
 }

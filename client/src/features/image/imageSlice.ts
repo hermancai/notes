@@ -54,7 +54,6 @@ export const deleteImage = createAsyncThunk(
 export const updateImage = createAsyncThunk(
   "image/updateImage",
   async (body: ImageInterfaces.UpdateImageRequest, thunkAPI) => {
-    // TODO return full image details
     return await imageService.updateImage(body);
   }
 );
@@ -69,8 +68,7 @@ export const imageSlice = createSlice({
     ) => {
       state.activeImage = payload;
     },
-    resetImageState: (state) => {
-      state.allImages = [];
+    resetActiveImage: (state) => {
       state.activeImage = undefined;
     },
     sortImageList: (
@@ -138,9 +136,21 @@ export const imageSlice = createSlice({
       })
       .addCase(deleteImage.rejected, (state) => {
         state.loading = false;
+      })
+      .addCase(updateImage.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateImage.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.allImages.forEach((image) => {
+          if (image.id === payload.newDetails.id) {
+            image.description = payload.newDetails.description;
+            image.updatedAt = new Date(payload.newDetails.updatedAt).getTime();
+          }
+        });
       });
   },
 });
 
-export const { resetImageState, sortImageList } = imageSlice.actions;
+export const { resetActiveImage, sortImageList, setImage } = imageSlice.actions;
 export default imageSlice.reducer;

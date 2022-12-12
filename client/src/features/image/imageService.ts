@@ -86,7 +86,18 @@ const deleteImage = async (
 };
 
 // PUT /api/image
-const updateImage = async (body: ImageInterfaces.UpdateImageRequest) => {};
+const updateImage = async (body: ImageInterfaces.UpdateImageRequest) => {
+  const response = await fetch("/api/image", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+    },
+    body: JSON.stringify(body),
+  });
+
+  return (await response.json()) as ImageInterfaces.UpdateImageResponse;
+};
 
 export const imageService = {
   uploadImage,

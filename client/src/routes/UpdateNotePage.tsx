@@ -71,6 +71,7 @@ export default function UpdateNotePage() {
         name="text"
         multiline
         minRows={4}
+        spellCheck={false}
         variant="outlined"
         InputLabelProps={{ shrink: true }}
         onChange={handleChange}
