@@ -24,6 +24,7 @@ const drawerWidth = 250;
 export default function Root() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const [openMobileSidebar, setOpenMobileSidebar] = React.useState(false);
   const { username, loading, searchQuery } = useSelector(
     (state: RootState) => state.user
   );
@@ -39,6 +40,10 @@ export default function Root() {
     }
   };
 
+  const toggleOpenMobileSidebar = () => {
+    setOpenMobileSidebar(!openMobileSidebar);
+  };
+
   return (
     <Box
       sx={{
@@ -47,7 +52,11 @@ export default function Root() {
         visibility: loading ? "hidden" : "visible",
       }}
     >
-      <Sidebar drawerWidth={drawerWidth}>
+      <Sidebar
+        drawerWidth={drawerWidth}
+        openMobileSidebar={openMobileSidebar}
+        toggleOpenMobileSidebar={toggleOpenMobileSidebar}
+      >
         <Box
           sx={{
             display: "flex",
@@ -61,7 +70,10 @@ export default function Root() {
 
           <NavLink to="/account" style={{ textDecoration: "none" }}>
             {({ isActive }) => (
-              <SidebarLink onClick={() => {}} isActive={isActive}>
+              <SidebarLink
+                onClick={toggleOpenMobileSidebar}
+                isActive={isActive}
+              >
                 <PersonOutlineOutlined />
                 <p>
                   {!username ? (
@@ -83,7 +95,10 @@ export default function Root() {
 
           <NavLink to="/" end style={{ textDecoration: "none" }}>
             {({ isActive }) => (
-              <SidebarLink onClick={() => {}} isActive={isActive}>
+              <SidebarLink
+                onClick={toggleOpenMobileSidebar}
+                isActive={isActive}
+              >
                 <StickyNote2Outlined />
                 <p>Notes</p>
               </SidebarLink>
@@ -92,7 +107,10 @@ export default function Root() {
 
           <NavLink to="/images" style={{ textDecoration: "none" }}>
             {({ isActive }) => (
-              <SidebarLink onClick={() => {}} isActive={isActive}>
+              <SidebarLink
+                onClick={toggleOpenMobileSidebar}
+                isActive={isActive}
+              >
                 <CameraAltOutlined />
                 <p>Images</p>
               </SidebarLink>

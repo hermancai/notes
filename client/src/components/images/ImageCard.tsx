@@ -117,11 +117,8 @@ export default function ImageCard({ image }: ImageCardProps) {
             borderColor: "action.disabledBackground",
           }}
         >
-          <Button size="small" onClick={handleClickEdit}>
-            Edit
-          </Button>
+          <Button onClick={handleClickEdit}>Edit</Button>
           <Button
-            size="small"
             color="info"
             sx={{
               display: "flex",

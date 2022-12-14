@@ -18,13 +18,20 @@ import {
   ClearRounded,
 } from "@mui/icons-material";
 
-export default function Sidebar(props: {
+interface SidebarProps {
   drawerWidth: number;
   children: React.ReactNode;
-}) {
-  const dispatch = useDispatch();
+  openMobileSidebar: boolean;
+  toggleOpenMobileSidebar: () => void;
+}
 
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+export default function Sidebar({
+  drawerWidth,
+  children,
+  openMobileSidebar,
+  toggleOpenMobileSidebar,
+}: SidebarProps) {
+  const dispatch = useDispatch();
   const { searchQuery } = useSelector((state: RootState) => state.user);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,10 +42,6 @@ export default function Sidebar(props: {
     dispatch(setSearchQuery(""));
   }, [dispatch]);
 
-  const handleDrawerToggle = React.useCallback(() => {
-    setMobileOpen(!mobileOpen);
-  }, [mobileOpen]);
-
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar
@@ -46,8 +49,8 @@ export default function Sidebar(props: {
         enableColorOnDark
         color="inherit"
         sx={{
-          width: { lg: `calc(100% - ${props.drawerWidth}px)` },
-          ml: { lg: `${props.drawerWidth}px` },
+          width: { lg: `calc(100% - ${drawerWidth}px)` },
+          ml: { lg: `${drawerWidth}px` },
           boxShadow: "none",
           borderBottom: "solid 1px",
           borderColor: "divider",
@@ -56,7 +59,7 @@ export default function Sidebar(props: {
       >
         <Toolbar
           sx={{
-            marginRight: { lg: `${props.drawerWidth}px` },
+            marginRight: { lg: `${drawerWidth}px` },
             padding: "0.75rem 1.5rem",
           }}
         >
@@ -65,7 +68,7 @@ export default function Sidebar(props: {
               color="inherit"
               aria-label="open drawer"
               edge="start"
-              onClick={handleDrawerToggle}
+              onClick={toggleOpenMobileSidebar}
               sx={{
                 mr: 2,
                 display: { lg: "none" },
@@ -114,7 +117,7 @@ export default function Sidebar(props: {
       <Box
         component="nav"
         sx={{
-          width: { lg: props.drawerWidth },
+          width: { lg: drawerWidth },
           flexShrink: { lg: 0 },
         }}
         aria-label="mailbox folders"
@@ -122,8 +125,8 @@ export default function Sidebar(props: {
         <Drawer
           container={window.document.body}
           variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
+          open={openMobileSidebar}
+          onClose={toggleOpenMobileSidebar}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}
@@ -131,7 +134,7 @@ export default function Sidebar(props: {
             display: { xs: "block", lg: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: props.drawerWidth,
+              width: drawerWidth,
             },
           }}
         >
@@ -140,14 +143,14 @@ export default function Sidebar(props: {
               color="inherit"
               aria-label="close drawer"
               edge="end"
-              onClick={handleDrawerToggle}
+              onClick={toggleOpenMobileSidebar}
               sx={{ mr: "0.5rem", display: { lg: "none" } }}
             >
               <ChevronLeft />
             </IconButton>
           </Toolbar>
           <Divider />
-          {props.children}
+          {children}
         </Drawer>
         <Drawer
           variant="permanent"
@@ -155,14 +158,14 @@ export default function Sidebar(props: {
             display: { xs: "none", lg: "block" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: props.drawerWidth,
+              width: drawerWidth,
             },
           }}
           open
         >
           <Toolbar />
           <Divider />
-          {props.children}
+          {children}
         </Drawer>
       </Box>
     </Box>

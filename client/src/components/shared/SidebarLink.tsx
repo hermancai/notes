@@ -35,6 +35,8 @@ export default function SidebarLink({ children, onClick, isActive }: Props) {
             ? alpha(green[500], 0.2)
             : alpha(green[500], 0.1),
         },
+        border: isActive ? "1px solid" : null,
+        borderColor: isActive ? alpha(green[500], 0.5) : null,
       }}
     >
       {children}

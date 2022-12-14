@@ -44,7 +44,7 @@ export default function DeleteImageButton({ imageKey }: ButtonProps) {
 
   return (
     <div>
-      <Button size="small" variant="text" onClick={handleOpen} color="error">
+      <Button variant="text" onClick={handleOpen} color="error">
         DELETE
       </Button>
       <Dialog
