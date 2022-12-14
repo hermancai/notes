@@ -5,7 +5,6 @@ import { getFullImage, setImage } from "../../features/image/imageSlice";
 import {
   Card,
   CardActions,
-  CardContent,
   CardMedia,
   Button,
   Typography,
@@ -14,9 +13,9 @@ import {
 } from "@mui/material";
 import { OpenInNewRounded } from "@mui/icons-material";
 import { ImageInterfaces } from "../../interfaces/ImageInterfaces";
-import LinkifyWrapper from "../../components/shared/LinkifyWrapper";
 import DeleteImageButton from "../../components/images/DeleteImageButton";
 import { useNavigate } from "react-router-dom";
+import CollaspeCardContent from "../../components/shared/CollapseCardContent";
 
 interface ImageCardProps {
   image: ImageInterfaces.ImageWithPresignedURL;
@@ -26,6 +25,7 @@ export default function ImageCard({ image }: ImageCardProps) {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
+  const ref = React.useRef<HTMLParagraphElement>(null);
   const [openModal, setOpenModal] = React.useState(false);
 
   // Derived state for handling aws 403 errors
@@ -90,22 +90,22 @@ export default function ImageCard({ image }: ImageCardProps) {
           onClick={toggleOpenModal}
           onError={handleLoadError}
         />
-
-        <CardContent sx={{ flexGrow: 1, whiteSpace: "pre-wrap" }}>
-          <LinkifyWrapper>
-            {image.description === "" ? (
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ fontStyle: "italic" }}
-              >
-                No description
-              </Typography>
-            ) : (
-              <Typography variant="body2">{image.description}</Typography>
-            )}
-          </LinkifyWrapper>
-        </CardContent>
+        <Box sx={{ padding: "0.5rem 1rem", height: "100%" }}>
+          {image.description === "" ? (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontStyle: "italic" }}
+            >
+              No description
+            </Typography>
+          ) : (
+            <CollaspeCardContent
+              textRef={ref}
+              text={image.description}
+            ></CollaspeCardContent>
+          )}
+        </Box>
 
         <CardActions
           sx={{

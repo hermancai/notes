@@ -18,7 +18,7 @@ export default function EditNoteButton(props: { note: NoteInterfaces.Note }) {
   };
 
   return (
-    <Button variant="text" onClick={() => handleEdit(props.note)}>
+    <Button variant="text" size="small" onClick={() => handleEdit(props.note)}>
       EDIT
     </Button>
   );

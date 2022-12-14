@@ -45,7 +45,7 @@ export default function DeleteNoteButton({ id }: ButtonProps) {
 
   return (
     <div>
-      <Button variant="text" onClick={handleOpen} color="error">
+      <Button variant="text" size="small" onClick={handleOpen} color="error">
         DELETE
       </Button>
       <Dialog
