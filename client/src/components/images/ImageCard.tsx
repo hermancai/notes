@@ -81,6 +81,7 @@ export default function ImageCard({ image }: ImageCardProps) {
           image={url}
           height={150}
           sx={{
+            minHeight: "150px",
             objectFit: "contain",
             backgroundColor: "background.default",
             borderBottom: "solid 1px",

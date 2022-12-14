@@ -5,7 +5,7 @@ import { getAllImages, sortImageList } from "../features/image/imageSlice";
 import { useNavigate } from "react-router-dom";
 import useSetUsername from "../hooks/useSetUsername";
 import { Box, Button, Typography } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { AddRounded } from "@mui/icons-material";
 import ImageCard from "../components/images/ImageCard";
 import SortDropdown from "../components/shared/SortDropdown";
 import { SharedInterfaces } from "../interfaces/SharedInterfaces";
@@ -51,7 +51,7 @@ export default function ImagesPage() {
         onClick={handleClickNewImage}
         sx={{ color: "white" }}
       >
-        <Add />
+        <AddRounded />
         New Image
       </Button>
       <Box

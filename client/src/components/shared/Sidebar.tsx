@@ -21,15 +21,17 @@ import {
 interface SidebarProps {
   drawerWidth: number;
   children: React.ReactNode;
-  openMobileSidebar: boolean;
-  toggleOpenMobileSidebar: () => void;
+  mobileSidebarOpen: boolean;
+  openMobileSidebar: () => void;
+  closeMobileSidebar: () => void;
 }
 
 export default function Sidebar({
   drawerWidth,
   children,
+  mobileSidebarOpen,
   openMobileSidebar,
-  toggleOpenMobileSidebar,
+  closeMobileSidebar,
 }: SidebarProps) {
   const dispatch = useDispatch();
   const { searchQuery } = useSelector((state: RootState) => state.user);
@@ -68,7 +70,7 @@ export default function Sidebar({
               color="inherit"
               aria-label="open drawer"
               edge="start"
-              onClick={toggleOpenMobileSidebar}
+              onClick={openMobileSidebar}
               sx={{
                 mr: 2,
                 display: { lg: "none" },
@@ -125,8 +127,8 @@ export default function Sidebar({
         <Drawer
           container={window.document.body}
           variant="temporary"
-          open={openMobileSidebar}
-          onClose={toggleOpenMobileSidebar}
+          open={mobileSidebarOpen}
+          onClose={closeMobileSidebar}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}
@@ -143,7 +145,7 @@ export default function Sidebar({
               color="inherit"
               aria-label="close drawer"
               edge="end"
-              onClick={toggleOpenMobileSidebar}
+              onClick={closeMobileSidebar}
               sx={{ mr: "0.5rem", display: { lg: "none" } }}
             >
               <ChevronLeft />

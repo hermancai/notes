@@ -6,7 +6,7 @@ import { getNotes, sortNoteList } from "../features/note/noteSlice";
 import { SharedInterfaces } from "../interfaces/SharedInterfaces";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { AddRounded } from "@mui/icons-material";
 import NoteCard from "../components/notes/NoteCard";
 import SortDropdown from "../components/shared/SortDropdown";
 
@@ -51,7 +51,7 @@ export default function HomePage() {
         onClick={handleClickNewNote}
         sx={{ color: "white" }}
       >
-        <Add />
+        <AddRounded />
         New Note
       </Button>
       <Box

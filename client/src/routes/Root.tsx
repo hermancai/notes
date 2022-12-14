@@ -24,7 +24,7 @@ const drawerWidth = 250;
 export default function Root() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const [openMobileSidebar, setOpenMobileSidebar] = React.useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
   const { username, loading, searchQuery } = useSelector(
     (state: RootState) => state.user
   );
@@ -40,8 +40,12 @@ export default function Root() {
     }
   };
 
-  const toggleOpenMobileSidebar = () => {
-    setOpenMobileSidebar(!openMobileSidebar);
+  const openMobileSidebar = () => {
+    setMobileSidebarOpen(true);
+  };
+
+  const closeMobileSidebar = () => {
+    setMobileSidebarOpen(false);
   };
 
   return (
@@ -53,9 +57,12 @@ export default function Root() {
       }}
     >
       <Sidebar
-        drawerWidth={drawerWidth}
-        openMobileSidebar={openMobileSidebar}
-        toggleOpenMobileSidebar={toggleOpenMobileSidebar}
+        {...{
+          drawerWidth,
+          mobileSidebarOpen,
+          openMobileSidebar,
+          closeMobileSidebar,
+        }}
       >
         <Box
           sx={{
@@ -70,10 +77,7 @@ export default function Root() {
 
           <NavLink to="/account" style={{ textDecoration: "none" }}>
             {({ isActive }) => (
-              <SidebarLink
-                onClick={toggleOpenMobileSidebar}
-                isActive={isActive}
-              >
+              <SidebarLink onClick={closeMobileSidebar} isActive={isActive}>
                 <PersonOutlineOutlined />
                 <p>
                   {!username ? (
@@ -95,10 +99,7 @@ export default function Root() {
 
           <NavLink to="/" end style={{ textDecoration: "none" }}>
             {({ isActive }) => (
-              <SidebarLink
-                onClick={toggleOpenMobileSidebar}
-                isActive={isActive}
-              >
+              <SidebarLink onClick={closeMobileSidebar} isActive={isActive}>
                 <StickyNote2Outlined />
                 <p>Notes</p>
               </SidebarLink>
@@ -107,10 +108,7 @@ export default function Root() {
 
           <NavLink to="/images" style={{ textDecoration: "none" }}>
             {({ isActive }) => (
-              <SidebarLink
-                onClick={toggleOpenMobileSidebar}
-                isActive={isActive}
-              >
+              <SidebarLink onClick={closeMobileSidebar} isActive={isActive}>
                 <CameraAltOutlined />
                 <p>Images</p>
               </SidebarLink>
