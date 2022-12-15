@@ -71,6 +71,11 @@ export const imageSlice = createSlice({
     resetActiveImage: (state) => {
       state.activeImage = undefined;
     },
+    resetAllImages: (state) => {
+      state.activeImage = undefined;
+      state.allImages = [];
+      state.initialFetch = false;
+    },
     sortImageList: (
       state,
       { payload }: PayloadAction<SharedInterfaces.SortModes["sortMode"]>
@@ -152,5 +157,6 @@ export const imageSlice = createSlice({
   },
 });
 
-export const { resetActiveImage, sortImageList, setImage } = imageSlice.actions;
+export const { resetActiveImage, sortImageList, setImage, resetAllImages } =
+  imageSlice.actions;
 export default imageSlice.reducer;

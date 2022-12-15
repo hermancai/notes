@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/user/userSlice";
 import { resetAllNotes } from "../features/note/noteSlice";
 import { clearAllToasts } from "../features/toast/toastSlice";
+import { resetAllImages } from "../features/image/imageSlice";
 import { useNavigate, NavLink } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/shared/Sidebar";
@@ -33,6 +34,7 @@ export default function Root() {
     try {
       await dispatch(logout());
       dispatch(resetAllNotes());
+      dispatch(resetAllImages());
       dispatch(clearAllToasts());
       navigate("/login");
     } catch (err) {
