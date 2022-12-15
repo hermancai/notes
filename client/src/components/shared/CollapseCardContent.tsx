@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Collapse,
-  IconButton,
-  IconButtonProps,
-  Divider,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Collapse, Divider, Button } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import LinkifyWrapper from "../../components/shared/LinkifyWrapper";
 import throttle from "../../util/throttle";
@@ -20,22 +13,6 @@ interface TextProps {
   textRef: React.RefObject<HTMLParagraphElement>;
   text: string;
 }
-
-interface ExpandWrapperProps extends IconButtonProps {
-  expand: boolean;
-}
-
-// Icon wrapper rotates icon based on 'expand' boolean
-const ExpandIconWrapper = styled((props: ExpandWrapperProps) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  marginLeft: "auto",
-  transform: expand ? "rotate(180deg)" : "rotate(0deg)",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
 
 function ParagraphWrapper({ textRef, text }: TextProps) {
   return (
@@ -102,14 +79,28 @@ export default function CollapseCardContent({ textRef, text }: TextProps) {
         <ParagraphWrapper text={text} textRef={textRef} />
       </Collapse>
       <Divider sx={{ margin: "0.5rem 0" }} />
-      <Box
-        sx={{ display: "flex", justifyContent: "end", width: "100%" }}
+      <Button
         onClick={toggleExpand}
+        variant="text"
+        size="small"
+        sx={{
+          display: "flex",
+          marginLeft: "auto",
+          whiteSpace: "nowrap",
+          textTransform: "none",
+          paddingLeft: "0.75rem",
+        }}
       >
-        <ExpandIconWrapper expand={expanded}>
-          <ExpandMore />
-        </ExpandIconWrapper>
-      </Box>
+        {expanded ? "Show Less" : "Show More"}
+        <ExpandMore
+          color="primary"
+          sx={{
+            transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+            transitionProperty: "transform",
+            transitionDuration: "0.5s",
+          }}
+        />
+      </Button>
     </>
   );
 }
