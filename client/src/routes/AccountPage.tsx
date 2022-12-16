@@ -61,14 +61,7 @@ export default function AccountPage() {
               Permanently delete this account?
             </DialogContentText>
           </DialogContent>
-          <DialogActions
-            sx={{
-              justifyContent: "space-between",
-              minWidth: { sm: "400px" },
-              padding: "0 1rem 1rem 1rem",
-              gap: "2rem",
-            }}
-          >
+          <DialogActions>
             <Button variant="outlined" onClick={handleClose}>
               Cancel
             </Button>
@@ -76,7 +69,6 @@ export default function AccountPage() {
               variant="contained"
               color="error"
               onClick={handleDeleteAccount}
-              sx={{ margin: "0" }}
             >
               Delete
             </Button>

@@ -58,14 +58,7 @@ export default function DeleteNoteButton({ id }: ButtonProps) {
             Delete this note?
           </DialogContentText>
         </DialogContent>
-        <DialogActions
-          sx={{
-            justifyContent: "space-between",
-            minWidth: { sm: "400px" },
-            padding: "0 1rem 1rem 1rem",
-            gap: "2rem",
-          }}
-        >
+        <DialogActions>
           <Button variant="outlined" onClick={handleClose}>
             Cancel
           </Button>

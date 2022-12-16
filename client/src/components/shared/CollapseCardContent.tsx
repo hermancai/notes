@@ -1,5 +1,5 @@
 import React from "react";
-import { Collapse, Divider, Button } from "@mui/material";
+import { Collapse, Divider, Button, Box } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import LinkifyWrapper from "../../components/shared/LinkifyWrapper";
 import throttle from "../../util/throttle";
@@ -16,18 +16,20 @@ interface TextProps {
 
 function ParagraphWrapper({ textRef, text }: TextProps) {
   return (
-    <LinkifyWrapper>
-      <p
-        ref={textRef}
-        style={{
-          whiteSpace: "pre-wrap",
-          margin: 0,
-          display: "inline",
-        }}
-      >
-        {text}
-      </p>
-    </LinkifyWrapper>
+    <Box sx={{ wordBreak: "break-word" }}>
+      <LinkifyWrapper>
+        <p
+          ref={textRef}
+          style={{
+            whiteSpace: "pre-wrap",
+            margin: 0,
+            display: "inline",
+          }}
+        >
+          {text}
+        </p>
+      </LinkifyWrapper>
+    </Box>
   );
 }
 

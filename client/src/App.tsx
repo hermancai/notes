@@ -91,6 +91,25 @@ export default function App() {
     () =>
       createTheme({
         palette: { mode, primary: { main: green[500] } },
+        components: {
+          MuiDialog: {
+            styleOverrides: {
+              paper: {
+                "@media (min-width: 0px)": { width: "90%" },
+                "@media (min-width: 600px)": { width: 400 },
+              },
+            },
+          },
+          MuiDialogActions: {
+            styleOverrides: {
+              root: {
+                justifyContent: "space-between",
+                padding: "0 1rem 1rem 1rem",
+                gap: "2rem",
+              },
+            },
+          },
+        },
       }),
     [mode]
   );

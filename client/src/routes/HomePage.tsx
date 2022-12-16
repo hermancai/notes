@@ -16,10 +16,15 @@ export default function HomePage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { username } = useSelector((state: RootState) => state.user);
-  const { allNotes, loading, initialFetch, sortMode } = useSelector(
-    (state: RootState) => state.note
+  const { username, loading: userLoading } = useSelector(
+    (state: RootState) => state.user
   );
+  const {
+    allNotes,
+    loading: noteLoading,
+    initialFetch,
+    sortMode,
+  } = useSelector((state: RootState) => state.note);
 
   React.useEffect(() => {
     const getAllNotes = async () => {
@@ -44,7 +49,7 @@ export default function HomePage() {
     dispatch(sortNoteList(sortMode));
   };
 
-  return loading ? null : (
+  return noteLoading || userLoading ? null : (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <Button
         variant="contained"

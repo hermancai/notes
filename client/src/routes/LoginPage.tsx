@@ -94,7 +94,13 @@ export default function LoginPage() {
   };
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
+    <Box
+      sx={{
+        display: "flex",
+        minHeight: "100vh",
+        flexDirection: "column",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -128,10 +134,10 @@ export default function LoginPage() {
             textAlign: "center",
             textDecoration: "underline",
             textDecorationColor: green[500],
-            textUnderlineOffset: "0.5rem",
+            textUnderlineOffset: "0.4rem",
           }}
         >
-          {showLogin ? "Login to your account" : "Register a new account"}
+          {showLogin ? "Login" : "Sign Up"}
         </Typography>
         <Box
           sx={{

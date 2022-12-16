@@ -16,10 +16,15 @@ export default function ImagesPage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { username } = useSelector((state: RootState) => state.user);
-  const { initialFetch, allImages, sortMode } = useSelector(
-    (state: RootState) => state.image
+  const { username, loading: userLoading } = useSelector(
+    (state: RootState) => state.user
   );
+  const {
+    initialFetch,
+    allImages,
+    sortMode,
+    loading: imageLoading,
+  } = useSelector((state: RootState) => state.image);
 
   const handleSortList = (sortMode: SharedInterfaces.SortModes["sortMode"]) => {
     dispatch(sortImageList(sortMode));
@@ -44,7 +49,7 @@ export default function ImagesPage() {
     navigate("/images/new");
   };
 
-  return (
+  return userLoading || imageLoading ? null : (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <Button
         variant="contained"
@@ -72,9 +77,9 @@ export default function ImagesPage() {
       </Box>
       <Box
         sx={{
-          display: "flex",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill,minmax(300px, 1fr))",
           gap: "1.5rem",
-          flexWrap: "wrap",
         }}
       >
         {allImages.map((image) => {
