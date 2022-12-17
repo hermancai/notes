@@ -1,8 +1,8 @@
 import React from "react";
 import { Collapse, Divider, Button, Box } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
-import LinkifyWrapper from "../../components/shared/LinkifyWrapper";
 import throttle from "../../util/throttle";
+import HighlightedText from "./HighlightedText";
 
 // Determines how many lines before a collapse is shown
 const LINE_CLAMP = 4;
@@ -17,18 +17,16 @@ interface TextProps {
 function ParagraphWrapper({ textRef, text }: TextProps) {
   return (
     <Box sx={{ wordBreak: "break-word" }}>
-      <LinkifyWrapper>
-        <p
-          ref={textRef}
-          style={{
-            whiteSpace: "pre-wrap",
-            margin: 0,
-            display: "inline",
-          }}
-        >
-          {text}
-        </p>
-      </LinkifyWrapper>
+      <p
+        ref={textRef}
+        style={{
+          whiteSpace: "pre-wrap",
+          margin: 0,
+          display: "inline",
+        }}
+      >
+        <HighlightedText text={text} />
+      </p>
     </Box>
   );
 }

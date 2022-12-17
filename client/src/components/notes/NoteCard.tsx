@@ -4,8 +4,8 @@ import DeleteNoteButton from "./DeleteNoteButton";
 import EditNoteButton from "./UpdateNoteButton";
 import { Box, Card, CardHeader } from "@mui/material";
 import { StickyNote2Outlined } from "@mui/icons-material";
-import LinkifyWrapper from "../shared/LinkifyWrapper";
 import CollapseCardContent from "../shared/CollapseCardContent";
+import HighlighedText from "../shared/HighlightedText";
 
 interface CardProps {
   note: NoteInterfaces.Note;
@@ -31,7 +31,16 @@ export default function NoteCard({ note }: CardProps) {
             }}
           >
             <StickyNote2Outlined color="primary" fontSize="small" />
-            <LinkifyWrapper>{note.title}</LinkifyWrapper>
+            <p
+              ref={textRef}
+              style={{
+                whiteSpace: "pre-wrap",
+                margin: 0,
+                display: "inline",
+              }}
+            >
+              <HighlighedText text={note.title} />{" "}
+            </p>
           </Box>
         }
         action={

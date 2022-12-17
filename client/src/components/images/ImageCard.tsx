@@ -19,9 +19,10 @@ import CollaspeCardContent from "../../components/shared/CollapseCardContent";
 
 interface ImageCardProps {
   image: ImageInterfaces.ImageWithPresignedURL;
+  highlight?: string;
 }
 
-export default function ImageCard({ image }: ImageCardProps) {
+export default function ImageCard({ image, highlight }: ImageCardProps) {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -101,10 +102,7 @@ export default function ImageCard({ image }: ImageCardProps) {
               No description
             </Typography>
           ) : (
-            <CollaspeCardContent
-              textRef={ref}
-              text={image.description}
-            ></CollaspeCardContent>
+            <CollaspeCardContent textRef={ref} text={image.description} />
           )}
         </Box>
 
