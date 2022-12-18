@@ -1,7 +1,7 @@
 import React from "react";
 import { Collapse, Divider, Button, Box } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
-import throttle from "../../util/throttle";
+import debounce from "lodash.debounce";
 import HighlightedText from "./HighlightedText";
 
 // Determines how many lines before a collapse is shown
@@ -41,12 +41,12 @@ export default function CollapseCardContent({ textRef, text }: TextProps) {
 
   // Track window resize
   React.useEffect(() => {
-    const handleResize = throttle(() => {
+    const debouncedWindowResize = debounce(() => {
       setWindowWidth(window.innerWidth);
-    }, 1000);
+    }, 500);
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("resize", debouncedWindowResize);
+    return () => window.removeEventListener("resize", debouncedWindowResize);
   }, []);
 
   // Collapse card content if it exceeds a line height

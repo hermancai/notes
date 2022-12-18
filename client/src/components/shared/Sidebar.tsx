@@ -2,6 +2,7 @@ import * as React from "react";
 import { RootState } from "../../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchQuery } from "../../features/user/userSlice";
+import debounce from "lodash.debounce";
 import {
   AppBar,
   Box,
@@ -34,13 +35,30 @@ export default function Sidebar({
   closeMobileSidebar,
 }: SidebarProps) {
   const dispatch = useDispatch();
+
+  // For debouncing search when user types
+  const [liveSearchValue, setLiveSearchValue] = React.useState("");
   const { searchQuery } = useSelector((state: RootState) => state.user);
 
+  const debouncedUpdateSearchQuery = React.useMemo(
+    () =>
+      debounce(
+        (query: string) => {
+          dispatch(setSearchQuery(query));
+        },
+        500,
+        { leading: true }
+      ),
+    [dispatch]
+  );
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSearchQuery(e.target.value));
+    setLiveSearchValue(e.target.value);
+    debouncedUpdateSearchQuery(e.target.value);
   };
 
   const clearSearch = React.useCallback(() => {
+    setLiveSearchValue("");
     dispatch(setSearchQuery(""));
   }, [dispatch]);
 
@@ -97,7 +115,7 @@ export default function Sidebar({
                 inputProps={{ "aria-label": "search" }}
                 sx={{ width: "100%" }}
                 type="text"
-                value={searchQuery}
+                value={liveSearchValue}
                 onChange={handleSearchChange}
               />
               <Box
