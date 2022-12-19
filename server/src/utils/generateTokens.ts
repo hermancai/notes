@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import User from "../models/User";
 import Token from "../models/Token";
 import { TokenPayload } from "../interfaces/interfaces";
 

@@ -8,7 +8,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
 import ImageCard from "../components/images/ImageCard";
 import SortDropdown from "../components/shared/SortDropdown";
-import { SharedInterfaces } from "../interfaces/SharedInterfaces";
+import { SortModes } from "../interfaces/SharedInterfaces";
 
 export default function ImagesPage() {
   useSetUsername();
@@ -26,7 +26,7 @@ export default function ImagesPage() {
     loading: imageLoading,
   } = useSelector((state: RootState) => state.image);
 
-  const handleSortList = (sortMode: SharedInterfaces.SortModes["sortMode"]) => {
+  const handleSortList = (sortMode: SortModes["sortMode"]) => {
     dispatch(sortImageList(sortMode));
   };
 

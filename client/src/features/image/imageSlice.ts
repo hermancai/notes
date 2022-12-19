@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { imageService } from "./imageService";
-import { ImageInterfaces } from "../../interfaces/ImageInterfaces";
-import { SharedInterfaces } from "../../interfaces/SharedInterfaces";
+import * as Image from "../../interfaces/ImageInterfaces";
+import { SortModes } from "../../interfaces/SharedInterfaces";
 
 export interface ImageState {
-  allImages: ImageInterfaces.ImageWithPresignedURL[];
-  activeImage?: ImageInterfaces.ImageWithPresignedURL;
+  allImages: Image.PresignedImage[];
+  activeImage?: Image.PresignedImage;
   loading: boolean;
   initialFetch: boolean;
-  sortMode: SharedInterfaces.SortModes["sortMode"];
+  sortMode: SortModes["sortMode"];
 }
 
 const initialState: ImageState = {
@@ -28,24 +28,21 @@ export const getAllImages = createAsyncThunk(
 
 export const uploadImage = createAsyncThunk(
   "image/uploadImage",
-  async (body: ImageInterfaces.NewImagePayload, thunkAPI) => {
+  async (body: Image.NewImagePayload, thunkAPI) => {
     return await imageService.uploadImage(body);
   }
 );
 
 export const getFullImage = createAsyncThunk(
   "image/getFullImage",
-  async (imageKey: ImageInterfaces.Image["fileName"], thunkAPI) => {
+  async (imageKey: Image.Image["fileName"], thunkAPI) => {
     return await imageService.getFullImageURL(imageKey);
   }
 );
 
 export const deleteImage = createAsyncThunk(
   "image/deleteImage",
-  async (
-    fileName: ImageInterfaces.ImageWithPresignedURL["fileName"],
-    thunkAPI
-  ) => {
+  async (fileName: Image.PresignedImage["fileName"], thunkAPI) => {
     await imageService.deleteImage(fileName);
     return fileName;
   }
@@ -53,7 +50,7 @@ export const deleteImage = createAsyncThunk(
 
 export const updateImage = createAsyncThunk(
   "image/updateImage",
-  async (body: ImageInterfaces.UpdateImageRequest, thunkAPI) => {
+  async (body: Image.UpdateImageRequest, thunkAPI) => {
     return await imageService.updateImage(body);
   }
 );
@@ -62,10 +59,7 @@ export const imageSlice = createSlice({
   name: "image",
   initialState,
   reducers: {
-    setImage: (
-      state,
-      { payload }: PayloadAction<ImageInterfaces.ImageWithPresignedURL>
-    ) => {
+    setImage: (state, { payload }: PayloadAction<Image.PresignedImage>) => {
       state.activeImage = payload;
     },
     resetActiveImage: (state) => {
@@ -78,7 +72,7 @@ export const imageSlice = createSlice({
     },
     sortImageList: (
       state,
-      { payload }: PayloadAction<SharedInterfaces.SortModes["sortMode"]>
+      { payload }: PayloadAction<SortModes["sortMode"]>
     ) => {
       state.sortMode = payload;
       switch (payload) {

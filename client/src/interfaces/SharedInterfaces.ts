@@ -1,13 +1,7 @@
-export namespace SharedInterfaces {
-  export interface ServerResponse {
-    error: boolean;
-    message: string;
-    accessToken?: string;
-    username?: string;
-    status?: number;
-  }
+export interface ServerResponse {
+  message: string;
+}
 
-  export interface SortModes {
-    sortMode: "Oldest" | "Newest" | "Last Updated";
-  }
+export interface SortModes {
+  sortMode: "Oldest" | "Newest" | "Last Updated";
 }

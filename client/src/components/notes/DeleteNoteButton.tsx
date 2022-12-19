@@ -11,10 +11,10 @@ import {
   DialogContentText,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { NoteInterfaces } from "../../interfaces/NoteInterfaces";
+import { Note } from "../../interfaces/NoteInterfaces";
 
 interface ButtonProps {
-  id: NoteInterfaces.Note["id"];
+  id: Note["id"];
 }
 
 export default function DeleteNoteButton({ id }: ButtonProps) {

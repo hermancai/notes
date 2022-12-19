@@ -12,13 +12,13 @@ import {
   Box,
 } from "@mui/material";
 import { OpenInNewRounded } from "@mui/icons-material";
-import { ImageInterfaces } from "../../interfaces/ImageInterfaces";
+import { PresignedImage } from "../../interfaces/ImageInterfaces";
 import DeleteImageButton from "../../components/images/DeleteImageButton";
 import { useNavigate } from "react-router-dom";
 import CollaspeCardContent from "../../components/shared/CollapseCardContent";
 
 interface ImageCardProps {
-  image: ImageInterfaces.ImageWithPresignedURL;
+  image: PresignedImage;
   highlight?: string;
 }
 

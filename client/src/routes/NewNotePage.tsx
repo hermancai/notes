@@ -6,14 +6,14 @@ import { createNewNote, sortNoteList } from "../features/note/noteSlice";
 import { makeToast } from "../features/toast/toastSlice";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { NoteInterfaces } from "../interfaces/NoteInterfaces";
+import { NewNotePayload } from "../interfaces/NoteInterfaces";
 
 export default function NewNotePage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const { sortMode } = useSelector((state: RootState) => state.note);
-  const [inputs, setInputs] = React.useState<NoteInterfaces.NewNotePayload>({
+  const [inputs, setInputs] = React.useState<NewNotePayload>({
     title: "",
     text: "",
   });

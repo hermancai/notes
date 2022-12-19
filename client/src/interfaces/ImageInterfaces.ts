@@ -1,52 +1,48 @@
-import { SharedInterfaces } from "./SharedInterfaces";
+export interface Image {
+  id: number;
+  description: string;
+  fileName: string;
+  fileNameResized: string;
+  updatedAt: string | number;
+  createdAt: string | number;
+  userId: string;
+}
 
-export namespace ImageInterfaces {
-  export interface Image {
-    id: number;
-    description: string;
-    fileName: string;
-    fileNameResized: string;
-    updatedAt: string | number;
-    createdAt: string | number;
-    userId: string;
-  }
+export interface PresignedImage extends Image {
+  presignedURL: string;
+}
 
-  export interface ImageWithPresignedURL extends Image {
-    presignedURL: string;
-  }
+export interface NewImagePayload {
+  file: File | undefined;
+  description: string;
+}
 
-  export interface NewImagePayload {
-    file: File | undefined;
-    description: string;
-  }
+export interface GetUploadURLResponse {
+  presignedURL: string;
+  fileName: Image["fileName"];
+}
 
-  export interface UploadURLResponse extends SharedInterfaces.ServerResponse {
-    presignedURL: string;
-    fileName: Image["fileName"];
-  }
+export interface SaveImageResponse {
+  newImage: PresignedImage;
+}
 
-  export interface NewImageResponse extends SharedInterfaces.ServerResponse {
-    newImage: ImageWithPresignedURL;
-  }
+export interface GetImagesResponse {
+  images: PresignedImage[];
+}
 
-  export interface GetImagesResponse extends SharedInterfaces.ServerResponse {
-    images: ImageWithPresignedURL[];
-  }
+export interface FullImageResponse {
+  presignedURL: string;
+}
 
-  export interface FullImageResponse extends SharedInterfaces.ServerResponse {
-    presignedURL: string;
-  }
+export interface UpdateImageRequest {
+  fileName: Image["fileName"];
+  description: Image["description"];
+}
 
-  export interface UpdateImageRequest {
-    fileName: Image["fileName"];
+export interface UpdateImageResponse {
+  newDetails: {
+    id: Image["id"];
+    updatedAt: Image["updatedAt"];
     description: Image["description"];
-  }
-
-  export interface UpdateImageResponse extends SharedInterfaces.ServerResponse {
-    newDetails: {
-      id: Image["id"];
-      updatedAt: Image["updatedAt"];
-      description: Image["description"];
-    };
-  }
+  };
 }

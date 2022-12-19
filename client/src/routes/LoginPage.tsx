@@ -13,7 +13,7 @@ import {
   SxProps,
 } from "@mui/material";
 import { green } from "@mui/material/colors";
-import { UserInterfaces } from "../interfaces/UserInterfaces";
+import { Credentials } from "../interfaces/UserInterfaces";
 import { useNavigate } from "react-router-dom";
 import { Person, Lock, ErrorOutlineOutlined } from "@mui/icons-material";
 
@@ -34,7 +34,7 @@ export default function LoginPage() {
 
   const [showLogin, setShowLogin] = React.useState(true);
   const loading = useSelector((state: RootState) => state.user.loading);
-  const [inputs, setInputs] = React.useState<UserInterfaces.UserCredentials>({
+  const [inputs, setInputs] = React.useState<Credentials>({
     username: "",
     password: "",
   });
@@ -54,42 +54,35 @@ export default function LoginPage() {
 
   // Attempt login
   const handleLogin = async () => {
-    try {
-      const res = await dispatch(login(inputs)).unwrap();
-      if (!res.error) {
-        navigate("/");
-      }
-      setErrorMessage(res.message);
-    } catch (err) {
-      console.log("Login Error:\n", err);
+    const res = await dispatch(login(inputs)).unwrap();
+    if (res.error === true) {
+      return setErrorMessage(res.message);
     }
+    navigate("/");
   };
 
   // Attempt signup then login
   const handleSignup = async () => {
     const signupRes = await dispatch(signup(inputs)).unwrap();
-    if (signupRes.error) {
+    if (signupRes.error === true) {
       return setErrorMessage(signupRes.message);
     }
 
-    const loginRes = await dispatch(login(inputs)).unwrap();
-    if (loginRes.error) {
-      return setErrorMessage(loginRes.message);
-    }
-    navigate("/");
+    handleLogin();
   };
 
   // Login using guest credentials
   const handleGuestLogin = async () => {
     try {
-      const res = await dispatch(
+      await dispatch(
         login({ username: "Guest", password: "password" })
       ).unwrap();
-      if (!res.error) {
-        navigate("/");
-      }
+
+      navigate("/");
     } catch (err) {
-      console.log("Login Error:\n", err);
+      if (err instanceof Error) {
+        setErrorMessage(err.message);
+      }
     }
   };
 

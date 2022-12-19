@@ -8,7 +8,7 @@ import {
   sortImageList,
 } from "../features/image/imageSlice";
 import { makeToast } from "../features/toast/toastSlice";
-import { ImageInterfaces } from "../interfaces/ImageInterfaces";
+import { PresignedImage } from "../interfaces/ImageInterfaces";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import DeleteImageButton from "../components/images/DeleteImageButton";
 
@@ -27,7 +27,7 @@ export default function UpdateNotePage() {
   }, [navigate, dispatch, activeImage]);
 
   const [description, setDescription] = React.useState<
-    ImageInterfaces.ImageWithPresignedURL["description"] | undefined
+    PresignedImage["description"] | undefined
   >(activeImage?.description);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

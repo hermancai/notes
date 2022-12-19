@@ -11,10 +11,10 @@ import {
   DialogContentText,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { ImageInterfaces } from "../../interfaces/ImageInterfaces";
+import { PresignedImage } from "../../interfaces/ImageInterfaces";
 
 interface ButtonProps {
-  imageKey: ImageInterfaces.ImageWithPresignedURL["fileName"];
+  imageKey: PresignedImage["fileName"];
 }
 
 export default function DeleteImageButton({ imageKey }: ButtonProps) {

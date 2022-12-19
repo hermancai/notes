@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import userService from "./userService";
-import { UserInterfaces } from "../../interfaces/UserInterfaces";
+import { Credentials } from "../../interfaces/UserInterfaces";
 
 export interface UserState {
   username?: string;
@@ -24,14 +24,14 @@ export const verifyAccessToken = createAsyncThunk(
 
 export const login = createAsyncThunk(
   "user/login",
-  async (credentials: UserInterfaces.UserCredentials, thunkAPI) => {
+  async (credentials: Credentials, thunkAPI) => {
     return await userService.login(credentials);
   }
 );
 
 export const signup = createAsyncThunk(
   "user/signup",
-  async (credentials: UserInterfaces.UserCredentials, thunkAPI) => {
+  async (credentials: Credentials, thunkAPI) => {
     return await userService.signup(credentials);
   }
 );
@@ -80,9 +80,9 @@ export const userSlice = createSlice({
     builder
       .addCase(verifyAccessToken.pending, (state) => {
         state.loading = true;
+        state.username = undefined;
       })
       .addCase(verifyAccessToken.fulfilled, (state, { payload }) => {
-        localStorage.setItem("accessToken", payload.accessToken!);
         state.loading = false;
         state.username = payload.username;
       })
@@ -92,35 +92,29 @@ export const userSlice = createSlice({
       })
       .addCase(login.pending, (state) => {
         state.loading = true;
+        state.username = undefined;
       })
       .addCase(login.fulfilled, (state, { payload }) => {
         state.loading = false;
-        if (!payload.error) {
-          localStorage.setItem("accessToken", payload.accessToken!);
-          state.username = payload.username;
-        }
+        state.username = payload.username;
       })
       .addCase(login.rejected, (state) => {
-        localStorage.removeItem("accessToken");
         state.loading = false;
         state.username = undefined;
       })
       .addCase(signup.pending, (state) => {
         state.loading = true;
       })
-      .addCase(signup.fulfilled, (state, { payload }) => {
+      .addCase(signup.fulfilled, (state) => {
         state.loading = false;
-        state.username = undefined;
       })
       .addCase(signup.rejected, (state) => {
         state.loading = false;
-        state.username = undefined;
       })
       .addCase(logout.pending, (state) => {
         state.loading = true;
       })
       .addCase(logout.fulfilled, (state) => {
-        localStorage.removeItem("accessToken");
         state.loading = false;
         state.username = undefined;
       })
@@ -131,8 +125,8 @@ export const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(deleteAccount.fulfilled, (state) => {
-        localStorage.removeItem("accessToken");
         state.loading = false;
+        state.username = undefined;
       })
       .addCase(deleteAccount.rejected, (state) => {
         state.loading = false;

@@ -1,17 +1,17 @@
 import React from "react";
-import { SharedInterfaces } from "../../interfaces/SharedInterfaces";
+import { SortModes } from "../../interfaces/SharedInterfaces";
 import { Box, Button, MenuItem, Menu } from "@mui/material";
 import { KeyboardArrowDown } from "@mui/icons-material";
 
-const sortOptions: Array<SharedInterfaces.SortModes["sortMode"]> = [
+const sortOptions: Array<SortModes["sortMode"]> = [
   "Newest",
   "Oldest",
   "Last Updated",
 ];
 
 interface DropdownProps {
-  sortMode: SharedInterfaces.SortModes["sortMode"];
-  handleSortList: (sortMode: SharedInterfaces.SortModes["sortMode"]) => void;
+  sortMode: SortModes["sortMode"];
+  handleSortList: (sortMode: SortModes["sortMode"]) => void;
 }
 
 export default function SortDropdown({
@@ -25,9 +25,7 @@ export default function SortDropdown({
     setAnchorEl(e.currentTarget);
   };
 
-  const handleClickSortOption = (
-    sortMode: SharedInterfaces.SortModes["sortMode"]
-  ) => {
+  const handleClickSortOption = (sortMode: SortModes["sortMode"]) => {
     setAnchorEl(null);
     handleSortList(sortMode);
   };
@@ -42,7 +40,7 @@ export default function SortDropdown({
         {sortMode} <KeyboardArrowDown />
       </Button>
       <Menu anchorEl={anchorEl} open={open} onClose={handleCloseSortMenu}>
-        {sortOptions.map((option: SharedInterfaces.SortModes["sortMode"]) => (
+        {sortOptions.map((option: SortModes["sortMode"]) => (
           <MenuItem
             key={option}
             selected={option === sortMode}

@@ -8,7 +8,7 @@ import {
   sortNoteList,
 } from "../features/note/noteSlice";
 import { makeToast } from "../features/toast/toastSlice";
-import { NoteInterfaces } from "../interfaces/NoteInterfaces";
+import { NewNotePayload } from "../interfaces/NoteInterfaces";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import DeleteNoteButton from "../components/notes/DeleteNoteButton";
 
@@ -26,7 +26,7 @@ export default function UpdateNotePage() {
     }
   }, [navigate, dispatch, id]);
 
-  const [inputs, setInputs] = React.useState<NoteInterfaces.NewNotePayload>({
+  const [inputs, setInputs] = React.useState<NewNotePayload>({
     title: title || "",
     text: text || "",
   });

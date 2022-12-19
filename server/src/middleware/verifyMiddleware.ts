@@ -15,9 +15,7 @@ declare global {
 const verifyUser = (req: Request, res: Response, next: NextFunction) => {
   const headerToken = req.headers.authorization;
   if (!headerToken || !headerToken.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ error: true, message: "Missing bearer token" });
+    return res.status(401).json({ message: "Error: Missing bearer token" });
   }
 
   const accessToken = headerToken.split(" ")[1];
@@ -30,9 +28,7 @@ const verifyUser = (req: Request, res: Response, next: NextFunction) => {
     req.userId = decoded.userId;
     next();
   } catch (err) {
-    return res
-      .status(401)
-      .json({ error: true, message: "Invalid bearer token" });
+    return res.status(401).json({ message: "Error: Invalid bearer token" });
   }
 };
 

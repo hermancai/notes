@@ -1,20 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { NoteInterfaces } from "../../interfaces/NoteInterfaces";
-import { SharedInterfaces } from "../../interfaces/SharedInterfaces";
+import * as Note from "../../interfaces/NoteInterfaces";
+import { SortModes } from "../../interfaces/SharedInterfaces";
 import noteService from "./noteService";
 
 export interface NoteState {
-  allNotes: NoteInterfaces.Note[];
+  allNotes: Note.Note[];
   id?: number;
   title?: string;
   text?: string;
   loading: boolean;
   initialFetch: boolean;
-  sortMode: SharedInterfaces.SortModes["sortMode"];
+  sortMode: SortModes["sortMode"];
 }
 
-export interface UpdateNoteBody extends NoteInterfaces.NewNotePayload {
+export interface UpdateNoteBody extends Note.NewNotePayload {
   id: number;
 }
 
@@ -27,7 +27,7 @@ const initialState: NoteState = {
 
 export const createNewNote = createAsyncThunk(
   "note/createNewNote",
-  async (contents: NoteInterfaces.NewNotePayload, thunkAPI) => {
+  async (contents: Note.NewNotePayload, thunkAPI) => {
     return await noteService.createNewNote(contents);
   }
 );
@@ -58,7 +58,7 @@ export const noteSlice = createSlice({
   name: "note",
   initialState,
   reducers: {
-    setNote: (state, { payload }: PayloadAction<NoteInterfaces.Note>) => {
+    setNote: (state, { payload }: PayloadAction<Note.Note>) => {
       state.id = payload.id;
       state.title = payload.title;
       state.text = payload.text;
@@ -70,7 +70,7 @@ export const noteSlice = createSlice({
     },
     sortNoteList: (
       state,
-      { payload }: PayloadAction<SharedInterfaces.SortModes["sortMode"]>
+      { payload }: PayloadAction<SortModes["sortMode"]>
     ) => {
       state.sortMode = payload;
       switch (payload) {

@@ -1,5 +1,5 @@
 import React from "react";
-import { NoteInterfaces } from "../../interfaces/NoteInterfaces";
+import { Note } from "../../interfaces/NoteInterfaces";
 import DeleteNoteButton from "./DeleteNoteButton";
 import EditNoteButton from "./UpdateNoteButton";
 import { Box, Card, CardHeader } from "@mui/material";
@@ -8,7 +8,7 @@ import CollapseCardContent from "../shared/CollapseCardContent";
 import HighlighedText from "../shared/HighlightedText";
 
 interface CardProps {
-  note: NoteInterfaces.Note;
+  note: Note;
 }
 
 export default function NoteCard({ note }: CardProps) {

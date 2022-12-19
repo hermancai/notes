@@ -13,7 +13,7 @@ import {
   InputLabel,
   Input,
 } from "@mui/material";
-import { ImageInterfaces } from "../interfaces/ImageInterfaces";
+import { NewImagePayload } from "../interfaces/ImageInterfaces";
 
 export default function NewImagePage() {
   useSetUsername();
@@ -23,7 +23,7 @@ export default function NewImagePage() {
 
   const fileInputRef = React.useRef<HTMLInputElement>();
   const { sortMode } = useSelector((state: RootState) => state.image);
-  const [inputs, setInputs] = React.useState<ImageInterfaces.NewImagePayload>({
+  const [inputs, setInputs] = React.useState<NewImagePayload>({
     file: undefined,
     description: "",
   });

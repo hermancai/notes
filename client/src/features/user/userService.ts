@@ -1,10 +1,12 @@
-import { SharedInterfaces } from "../../interfaces/SharedInterfaces";
-import { UserInterfaces } from "../../interfaces/UserInterfaces";
+import { ServerResponse } from "../../interfaces/SharedInterfaces";
+import * as User from "../../interfaces/UserInterfaces";
 import refreshAccessToken from "../shared/refreshAccessToken";
+import protectedFetch from "../shared/protectedFetch";
 
 // POST /api/token
-const verifyAccessToken = async () => {
+const verifyAccessToken = async (): Promise<User.TokenResponse> => {
   const accessToken = localStorage.getItem("accessToken");
+
   // Send current access token for verification
   if (accessToken !== null) {
     const verifyResponse = await fetch("/api/token", {
@@ -13,12 +15,9 @@ const verifyAccessToken = async () => {
         Authorization: "Bearer " + accessToken,
       },
     });
-    const verifyRes =
-      (await verifyResponse.json()) as SharedInterfaces.ServerResponse;
 
-    // Exit if current access token is valid
-    if (!verifyRes.error) {
-      return verifyRes;
+    if (verifyResponse.status === 200) {
+      return (await verifyResponse.json()) as User.TokenResponse;
     }
   }
 
@@ -26,7 +25,9 @@ const verifyAccessToken = async () => {
 };
 
 // POST /api/user/login
-const login = async (credentials: UserInterfaces.UserCredentials) => {
+const login = async (
+  credentials: User.Credentials
+): Promise<User.LoginResponse> => {
   const response = await fetch("/api/user/login", {
     method: "POST",
     headers: {
@@ -34,11 +35,23 @@ const login = async (credentials: UserInterfaces.UserCredentials) => {
     },
     body: JSON.stringify(credentials),
   });
-  return (await response.json()) as SharedInterfaces.ServerResponse;
+
+  const res = (await response.json()) as User.LoginResponse;
+  if (response.status !== 200) {
+    localStorage.removeItem("accessToken");
+    res.error = true;
+    return res;
+  }
+
+  localStorage.setItem("accessToken", res.accessToken!);
+  res.error = false;
+  return res;
 };
 
 // POST /api/user/signup
-const signup = async (credentials: UserInterfaces.UserCredentials) => {
+const signup = async (
+  credentials: User.Credentials
+): Promise<User.SignupResponse> => {
   const response = await fetch("/api/user/signup", {
     method: "POST",
     headers: {
@@ -46,48 +59,41 @@ const signup = async (credentials: UserInterfaces.UserCredentials) => {
     },
     body: JSON.stringify(credentials),
   });
-  return (await response.json()) as SharedInterfaces.ServerResponse;
+
+  const res = (await response.json()) as User.SignupResponse;
+  if (response.status !== 200) {
+    res.error = true;
+    return res;
+  }
+
+  res.error = false;
+  return res;
 };
 
 // DELETE /api/token
-const logout = async () => {
+const logout = async (): Promise<ServerResponse> => {
   const response = await fetch("/api/token", {
     method: "DELETE",
     credentials: "include",
   });
-  return (await response.json()) as SharedInterfaces.ServerResponse;
+  localStorage.removeItem("accessToken");
+  return (await response.json()) as ServerResponse;
 };
 
 // DELETE /api/user
-const deleteAccount = async () => {
-  const fetchRequest = async () => {
-    return await fetch("/api/user", {
+const deleteAccount = async (): Promise<ServerResponse> => {
+  const res = await protectedFetch<ServerResponse>(() => {
+    return fetch("/api/user", {
       method: "DELETE",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("accessToken"),
       },
     });
-  };
+  });
 
-  const initialResponse = await fetchRequest();
-  if (initialResponse.status === 401) {
-    const refreshResponse = await refreshAccessToken();
-    if (refreshResponse.error) {
-      throw new Error(refreshResponse.message);
-    }
-    const retryResponse = await fetchRequest();
-    const retryRes =
-      (await retryResponse.json()) as SharedInterfaces.ServerResponse;
-    if (retryRes.error) {
-      throw new Error(retryRes.message);
-    }
-    return retryRes;
-  }
+  localStorage.removeItem("accessToken");
+  return res;
 };
-
-// PUT /api/token
-// For accessing protected pages when no default fetch is used
-const getUsername = async () => {};
 
 const userService = {
   verifyAccessToken,
@@ -95,6 +101,5 @@ const userService = {
   signup,
   logout,
   deleteAccount,
-  getUsername,
 };
 export default userService;

@@ -2,10 +2,8 @@ import { Response, Request, NextFunction } from "express";
 import s3Client from "../config/s3Connect";
 import {
   GetObjectCommand,
-  GetObjectCommandInput,
   PutObjectCommand,
   DeleteObjectCommand,
-  DeleteObjectCommandInput,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid";
@@ -47,9 +45,7 @@ const getAllImages = async (
   });
 
   if (images === null) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Retrieving images failed" });
+    return res.status(400).json({ message: "Error: Get thumbnails" });
   }
 
   // Build new image list with presignedURLs
@@ -72,7 +68,7 @@ const getAllImages = async (
 
   res
     .status(200)
-    .json({ error: false, message: "Retrieved all images", images: imageList });
+    .json({ message: "Success: Get thumbnails", images: imageList });
 };
 
 // @desc   Generate presigned URL for upload to S3 bucket
@@ -90,8 +86,7 @@ const getUploadPresignedURL = async (
     });
     const presignedURL = await getSignedUrl(s3Client, command);
     res.status(200).json({
-      error: false,
-      message: "Image upload successful",
+      message: "Success: Uploaded image",
       presignedURL,
       fileName,
     });
@@ -109,7 +104,7 @@ const saveImage = async (req: Request, res: Response, next: NextFunction) => {
   };
 
   if (!fileName) {
-    return res.status(400).json({ error: true, message: "Missing file name" });
+    return res.status(400).json({ message: "Error: Missing file name" });
   }
 
   const savedImage = await Image.create(
@@ -122,7 +117,7 @@ const saveImage = async (req: Request, res: Response, next: NextFunction) => {
     { returning: true }
   );
   if (!savedImage) {
-    return res.status(400).json({ error: true, message: "Image save failed" });
+    return res.status(500).json({ message: "Error: Save image failed" });
   }
 
   const newImage: ImageWithPresignedURL = {
@@ -139,9 +134,7 @@ const saveImage = async (req: Request, res: Response, next: NextFunction) => {
     ),
   };
 
-  res
-    .status(200)
-    .json({ error: false, message: "Image save successful", newImage });
+  res.status(200).json({ message: "Success: Upload image", newImage });
 };
 
 // @desc   Get presigned URL for one full sized image
@@ -157,8 +150,7 @@ const getFullImageURL = async (
       BUCKET_NAME
     );
     res.status(200).json({
-      error: false,
-      message: "URL created successfully",
+      message: "Success: Get full image",
       presignedURL,
     });
   } catch (err) {
@@ -173,15 +165,14 @@ const deleteImage = async (req: Request, res: Response, next: NextFunction) => {
   const { fileName } = req.body;
 
   if (!fileName) {
-    return next(new Error("Missing file name"));
+    return res.status(400).json({ message: "Error: Missing file name" });
   }
 
   try {
-    const bucketParams: DeleteObjectCommandInput = {
+    const command = new DeleteObjectCommand({
       Bucket: BUCKET_NAME,
       Key: fileName,
-    };
-    const command = new DeleteObjectCommand(bucketParams);
+    });
     await s3Client.send(command);
   } catch (err) {
     next(err);
@@ -190,13 +181,9 @@ const deleteImage = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const deletedImage = await Image.destroy({ where: { fileName, userId } });
     if (deletedImage === 0) {
-      return res
-        .status(400)
-        .json({ error: true, message: "Image deletion failed" });
+      return res.status(400).json({ message: "Error: Delete image failed" });
     }
-    return res
-      .status(200)
-      .json({ error: false, message: "Image deletion successful" });
+    return res.status(200).json({ message: "Success: Delete image" });
   } catch (err) {
     next(err);
   }
@@ -207,16 +194,12 @@ const deleteImage = async (req: Request, res: Response, next: NextFunction) => {
 const updateImage = async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req;
   if (!userId) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Update Error: Unknown user" });
+    return res.status(400).json({ message: "Error: Missing user ID" });
   }
 
   const { fileName, description } = req.body;
   if (!fileName) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Update Error: Missing file name" });
+    return res.status(400).json({ message: "Error: Missing file name" });
   }
 
   try {
@@ -225,15 +208,12 @@ const updateImage = async (req: Request, res: Response, next: NextFunction) => {
       { where: { userId, fileName }, returning: true }
     );
     if (!updatedImage) {
-      return res
-        .status(400)
-        .json({ error: true, message: "Update Error: Image not found" });
+      return res.status(400).json({ message: "Error: Image not found" });
     }
 
     const image = updatedImage[1][0];
     res.status(200).json({
-      error: false,
-      message: "Image update successful",
+      message: "Success: Update image",
       newDetails: {
         id: image.id,
         description: image.description,
