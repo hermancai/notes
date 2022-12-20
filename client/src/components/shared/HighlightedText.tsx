@@ -24,7 +24,11 @@ export default function HighlightedText({ text }: TextProps) {
         return (
           <span
             key={i}
-            style={part === searchQuery ? { backgroundColor: green[500] } : {}}
+            style={
+              part.toLowerCase() === searchQuery.toLowerCase()
+                ? { backgroundColor: green[500] }
+                : {}
+            }
           >
             {part}
           </span>
