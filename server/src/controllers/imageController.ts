@@ -32,6 +32,19 @@ const generateGetPresignedURL = async (fileName: string, bucket: string) => {
   return await getSignedUrl(s3Client, command, { expiresIn: 86400 });
 };
 
+// Delete all images belonging to user from S3
+const deleteAllUserImages = async (userId: string) => {
+  const allImages = await Image.findAll({ where: { userId } });
+
+  for (const image of allImages) {
+    const command = new DeleteObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: image.fileName,
+    });
+    await s3Client.send(command);
+  }
+};
+
 // @desc   Send presigned URLs of thumbnails belonging to user
 // @route  GET /api/image
 const getAllImages = async (
@@ -232,4 +245,5 @@ export {
   getFullImageURL,
   deleteImage,
   updateImage,
+  deleteAllUserImages,
 };

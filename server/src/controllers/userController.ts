@@ -7,6 +7,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateTokens";
+import { deleteAllUserImages } from "./imageController";
 
 // @desc   Register new user in database
 // @route  POST /api/user/signup
@@ -95,6 +96,12 @@ const deleteAccount = async (
 ) => {
   if (req.user === "Guest") {
     return res.status(400).json({ message: "Error: Cannot delete Guest" });
+  }
+
+  try {
+    await deleteAllUserImages(req.userId);
+  } catch (err) {
+    return res.status(500).json({ message: "Error: Delete images failed" });
   }
 
   // Remove user from database and remove cookie

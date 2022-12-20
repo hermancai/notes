@@ -4,10 +4,7 @@ import {
   Model,
   DataType,
   CreatedAt,
-  PrimaryKey,
   AllowNull,
-  Unique,
-  HasOne,
   ForeignKey,
   BelongsTo,
 } from "sequelize-typescript";

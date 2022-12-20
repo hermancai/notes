@@ -3,6 +3,8 @@ import { AppDispatch, RootState } from "../app/store";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteAccount } from "../features/user/userSlice";
 import useSetUsername from "../hooks/useSetUsername";
+import { resetAllNotes } from "../features/note/noteSlice";
+import { resetAllImages } from "../features/image/imageSlice";
 import {
   Box,
   Button,
@@ -33,6 +35,8 @@ export default function AccountPage() {
   const handleDeleteAccount = async () => {
     try {
       await dispatch(deleteAccount()).unwrap();
+      dispatch(resetAllNotes());
+      dispatch(resetAllImages());
       navigate("/login");
     } catch (err) {
       console.log(err);

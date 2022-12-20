@@ -26,7 +26,8 @@ const connectToDatabase = async () => {
   }
 
   // Reset database to match new models
-  // await sequelize.sync({ force: true });
+  // TODO use migrations for production
+  await sequelize.sync({ alter: true });
 };
 
 export default connectToDatabase;

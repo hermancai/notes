@@ -12,6 +12,7 @@ import {
 } from "sequelize-typescript";
 import Token from "./Token";
 import Note from "./Note";
+import Image from "./Image";
 
 @Table
 class User extends Model {
@@ -48,6 +49,13 @@ class User extends Model {
     hooks: true,
   })
   notes!: Note[];
+
+  @HasMany(() => Image, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+    hooks: true,
+  })
+  images!: Image[];
 }
 
 export default User;
