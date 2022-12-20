@@ -2,6 +2,7 @@ import React from "react";
 import { AppDispatch } from "../../app/store";
 import { useDispatch } from "react-redux";
 import { getFullImage, setImage } from "../../features/image/imageSlice";
+import { setSearchQuery } from "../../features/user/userSlice";
 import {
   Card,
   CardActions,
@@ -58,6 +59,7 @@ export default function ImageCard({ image, highlight }: ImageCardProps) {
 
   const handleClickEdit = () => {
     dispatch(setImage(image));
+    dispatch(setSearchQuery(""));
     navigate("/images/update");
   };
 
