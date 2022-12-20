@@ -22,13 +22,12 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
     console.log("valid access token", new Date().toISOString());
 
-    return res
-      .status(200)
-      .json({
-        message: "Success: Valid access token",
-        username: decoded.username,
-      });
+    return res.status(200).json({
+      message: "Success: Valid access token",
+      username: decoded.username,
+    });
   } catch (err) {
+    res.status(400);
     return next(err);
   }
 };
@@ -78,6 +77,7 @@ const refreshAccessToken = async (
 
     res.status(200).json({
       accessToken,
+      username: decoded.username,
       message: "Success: Renewed access token",
     });
   } catch (err) {

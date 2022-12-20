@@ -11,14 +11,14 @@ export interface TokenPayload {
 export interface TokenResponse {
   message: string;
   error: boolean;
-  username?: string;
+  username: string;
   accessToken?: string;
 }
 
 export interface LoginResponse {
   message: string;
   error: boolean;
-  username?: string;
+  username: string;
   accessToken?: string;
 }
 
