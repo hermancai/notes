@@ -1,10 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import s3Client from "../config/s3Connect";
-import {
-  GetObjectCommand,
-  PutObjectCommand,
-  DeleteObjectCommand,
-} from "@aws-sdk/client-s3";
+import { GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid";
 import Image from "../models/Image";
@@ -27,6 +24,7 @@ const generateGetPresignedURL = async (fileName: string, bucket: string) => {
   const command = new GetObjectCommand({
     Bucket: bucket,
     Key: fileName,
+    ResponseContentDisposition: `inline; filename="${fileName}"`,
   });
   // presigned URL expires in 24 hours
   return await getSignedUrl(s3Client, command, { expiresIn: 86400 });
@@ -91,17 +89,29 @@ const getUploadPresignedURL = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { fileType, fileSize } = req.body;
+  if (!fileSize || !fileType) {
+    return res.status(400).json({ message: "Error: Missing file data" });
+  }
+
   try {
-    const fileName = `${req.user}-${uuidv4()}.${req.body.fileType}`;
-    const command = new PutObjectCommand({
+    const fileName = `${req.user}-${uuidv4()}.${fileType}`;
+
+    const { url, fields } = await createPresignedPost(s3Client, {
       Bucket: BUCKET_NAME,
       Key: fileName,
+      Fields: { acl: "private", "Content-Type": "image/" + fileType },
+      Conditions: [
+        ["starts-with", "$Content-Type", "image/"],
+        ["content-length-range", 0, 10485760], // 10 Mb limit
+      ],
     });
-    const presignedURL = await getSignedUrl(s3Client, command);
+
     res.status(200).json({
-      message: "Success: Uploaded image",
-      presignedURL,
+      message: "Success: Get presigned URL",
       fileName,
+      url,
+      fields,
     });
   } catch (err) {
     throw err;
@@ -188,7 +198,7 @@ const deleteImage = async (req: Request, res: Response, next: NextFunction) => {
     });
     await s3Client.send(command);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 
   try {

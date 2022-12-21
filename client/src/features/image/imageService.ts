@@ -4,7 +4,8 @@ import protectedFetch from "../shared/protectedFetch";
 
 // GET /api/image/getUploadPresign
 const getUploadPresignedURL = async (
-  fileType: string
+  fileType: string,
+  fileSize: Blob["size"]
 ): Promise<Image.GetUploadURLResponse> => {
   return await protectedFetch<Image.GetUploadURLResponse>(() => {
     return fetch("/api/image/getUploadPresign", {
@@ -13,15 +14,13 @@ const getUploadPresignedURL = async (
         Authorization: "Bearer " + localStorage.getItem("accessToken"),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ fileType }),
+      body: JSON.stringify({ fileType, fileSize }),
     });
   });
 };
 
-// PUT using presigned URL
-const uploadImage = async (
-  body: Image.NewImagePayload
-): Promise<Image.SaveImageResponse> => {
+// Get presigned upload URL and POST file to S3
+const uploadToS3 = async (body: Image.NewImagePayload): Promise<string> => {
   if (body.file === undefined) {
     throw new Error("A file was not provided");
   }
@@ -31,12 +30,30 @@ const uploadImage = async (
     throw new Error("Invalid file type");
   }
 
-  // This already uses protectFetch
-  const response = await getUploadPresignedURL(fileType);
+  // This already uses protectedFetch
+  const response = await getUploadPresignedURL(fileType, body.file.size);
 
   // Upload file to S3
-  // DANGER: currently assumes the upload to s3 will always work
-  await fetch(response.presignedURL, { method: "PUT", body: body.file });
+  const formData = new FormData();
+  Object.keys(response.fields).forEach((key) => {
+    formData.append(key, response.fields[key]);
+  });
+  formData.append("file", body.file);
+
+  const s3Response = await fetch(response.url, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!s3Response.ok) throw new Error("Upload to S3 failed");
+  return response.fileName;
+};
+
+// PUT using presigned URL
+const uploadImage = async (
+  body: Image.NewImagePayload
+): Promise<Image.SaveImageResponse> => {
+  const fileName = await uploadToS3(body);
 
   // Save image data to own database
   return await protectedFetch<Image.SaveImageResponse>(() => {
@@ -47,7 +64,7 @@ const uploadImage = async (
         Authorization: "Bearer " + localStorage.getItem("accessToken"),
       },
       body: JSON.stringify({
-        fileName: response.fileName,
+        fileName,
         description: body.description,
       }),
     });

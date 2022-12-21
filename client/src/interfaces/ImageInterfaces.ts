@@ -18,7 +18,8 @@ export interface NewImagePayload {
 }
 
 export interface GetUploadURLResponse {
-  presignedURL: string;
+  url: string;
+  fields: Record<string, string>;
   fileName: Image["fileName"];
 }
 

@@ -46,13 +46,15 @@ export default function NewImagePage() {
   };
 
   const handleSubmit = async () => {
-    try {
-      await dispatch(uploadImage(inputs)).unwrap();
-      dispatch(sortImageList(sortMode));
-      dispatch(makeToast("Saved new image"));
-      navigate("/images");
-    } catch (err) {
-      console.log(err);
+    if (inputs.file !== undefined) {
+      try {
+        await dispatch(uploadImage(inputs)).unwrap();
+        dispatch(sortImageList(sortMode));
+        dispatch(makeToast("Saved new image"));
+        navigate("/images");
+      } catch (err) {
+        dispatch(makeToast("Error: Image upload failed"));
+      }
     }
   };
 
@@ -60,10 +62,17 @@ export default function NewImagePage() {
     navigate("/images");
   };
 
+  // True if file size is over 10 Mb
+  const fileTooBig: boolean = inputs.file
+    ? inputs.file.size > 10485760
+      ? true
+      : false
+    : false;
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <Typography component="h1" variant="h4">
-        New Image
+        Upload Image
       </Typography>
       <Box
         sx={{
@@ -93,6 +102,14 @@ export default function NewImagePage() {
           {inputs.file ? inputs.file.name : "No file chosen"}
         </Typography>
       </Box>
+      <Typography
+        variant="subtitle2"
+        color={fileTooBig ? "error.light" : "text.secondary"}
+      >
+        File types - jpg / png
+        <br />
+        Size limit - 10 Mb
+      </Typography>
       <TextField
         label="Description"
         type="text"
@@ -108,7 +125,7 @@ export default function NewImagePage() {
       <Button
         variant="contained"
         onClick={handleSubmit}
-        disabled={inputs.file === undefined}
+        disabled={inputs.file === undefined || fileTooBig}
         sx={{ color: "white" }}
       >
         Save

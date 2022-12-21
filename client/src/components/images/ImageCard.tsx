@@ -20,10 +20,9 @@ import CollaspeCardContent from "../../components/shared/CollapseCardContent";
 
 interface ImageCardProps {
   image: PresignedImage;
-  highlight?: string;
 }
 
-export default function ImageCard({ image, highlight }: ImageCardProps) {
+export default function ImageCard({ image }: ImageCardProps) {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -39,20 +38,24 @@ export default function ImageCard({ image, highlight }: ImageCardProps) {
   };
 
   // Get url for full image and open in new tab
+  // Need to open empty tab immediately to count as trusted event
+  // Some browsers (safari) block async pop-ups
   const openFullImage = async () => {
-    const fullImageURL = await dispatch(getFullImage(image.fileName)).unwrap();
-    if (window !== null) {
-      window.open(fullImageURL, "_blank", "noreferrer");
+    const newWindow = window.open();
+    if (newWindow) {
+      newWindow.location.href = await dispatch(
+        getFullImage(image.fileName)
+      ).unwrap();
     }
   };
 
   // When loading url for new image, aws returns 403 error on first load
   const handleLoadError = () => {
-    if (loadCounter < 3) {
+    if (loadCounter < 4) {
       setUrl("");
       setTimeout(() => {
         setUrl(image.presignedURL);
-      }, 1000);
+      }, 2000);
       setLoadCounter(loadCounter + 1);
     }
   };
