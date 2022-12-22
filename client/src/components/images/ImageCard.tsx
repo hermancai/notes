@@ -8,15 +8,16 @@ import {
   CardActions,
   CardMedia,
   Button,
-  Typography,
   Modal,
   Box,
+  Divider,
 } from "@mui/material";
 import { OpenInNewRounded } from "@mui/icons-material";
 import { PresignedImage } from "../../interfaces/ImageInterfaces";
 import DeleteImageButton from "../../components/images/DeleteImageButton";
 import { useNavigate } from "react-router-dom";
 import CollaspeCardContent from "../../components/shared/CollapseCardContent";
+import HighlightedText from "../../components/shared/HighlightedText";
 
 interface ImageCardProps {
   image: PresignedImage;
@@ -44,7 +45,10 @@ export default function ImageCard({ image }: ImageCardProps) {
     const newWindow = window.open();
     if (newWindow) {
       newWindow.location.href = await dispatch(
-        getFullImage(image.fileName)
+        getFullImage({
+          fileName: image.fileName,
+          fileNameOriginal: image.fileNameOriginal,
+        })
       ).unwrap();
     }
   };
@@ -97,17 +101,23 @@ export default function ImageCard({ image }: ImageCardProps) {
           onClick={toggleOpenModal}
           onError={handleLoadError}
         />
-        <Box sx={{ padding: "0.5rem 1rem", height: "100%" }}>
-          {image.description === "" ? (
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ fontStyle: "italic" }}
-            >
-              No description
-            </Typography>
-          ) : (
-            <CollaspeCardContent textRef={ref} text={image.description} />
+        <Box sx={{ height: "100%" }}>
+          <Box
+            sx={{
+              padding: "0.5rem 1rem",
+              wordBreak: "break-word",
+            }}
+          >
+            <HighlightedText text={image.fileNameOriginal} />
+          </Box>
+
+          {image.description === "" ? null : (
+            <>
+              <Divider />
+              <Box sx={{ padding: "0.5rem 1rem", height: "100%" }}>
+                <CollaspeCardContent textRef={ref} text={image.description} />
+              </Box>
+            </>
           )}
         </Box>
 

@@ -15,6 +15,17 @@ import {
 } from "@mui/material";
 import { NewImagePayload } from "../interfaces/ImageInterfaces";
 
+function InfoText(props: { showError: boolean; children: React.ReactNode }) {
+  return (
+    <Typography
+      variant="subtitle2"
+      color={props.showError ? "error.light" : "text.secondary"}
+    >
+      {props.children}
+    </Typography>
+  );
+}
+
 export default function NewImagePage() {
   useSetUsername();
 
@@ -22,9 +33,12 @@ export default function NewImagePage() {
   const navigate = useNavigate();
 
   const fileInputRef = React.useRef<HTMLInputElement>();
-  const { sortMode } = useSelector((state: RootState) => state.image);
+  const { sortMode, allImages } = useSelector(
+    (state: RootState) => state.image
+  );
   const [inputs, setInputs] = React.useState<NewImagePayload>({
     file: undefined,
+    fileNameOriginal: "",
     description: "",
   });
 
@@ -42,6 +56,7 @@ export default function NewImagePage() {
     setInputs({
       ...inputs,
       file: e.target.files !== null ? e.target.files[0] : undefined,
+      fileNameOriginal: e.target.files !== null ? e.target.files[0].name : "",
     });
   };
 
@@ -63,12 +78,8 @@ export default function NewImagePage() {
     navigate("/images");
   };
 
-  // True if file size is over 10 Mb
-  const fileTooBig: boolean = inputs.file
-    ? inputs.file.size > 10485760
-      ? true
-      : false
-    : false;
+  const overSizeLimit = inputs.file ? inputs.file.size > 10485760 : false;
+  const overUploadLimit = allImages.length >= 10;
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
@@ -103,14 +114,14 @@ export default function NewImagePage() {
           {inputs.file ? inputs.file.name : "No file chosen"}
         </Typography>
       </Box>
-      <Typography
-        variant="subtitle2"
-        color={fileTooBig ? "error.light" : "text.secondary"}
-      >
-        File types - jpg / png
-        <br />
-        Size limit - 10 Mb
-      </Typography>
+      <Box>
+        <InfoText showError={false}>File Types: jpg / png</InfoText>
+        <InfoText showError={overSizeLimit}>Size Limit: 10 Mb</InfoText>
+        <InfoText showError={overUploadLimit}>
+          Upload Limit: {allImages.length} of 10 images
+        </InfoText>
+      </Box>
+
       <TextField
         label="Description"
         type="text"
@@ -126,7 +137,7 @@ export default function NewImagePage() {
       <Button
         variant="contained"
         onClick={handleSubmit}
-        disabled={inputs.file === undefined || fileTooBig}
+        disabled={inputs.file === undefined || overSizeLimit || overUploadLimit}
         sx={{ color: "white" }}
       >
         Save

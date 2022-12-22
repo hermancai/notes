@@ -24,6 +24,10 @@ class Image extends Model {
 
   @AllowNull(false)
   @Column(DataType.TEXT)
+  fileNameOriginal!: string;
+
+  @AllowNull(false)
+  @Column(DataType.TEXT)
   fileName!: string;
 
   @Column(DataType.TEXT)

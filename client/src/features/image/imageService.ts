@@ -2,7 +2,7 @@ import * as Image from "../../interfaces/ImageInterfaces";
 import { ServerResponse } from "../../interfaces/SharedInterfaces";
 import protectedFetch from "../shared/protectedFetch";
 
-// GET /api/image/getUploadPresign
+// POST /api/image/getUploadPresign
 const getUploadPresignedURL = async (
   fileType: string,
   fileSize: Blob["size"]
@@ -49,7 +49,7 @@ const uploadToS3 = async (body: Image.NewImagePayload): Promise<string> => {
   return response.fileName;
 };
 
-// PUT using presigned URL
+// POST /api/image
 const uploadImage = async (
   body: Image.NewImagePayload
 ): Promise<Image.SaveImageResponse> => {
@@ -65,6 +65,7 @@ const uploadImage = async (
       },
       body: JSON.stringify({
         fileName,
+        fileNameOriginal: body.fileNameOriginal,
         description: body.description,
       }),
     });
@@ -85,7 +86,7 @@ const getAllImages = async (): Promise<Image.GetImagesResponse> => {
 
 // POST /api/image/full
 const getFullImageURL = async (
-  imageKey: Image.Image["fileName"]
+  body: Image.FullImageRequest
 ): Promise<Image.FullImageResponse["presignedURL"]> => {
   const res = await protectedFetch<Image.FullImageResponse>(() => {
     return fetch("/api/image/full", {
@@ -94,7 +95,7 @@ const getFullImageURL = async (
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("accessToken"),
       },
-      body: JSON.stringify({ imageKey }),
+      body: JSON.stringify(body),
     });
   });
 

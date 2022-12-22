@@ -3,6 +3,7 @@ export interface Image {
   description: string;
   fileName: string;
   fileNameResized: string;
+  fileNameOriginal: string;
   updatedAt: string | number;
   createdAt: string | number;
   userId: string;
@@ -14,6 +15,7 @@ export interface PresignedImage extends Image {
 
 export interface NewImagePayload {
   file: File | undefined;
+  fileNameOriginal: string;
   description: string;
 }
 
@@ -29,6 +31,11 @@ export interface SaveImageResponse {
 
 export interface GetImagesResponse {
   images: PresignedImage[];
+}
+
+export interface FullImageRequest {
+  fileName: Image["fileName"];
+  fileNameOriginal: Image["fileNameOriginal"];
 }
 
 export interface FullImageResponse {

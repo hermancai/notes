@@ -13,6 +13,7 @@ interface ImageWithPresignedURL {
   description: string;
   fileName: string;
   fileNameResized: string;
+  fileNameOriginal: string;
   updatedAt: Date;
   createdAt: Date;
   userId: string;
@@ -20,11 +21,17 @@ interface ImageWithPresignedURL {
 }
 
 // Create presigned URL for getting image from AWS S3
-const generateGetPresignedURL = async (fileName: string, bucket: string) => {
+const generateGetPresignedURL = async (
+  bucket: string,
+  fileName: string,
+  fileNameOriginal: string
+) => {
   const command = new GetObjectCommand({
     Bucket: bucket,
     Key: fileName,
-    ResponseContentDisposition: `inline; filename="${fileName}"`,
+    ResponseContentDisposition: `inline; filename="${encodeURIComponent(
+      fileNameOriginal
+    )}"`,
   });
   // presigned URL expires in 24 hours
   return await getSignedUrl(s3Client, command, { expiresIn: 86400 });
@@ -67,12 +74,14 @@ const getAllImages = async (
       description: image.description,
       fileName: image.fileName,
       fileNameResized: image.fileNameResized,
+      fileNameOriginal: image.fileNameOriginal,
       updatedAt: image.updatedAt,
       createdAt: image.createdAt,
       userId: image.userId,
       presignedURL: await generateGetPresignedURL(
+        BUCKET_NAME + "-resized",
         image.fileNameResized,
-        BUCKET_NAME + "-resized"
+        image.fileNameOriginal
       ),
     });
   }
@@ -83,7 +92,7 @@ const getAllImages = async (
 };
 
 // @desc   Generate presigned URL for upload to S3 bucket
-// @route  GET /api/image/getUploadPresign
+// @route  POST /api/image/getUploadPresign
 const getUploadPresignedURL = async (
   req: Request,
   res: Response,
@@ -127,12 +136,13 @@ const getUploadPresignedURL = async (
 // @desc   Save image entry to own database
 // @route  POST /api/image
 const saveImage = async (req: Request, res: Response, next: NextFunction) => {
-  const { description, fileName } = req.body as {
+  const { description, fileName, fileNameOriginal } = req.body as {
     description: string;
     fileName: string;
+    fileNameOriginal: string;
   };
 
-  if (!fileName) {
+  if (!fileName || !fileNameOriginal) {
     return res.status(400).json({ message: "Error: Missing file name" });
   }
 
@@ -142,6 +152,7 @@ const saveImage = async (req: Request, res: Response, next: NextFunction) => {
       description,
       fileName,
       fileNameResized: "resized-" + fileName,
+      fileNameOriginal,
     },
     { returning: true }
   );
@@ -154,12 +165,14 @@ const saveImage = async (req: Request, res: Response, next: NextFunction) => {
     description: savedImage.description,
     fileName: savedImage.fileName,
     fileNameResized: savedImage.fileNameResized,
+    fileNameOriginal: savedImage.fileNameOriginal,
     createdAt: savedImage.createdAt,
     updatedAt: savedImage.updatedAt,
     userId: savedImage.userId,
     presignedURL: await generateGetPresignedURL(
-      savedImage.fileNameResized,
-      BUCKET_NAME + "-resized"
+      BUCKET_NAME + "-resized",
+      "resized-" + savedImage.fileName,
+      savedImage.fileNameOriginal
     ),
   };
 
@@ -173,10 +186,17 @@ const getFullImageURL = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { fileName, fileNameOriginal } = req.body;
+
+  if (!fileName || !fileNameOriginal) {
+    return res.status(400).json({ message: "Error: Missing file data" });
+  }
+
   try {
     const presignedURL = await generateGetPresignedURL(
-      req.body.imageKey,
-      BUCKET_NAME
+      BUCKET_NAME,
+      fileName,
+      fileNameOriginal
     );
     res.status(200).json({
       message: "Success: Get full image",

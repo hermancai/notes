@@ -35,8 +35,8 @@ export const uploadImage = createAsyncThunk(
 
 export const getFullImage = createAsyncThunk(
   "image/getFullImage",
-  async (imageKey: Image.Image["fileName"], thunkAPI) => {
-    return await imageService.getFullImageURL(imageKey);
+  async (body: Image.FullImageRequest, thunkAPI) => {
+    return await imageService.getFullImageURL(body);
   }
 );
 

@@ -36,7 +36,7 @@ export default function SearchResults() {
   const imageFuse = React.useMemo(
     () =>
       new Fuse(allImages, {
-        keys: ["description"],
+        keys: ["fileNameOriginal", "description"],
         threshold: 0.0,
         ignoreLocation: true,
       }),
