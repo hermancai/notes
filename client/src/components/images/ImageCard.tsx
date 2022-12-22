@@ -6,11 +6,11 @@ import { setSearchQuery } from "../../features/user/userSlice";
 import {
   Card,
   CardActions,
-  CardMedia,
   Button,
   Modal,
   Box,
   Divider,
+  Skeleton,
 } from "@mui/material";
 import { OpenInNewRounded } from "@mui/icons-material";
 import { PresignedImage } from "../../interfaces/ImageInterfaces";
@@ -18,6 +18,7 @@ import DeleteImageButton from "../../components/images/DeleteImageButton";
 import { useNavigate } from "react-router-dom";
 import CollaspeCardContent from "../../components/shared/CollapseCardContent";
 import HighlightedText from "../../components/shared/HighlightedText";
+import ThumbnailModal from "../images/ThumbnailModal";
 
 interface ImageCardProps {
   image: PresignedImage;
@@ -29,6 +30,7 @@ export default function ImageCard({ image }: ImageCardProps) {
 
   const ref = React.useRef<HTMLParagraphElement>(null);
   const [openModal, setOpenModal] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
 
   // Derived state for handling aws 403 errors
   const [url, setUrl] = React.useState(image.presignedURL);
@@ -53,7 +55,7 @@ export default function ImageCard({ image }: ImageCardProps) {
     }
   };
 
-  // When loading url for new image, aws returns 403 error on first load
+  // When loading thumbnail for new image, S3 returns 403 error on first load
   const handleLoadError = () => {
     if (loadCounter < 4) {
       setUrl("");
@@ -61,7 +63,13 @@ export default function ImageCard({ image }: ImageCardProps) {
         setUrl(image.presignedURL);
       }, 2000);
       setLoadCounter(loadCounter + 1);
+    } else {
+      setLoading(false);
     }
+  };
+
+  const handleOnLoad = () => {
+    setLoading(false);
   };
 
   const handleClickEdit = () => {
@@ -85,22 +93,36 @@ export default function ImageCard({ image }: ImageCardProps) {
           "&:hover": { borderColor: "text.secondary" },
         }}
       >
-        <CardMedia
-          component="img"
-          alt="thumbnail"
-          image={url}
-          height={150}
+        <Box
           sx={{
-            minHeight: "150px",
-            objectFit: "contain",
+            height: "150px",
             backgroundColor: "background.default",
             borderBottom: "solid 1px",
             borderColor: "action.disabledBackground",
-            "&:hover": { cursor: "zoom-in" },
+            position: "relative",
           }}
-          onClick={toggleOpenModal}
-          onError={handleLoadError}
-        />
+        >
+          <Skeleton
+            variant="rectangular"
+            height="100%"
+            width="100%"
+            sx={{ position: "absolute", display: loading ? "block" : "none" }}
+          />
+          <Box
+            component="img"
+            sx={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              visibility: loading ? "hidden" : "visible",
+              "&:hover": { cursor: "zoom-in" },
+            }}
+            src={url}
+            onLoad={handleOnLoad}
+            onError={handleLoadError}
+            onClick={toggleOpenModal}
+          />
+        </Box>
         <Box sx={{ height: "100%" }}>
           <Box
             sx={{
@@ -146,31 +168,11 @@ export default function ImageCard({ image }: ImageCardProps) {
           <DeleteImageButton imageKey={image.fileName} />
         </CardActions>
       </Card>
-      <Modal
+      <ThumbnailModal
         open={openModal}
-        onClose={toggleOpenModal}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100vw",
-          height: "100vh",
-          objectFit: "contain",
-        }}
-      >
-        <Box
-          component="img"
-          onClick={toggleOpenModal}
-          sx={{
-            "&:hover": { cursor: "zoom-out" },
-            maxWidth: "90vw",
-            maxHeight: "90vh",
-            objectFit: "contain",
-          }}
-          alt="fullscreen thumbnail"
-          src={image.presignedURL}
-        />
-      </Modal>
+        toggleOpen={toggleOpenModal}
+        url={image.presignedURL}
+      />
     </>
   );
 }
