@@ -52,8 +52,9 @@ export default function NewImagePage() {
         dispatch(sortImageList(sortMode));
         dispatch(makeToast("Saved new image"));
         navigate("/images");
-      } catch (err) {
-        dispatch(makeToast("Error: Image upload failed"));
+      } catch (error) {
+        const err = error as Error;
+        dispatch(makeToast(err.message));
       }
     }
   };

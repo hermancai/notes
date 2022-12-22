@@ -89,6 +89,12 @@ const getUploadPresignedURL = async (
   res: Response,
   next: NextFunction
 ) => {
+  // Allow upload if user has < 10 images
+  const imageCount = await Image.count({ where: { userId: req.userId } });
+  if (imageCount >= 10) {
+    return res.status(400).json({ message: "10 images max!" });
+  }
+
   const { fileType, fileSize } = req.body;
   if (!fileSize || !fileType) {
     return res.status(400).json({ message: "Error: Missing file data" });
