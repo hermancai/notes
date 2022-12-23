@@ -73,7 +73,7 @@ export default function NoteCard({ note }: CardProps) {
         sx={{ backgroundColor: "action.hover", padding: "0.5rem" }}
         titleTypographyProps={{ fontSize: 16 }}
       />
-      <Box sx={{ padding: "0.5rem 1rem" }}>
+      <Box sx={{ padding: "0.5rem 0.75rem" }}>
         <CollapseCardContent textRef={textRef} text={note.text} />
       </Box>
     </Card>

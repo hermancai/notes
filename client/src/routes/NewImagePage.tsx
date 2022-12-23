@@ -13,6 +13,7 @@ import {
   InputLabel,
   Input,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { NewImagePayload } from "../interfaces/ImageInterfaces";
 
 function InfoText(props: { showError: boolean; children: React.ReactNode }) {
@@ -36,6 +37,7 @@ export default function NewImagePage() {
   const { sortMode, allImages } = useSelector(
     (state: RootState) => state.image
   );
+  const [loading, setLoading] = React.useState(false);
   const [inputs, setInputs] = React.useState<NewImagePayload>({
     file: undefined,
     fileNameOriginal: "",
@@ -62,6 +64,7 @@ export default function NewImagePage() {
 
   const handleSubmit = async () => {
     if (inputs.file !== undefined) {
+      setLoading(true);
       try {
         await dispatch(uploadImage(inputs)).unwrap();
         dispatch(sortImageList(sortMode));
@@ -70,6 +73,8 @@ export default function NewImagePage() {
       } catch (error) {
         const err = error as Error;
         dispatch(makeToast(err.message));
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -134,14 +139,18 @@ export default function NewImagePage() {
         value={inputs.description}
       />
 
-      <Button
+      <LoadingButton
         variant="contained"
         onClick={handleSubmit}
         disabled={inputs.file === undefined || overSizeLimit || overUploadLimit}
-        sx={{ color: "white" }}
+        sx={{
+          color: "white",
+          "& .MuiCircularProgress-root": { color: "success.main" },
+        }}
+        loading={loading}
       >
         Save
-      </Button>
+      </LoadingButton>
       <Button variant="outlined" color="error" onClick={handleClickCancel}>
         Cancel
       </Button>

@@ -125,9 +125,6 @@ export const noteSlice = createSlice({
       .addCase(updateNote.rejected, (state) => {
         state.loading = false;
       })
-      .addCase(deleteNote.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(deleteNote.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.id = undefined;

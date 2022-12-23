@@ -13,16 +13,19 @@ import {
   DialogContent,
   DialogContentText,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
+import { makeToast } from "../features/toast/toastSlice";
 
 export default function AccountPage() {
+  useSetUsername();
+
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const { username } = useSelector((state: RootState) => state.user);
   const [open, setOpen] = React.useState<boolean>(false);
-
-  useSetUsername();
+  const [loading, setLoading] = React.useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -33,13 +36,17 @@ export default function AccountPage() {
   };
 
   const handleDeleteAccount = async () => {
+    setLoading(true);
     try {
       await dispatch(deleteAccount()).unwrap();
       dispatch(resetAllNotes());
       dispatch(resetAllImages());
       navigate("/login");
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      const err = error as Error;
+      dispatch(makeToast(err.message));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,14 +54,15 @@ export default function AccountPage() {
     <Box>
       <p>Username: {username}</p>
       <div>
-        <Button
+        <LoadingButton
           variant="contained"
           onClick={handleOpen}
-          disabled={!username || username === "Guest"}
+          disabled={!username || loading || username === "Guest"}
+          loading={loading}
           color="error"
         >
           Delete Account
-        </Button>
+        </LoadingButton>
         <Dialog
           open={open}
           onClose={handleClose}
@@ -69,13 +77,15 @@ export default function AccountPage() {
             <Button variant="outlined" onClick={handleClose}>
               Cancel
             </Button>
-            <Button
+            <LoadingButton
               variant="contained"
               color="error"
               onClick={handleDeleteAccount}
+              loading={loading}
+              disabled={loading}
             >
               Delete
-            </Button>
+            </LoadingButton>
           </DialogActions>
         </Dialog>
       </div>

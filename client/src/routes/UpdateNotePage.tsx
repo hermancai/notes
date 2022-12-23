@@ -10,12 +10,14 @@ import {
 import { makeToast } from "../features/toast/toastSlice";
 import { NewNotePayload } from "../interfaces/NoteInterfaces";
 import { Box, Button, TextField, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import DeleteNoteButton from "../components/notes/DeleteNoteButton";
 
 export default function UpdateNotePage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
+  const [loading, setLoading] = React.useState(false);
   const { id, title, text, sortMode } = useSelector(
     (state: RootState) => state.note
   );
@@ -40,14 +42,18 @@ export default function UpdateNotePage() {
       return navigate("/");
     }
 
+    setLoading(true);
     try {
       await dispatch(updateNote({ ...inputs, id })).unwrap();
       dispatch(resetNote());
       dispatch(sortNoteList(sortMode));
       dispatch(makeToast("Updated note"));
       navigate("/");
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      const err = error as Error;
+      dispatch(makeToast(err.message));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -77,14 +83,18 @@ export default function UpdateNotePage() {
         onChange={handleChange}
         value={inputs.text}
       />
-      <Button
+      <LoadingButton
         variant="contained"
         onClick={handleSubmit}
-        disabled={inputs.title.trim() === ""}
-        sx={{ color: "white" }}
+        disabled={loading || inputs.title.trim() === ""}
+        sx={{
+          color: "white",
+          "& .MuiCircularProgress-root": { color: "success.main" },
+        }}
+        loading={loading}
       >
         Save
-      </Button>
+      </LoadingButton>
       <Button variant="outlined" color="error" onClick={() => navigate("/")}>
         Cancel
       </Button>

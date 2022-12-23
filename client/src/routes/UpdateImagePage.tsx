@@ -10,6 +10,7 @@ import {
 import { makeToast } from "../features/toast/toastSlice";
 import { PresignedImage } from "../interfaces/ImageInterfaces";
 import { Box, Button, TextField, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import DeleteImageButton from "../components/images/DeleteImageButton";
 import ThumbnailModal from "../components/images/ThumbnailModal";
 
@@ -17,6 +18,7 @@ export default function UpdateNotePage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
+  const [loading, setLoading] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
   const toggleOpenModal = () => {
     setOpenModal((prev) => !prev);
@@ -47,6 +49,7 @@ export default function UpdateNotePage() {
       return navigate("/images");
     }
 
+    setLoading(true);
     try {
       await dispatch(
         updateImage({ description, fileName: activeImage.fileName })
@@ -58,6 +61,8 @@ export default function UpdateNotePage() {
     } catch (error) {
       const err = error as Error;
       dispatch(makeToast(err.message));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,7 +83,8 @@ export default function UpdateNotePage() {
             component="img"
             src={activeImage.presignedURL}
             sx={{
-              height: 300,
+              maxHeight: 300,
+              maxWidth: "100%",
               "&:hover": { cursor: "zoom-in" },
             }}
             onClick={toggleOpenModal}
@@ -107,13 +113,15 @@ export default function UpdateNotePage() {
           onChange={handleChange}
           value={description}
         />
-        <Button
+        <LoadingButton
           variant="contained"
           onClick={handleSubmit}
           sx={{ color: "white" }}
+          loading={loading}
+          disabled={loading}
         >
           Save
-        </Button>
+        </LoadingButton>
         <Button
           variant="outlined"
           color="error"

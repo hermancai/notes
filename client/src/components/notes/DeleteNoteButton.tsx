@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogContentText,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
 import { Note } from "../../interfaces/NoteInterfaces";
 
@@ -21,7 +22,8 @@ export default function DeleteNoteButton({ id }: ButtonProps) {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -32,22 +34,32 @@ export default function DeleteNoteButton({ id }: ButtonProps) {
   };
 
   const handleDelete = async () => {
+    setLoading(true);
     try {
       await dispatch(deleteNote(id)).unwrap();
       dispatch(resetNote());
       handleClose();
       dispatch(makeToast("Deleted note"));
       navigate("/");
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      const err = error as Error;
+      dispatch(makeToast(err.message));
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div>
-      <Button variant="text" onClick={handleOpen} color="error">
+      <LoadingButton
+        variant="text"
+        onClick={handleOpen}
+        color="error"
+        loading={loading}
+        disabled={loading}
+      >
         DELETE
-      </Button>
+      </LoadingButton>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -62,9 +74,15 @@ export default function DeleteNoteButton({ id }: ButtonProps) {
           <Button variant="outlined" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="contained" color="error" onClick={handleDelete}>
+          <LoadingButton
+            variant="contained"
+            color="error"
+            onClick={handleDelete}
+            loading={loading}
+            disabled={loading}
+          >
             Delete
-          </Button>
+          </LoadingButton>
         </DialogActions>
       </Dialog>
     </div>

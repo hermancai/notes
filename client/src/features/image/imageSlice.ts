@@ -123,9 +123,6 @@ export const imageSlice = createSlice({
       .addCase(uploadImage.rejected, (state) => {
         state.loading = false;
       })
-      .addCase(deleteImage.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(deleteImage.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.activeImage = undefined;

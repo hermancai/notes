@@ -6,32 +6,38 @@ import { createNewNote, sortNoteList } from "../features/note/noteSlice";
 import { makeToast } from "../features/toast/toastSlice";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, TextField, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { NewNotePayload } from "../interfaces/NoteInterfaces";
 
 export default function NewNotePage() {
+  useSetUsername();
+
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const { sortMode } = useSelector((state: RootState) => state.note);
+  const [loading, setLoading] = React.useState(false);
   const [inputs, setInputs] = React.useState<NewNotePayload>({
     title: "",
     text: "",
   });
-
-  useSetUsername();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       await dispatch(createNewNote(inputs)).unwrap();
       dispatch(sortNoteList(sortMode));
       dispatch(makeToast("Created new note"));
       navigate("/");
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      const err = error as Error;
+      dispatch(makeToast(err.message));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,14 +66,18 @@ export default function NewNotePage() {
         onChange={handleChange}
         value={inputs.text}
       />
-      <Button
+      <LoadingButton
         variant="contained"
         onClick={handleSubmit}
-        disabled={inputs.title.trim() === ""}
-        sx={{ color: "white" }}
+        disabled={loading || inputs.title.trim() === ""}
+        sx={{
+          color: "white",
+          "& .MuiCircularProgress-root": { color: "success.main" },
+        }}
+        loading={loading}
       >
         Save
-      </Button>
+      </LoadingButton>
       <Button variant="outlined" color="error" onClick={() => navigate("/")}>
         Cancel
       </Button>

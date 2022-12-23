@@ -7,12 +7,11 @@ import {
   Card,
   CardActions,
   Button,
-  Modal,
   Box,
   Divider,
   Skeleton,
 } from "@mui/material";
-import { OpenInNewRounded } from "@mui/icons-material";
+import { OpenInNewRounded, CameraAltOutlined } from "@mui/icons-material";
 import { PresignedImage } from "../../interfaces/ImageInterfaces";
 import DeleteImageButton from "../../components/images/DeleteImageButton";
 import { useNavigate } from "react-router-dom";
@@ -126,17 +125,21 @@ export default function ImageCard({ image }: ImageCardProps) {
         <Box sx={{ height: "100%" }}>
           <Box
             sx={{
-              padding: "0.5rem 1rem",
+              padding: "0.5rem",
               wordBreak: "break-word",
+              display: "flex",
+              gap: "0.5rem",
+              alignItems: "center",
             }}
           >
+            <CameraAltOutlined fontSize="small" color="primary" />
             <HighlightedText text={image.fileNameOriginal} />
           </Box>
 
           {image.description === "" ? null : (
             <>
               <Divider />
-              <Box sx={{ padding: "0.5rem 1rem", height: "100%" }}>
+              <Box sx={{ padding: "0.5rem 0.75rem", height: "100%" }}>
                 <CollaspeCardContent textRef={ref} text={image.description} />
               </Box>
             </>
