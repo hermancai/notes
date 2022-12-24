@@ -14,7 +14,7 @@ import {
   Input,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { NewImagePayload } from "../interfaces/ImageInterfaces";
+import { SaveImageRequest } from "shared";
 
 function InfoText(props: { showError: boolean; children: React.ReactNode }) {
   return (
@@ -38,7 +38,7 @@ export default function NewImagePage() {
     (state: RootState) => state.image
   );
   const [loading, setLoading] = React.useState(false);
-  const [inputs, setInputs] = React.useState<NewImagePayload>({
+  const [inputs, setInputs] = React.useState<SaveImageRequest>({
     file: undefined,
     fileNameOriginal: "",
     description: "",

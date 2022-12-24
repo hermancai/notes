@@ -7,7 +7,7 @@ import { makeToast } from "../features/toast/toastSlice";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { NewNotePayload } from "../interfaces/NoteInterfaces";
+import { NewNotePayload } from "shared";
 
 export default function NewNotePage() {
   useSetUsername();

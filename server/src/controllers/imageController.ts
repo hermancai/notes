@@ -5,20 +5,9 @@ import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid";
 import Image from "../models/Image";
+import { PresignedImage } from "shared";
 
 const BUCKET_NAME = process.env.BUCKET_NAME!;
-
-interface ImageWithPresignedURL {
-  id: number;
-  description: string;
-  fileName: string;
-  fileNameResized: string;
-  fileNameOriginal: string;
-  updatedAt: Date;
-  createdAt: Date;
-  userId: string;
-  presignedURL: string;
-}
 
 // Create presigned URL for getting image from AWS S3
 const generateGetPresignedURL = async (
@@ -67,7 +56,7 @@ const getAllImages = async (
   }
 
   // Build new image list with presignedURLs
-  const imageList: ImageWithPresignedURL[] = [];
+  const imageList: PresignedImage[] = [];
   for (const image of images) {
     imageList.push({
       id: image.id,
@@ -86,9 +75,7 @@ const getAllImages = async (
     });
   }
 
-  res
-    .status(200)
-    .json({ message: "Success: Get thumbnails", images: imageList });
+  res.status(200).json({ images: imageList });
 };
 
 // @desc   Generate presigned URL for upload to S3 bucket
@@ -123,7 +110,6 @@ const getUploadPresignedURL = async (
     });
 
     res.status(200).json({
-      message: "Success: Get presigned URL",
       fileName,
       url,
       fields,
@@ -160,7 +146,7 @@ const saveImage = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(500).json({ message: "Error: Save image failed" });
   }
 
-  const newImage: ImageWithPresignedURL = {
+  const newImage: PresignedImage = {
     id: savedImage.id,
     description: savedImage.description,
     fileName: savedImage.fileName,
@@ -176,7 +162,7 @@ const saveImage = async (req: Request, res: Response, next: NextFunction) => {
     ),
   };
 
-  res.status(200).json({ message: "Success: Upload image", newImage });
+  res.status(200).json({ newImage });
 };
 
 // @desc   Get presigned URL for one full sized image
@@ -199,7 +185,6 @@ const getFullImageURL = async (
       fileNameOriginal
     );
     res.status(200).json({
-      message: "Success: Get full image",
       presignedURL,
     });
   } catch (err) {

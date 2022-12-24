@@ -1,5 +1,5 @@
-import * as Image from "../../interfaces/ImageInterfaces";
-import { ServerResponse } from "../../interfaces/SharedInterfaces";
+import { ServerResponse } from "shared";
+import * as Image from "shared/lib/types/ImageInterfaces";
 import protectedFetch from "../shared/protectedFetch";
 
 // POST /api/image/getUploadPresign
@@ -20,7 +20,7 @@ const getUploadPresignedURL = async (
 };
 
 // Get presigned upload URL and POST file to S3
-const uploadToS3 = async (body: Image.NewImagePayload): Promise<string> => {
+const uploadToS3 = async (body: Image.SaveImageRequest): Promise<string> => {
   if (body.file === undefined) {
     throw new Error("A file was not provided");
   }
@@ -51,7 +51,7 @@ const uploadToS3 = async (body: Image.NewImagePayload): Promise<string> => {
 
 // POST /api/image
 const uploadImage = async (
-  body: Image.NewImagePayload
+  body: Image.SaveImageRequest
 ): Promise<Image.SaveImageResponse> => {
   const fileName = await uploadToS3(body);
 
@@ -73,8 +73,8 @@ const uploadImage = async (
 };
 
 // GET /api/image
-const getAllImages = async (): Promise<Image.GetImagesResponse> => {
-  return await protectedFetch<Image.GetImagesResponse>(() => {
+const getAllImages = async (): Promise<Image.GetAllImagesResponse> => {
+  return await protectedFetch<Image.GetAllImagesResponse>(() => {
     return fetch("/api/image", {
       method: "GET",
       headers: {

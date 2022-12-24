@@ -8,7 +8,7 @@ import {
   sortNoteList,
 } from "../features/note/noteSlice";
 import { makeToast } from "../features/toast/toastSlice";
-import { NewNotePayload } from "../interfaces/NoteInterfaces";
+import { NewNotePayload } from "shared";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import DeleteNoteButton from "../components/notes/DeleteNoteButton";

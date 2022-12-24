@@ -1,4 +1,4 @@
-import { TokenResponse } from "../../interfaces/UserInterfaces";
+import { TokenResponse } from "shared";
 
 // PUT /api/token
 const refreshAccessToken = async (): Promise<TokenResponse> => {

@@ -1,15 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { TokenPayload } from "../interfaces/interfaces";
+import { TokenPayload } from "shared";
 import jwt from "jsonwebtoken";
-
-declare global {
-  namespace Express {
-    export interface Request {
-      user: string;
-      userId: string;
-    }
-  }
-}
 
 // Set username and userId in request body after verifying access token
 const verifyUser = (req: Request, res: Response, next: NextFunction) => {

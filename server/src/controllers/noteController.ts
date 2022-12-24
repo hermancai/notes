@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from "express";
 import Note from "../models/Note";
-import { NotePayload } from "../interfaces/interfaces";
+import { UpdateNoteRequest, Note as NotePayload } from "shared";
 
 // @desc   Create new note from user
 // @route  POST /api/note
@@ -23,7 +23,7 @@ const createNewNote = async (
     return res.status(500).json({ message: "Error: Create note failed" });
   }
 
-  const note = {
+  const note: NotePayload = {
     id: newNote.id,
     userId: newNote.userId,
     title: newNote.title,
@@ -32,7 +32,7 @@ const createNewNote = async (
     updatedAt: newNote.updatedAt,
   };
 
-  res.status(200).json({ message: "Success: Created note", note });
+  res.status(200).json({ note });
 };
 
 // @desc   Get all notes belonging to user
@@ -47,7 +47,7 @@ const getNotes = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(500).json({ message: "Error: Get notes failed" });
   }
 
-  res.status(200).json({ message: "Success: Get notes", notes });
+  res.status(200).json({ notes });
 };
 
 // @desc   Update an existing note
@@ -58,13 +58,9 @@ const updateNote = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(400).json({ message: "Error: Missing user ID" });
   }
 
-  const { id, title, text }: NotePayload = req.body;
-  if (!id) {
-    return res.status(400).json({ message: "Error: Missing note ID" });
-  }
-
-  if (!title) {
-    return res.status(400).json({ message: "Error: Missing note title" });
+  const { id, title, text }: UpdateNoteRequest = req.body;
+  if (!id || !title) {
+    return res.status(400).json({ message: "Error: Missing note details" });
   }
 
   try {
@@ -79,7 +75,6 @@ const updateNote = async (req: Request, res: Response, next: NextFunction) => {
     const note = updatedNote[1][0];
 
     res.status(200).json({
-      message: "Success: Note updated",
       note: {
         title: note.title,
         text: note.text,

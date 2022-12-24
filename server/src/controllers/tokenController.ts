@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from "express";
 import Token from "../models/Token";
-import { TokenPayload } from "../interfaces/interfaces";
+import { TokenPayload } from "shared";
 import jwt from "jsonwebtoken";
 
 // @desc   Verify access token
@@ -23,7 +23,6 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     console.log("valid access token", new Date().toISOString());
 
     return res.status(200).json({
-      message: "Success: Valid access token",
       username: decoded.username,
     });
   } catch (err) {

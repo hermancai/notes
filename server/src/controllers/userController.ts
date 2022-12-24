@@ -2,7 +2,7 @@ import { Response, Request, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import User from "../models/User";
 import signupSchema from "../schemas/signupSchema";
-import { Credentials } from "../interfaces/interfaces";
+import { Credentials } from "shared";
 import {
   generateAccessToken,
   generateRefreshToken,

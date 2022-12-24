@@ -1,5 +1,5 @@
-import { ServerResponse } from "../../interfaces/SharedInterfaces";
-import * as User from "../../interfaces/UserInterfaces";
+import { ServerResponse } from "shared";
+import * as User from "shared/lib/types/UserInterfaces";
 import refreshAccessToken from "../shared/refreshAccessToken";
 import protectedFetch from "../shared/protectedFetch";
 

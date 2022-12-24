@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
-import { PresignedImage } from "../../interfaces/ImageInterfaces";
+import { PresignedImage } from "shared";
 
 interface ButtonProps {
   imageKey: PresignedImage["fileName"];

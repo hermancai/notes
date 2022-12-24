@@ -25,6 +25,7 @@
     "pg": "^8.8.0",
     "sequelize": "^6.25.3",
     "sequelize-typescript": "^2.1.5",
+    "shared": "file:../shared",
     "ts-node": "^10.9.1",
     "uuid": "^9.0.0"
   },

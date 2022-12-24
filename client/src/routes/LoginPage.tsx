@@ -13,7 +13,7 @@ import {
   SxProps,
 } from "@mui/material";
 import { green } from "@mui/material/colors";
-import { Credentials } from "../interfaces/UserInterfaces";
+import { Credentials } from "shared";
 import { useNavigate } from "react-router-dom";
 import { Person, Lock, ErrorOutlineOutlined } from "@mui/icons-material";
 

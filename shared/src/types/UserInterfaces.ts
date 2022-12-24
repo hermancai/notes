@@ -8,6 +8,7 @@ export interface TokenPayload {
   userId: string;
 }
 
+// PUT /api/token
 export interface TokenResponse {
   message: string;
   error: boolean;
@@ -15,14 +16,16 @@ export interface TokenResponse {
   accessToken?: string;
 }
 
+// POST /api/user/signup
+export interface SignupResponse {
+  message: string;
+  error: boolean;
+}
+
+// POST /api/user/login
 export interface LoginResponse {
   message: string;
   error: boolean;
   username: string;
   accessToken?: string;
-}
-
-export interface SignupResponse {
-  message: string;
-  error: boolean;
 }

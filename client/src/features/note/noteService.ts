@@ -1,4 +1,4 @@
-import * as Note from "../../interfaces/NoteInterfaces";
+import * as Note from "shared/lib/types/NoteInterfaces";
 import { UpdateNoteBody } from "./noteSlice";
 import protectedFetch from "../shared/protectedFetch";
 

@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { imageService } from "./imageService";
-import * as Image from "../../interfaces/ImageInterfaces";
-import { SortModes } from "../../interfaces/SharedInterfaces";
+import * as Image from "shared/lib/types/ImageInterfaces";
+import { SortModes } from "shared";
 
 export interface ImageState {
   allImages: Image.PresignedImage[];
@@ -28,7 +28,7 @@ export const getAllImages = createAsyncThunk(
 
 export const uploadImage = createAsyncThunk(
   "image/uploadImage",
-  async (body: Image.NewImagePayload, thunkAPI) => {
+  async (body: Image.SaveImageRequest, thunkAPI) => {
     return await imageService.uploadImage(body);
   }
 );
