@@ -17,13 +17,6 @@ import { Credentials } from "shared";
 import { useNavigate } from "react-router-dom";
 import { Person, Lock, ErrorOutlineOutlined } from "@mui/icons-material";
 
-const inputStyles: SxProps<Theme> = {
-  "& legend": { display: "none" },
-  "& fieldset": { top: 0 },
-  backgroundColor: "background.default",
-  "& .MuiInputBase-input": { padding: "0.75rem 0.75rem 0.75rem 0" },
-};
-
 export default function LoginPage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -33,12 +26,20 @@ export default function LoginPage() {
   }, [dispatch]);
 
   const [showLogin, setShowLogin] = React.useState(true);
-  const loading = useSelector((state: RootState) => state.user.loading);
+  const { loading, colorMode } = useSelector((state: RootState) => state.user);
   const [inputs, setInputs] = React.useState<Credentials>({
     username: "",
     password: "",
   });
   const [errorMessage, setErrorMessage] = React.useState("");
+
+  const inputStyles: SxProps<Theme> = {
+    "& legend": { display: "none" },
+    "& fieldset": { top: 0 },
+    backgroundColor: colorMode === "light" ? "#f5f5f5" : "#121212",
+    "& .MuiInputBase-input": { padding: "0.75rem 0.75rem 0.75rem 0" },
+    borderRadius: 1,
+  };
 
   // Handle input changes in form
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,12 +87,18 @@ export default function LoginPage() {
     }
   };
 
+  const showLoginPanel = (show: boolean) => {
+    setErrorMessage("");
+    setShowLogin(show);
+  };
+
   return (
     <Box
       sx={{
         display: "flex",
         minHeight: "100vh",
         flexDirection: "column",
+        backgroundColor: colorMode === "light" ? "#e8e8e8" : "#121212",
       }}
     >
       <Box
@@ -116,12 +123,12 @@ export default function LoginPage() {
           borderRadius: 1,
           margin: "2rem 0",
           padding: "2rem 1rem",
-          backgroundColor: "action.hover",
+          backgroundColor: colorMode === "light" ? "#fff" : "action.hover",
           gap: "2rem",
         }}
       >
         <Typography
-          variant="h6"
+          variant="h5"
           component="h1"
           sx={{
             textAlign: "center",
@@ -130,7 +137,7 @@ export default function LoginPage() {
             textUnderlineOffset: "0.4rem",
           }}
         >
-          {showLogin ? "Login" : "Sign Up"}
+          {showLogin ? "LOGIN" : "SIGN UP"}
         </Typography>
         <Box
           sx={{
@@ -180,7 +187,7 @@ export default function LoginPage() {
                 alignItems: "center",
                 gap: "0.5rem",
                 color: "error.light",
-                backgroundColor: "background.default",
+                backgroundColor: colorMode === "light" ? "#f5f5f5" : "#121212",
                 padding: "0.5rem",
                 border: "solid 1px",
                 borderColor: "error.light",
@@ -235,7 +242,9 @@ export default function LoginPage() {
           <Button
             variant="text"
             onClick={
-              showLogin ? () => setShowLogin(false) : () => setShowLogin(true)
+              showLogin
+                ? () => showLoginPanel(false)
+                : () => showLoginPanel(true)
             }
             sx={{ textTransform: "none" }}
             disabled={loading}
