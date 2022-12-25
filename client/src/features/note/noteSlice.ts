@@ -14,7 +14,7 @@ export interface NoteState {
   sortMode: SortModes["sortMode"];
 }
 
-export interface UpdateNoteBody extends Note.NewNotePayload {
+export interface UpdateNoteBody extends Note.NewNoteRequest {
   id: number;
 }
 
@@ -27,7 +27,7 @@ const initialState: NoteState = {
 
 export const createNewNote = createAsyncThunk(
   "note/createNewNote",
-  async (contents: Note.NewNotePayload, thunkAPI) => {
+  async (contents: Note.NewNoteRequest, thunkAPI) => {
     return await noteService.createNewNote(contents);
   }
 );

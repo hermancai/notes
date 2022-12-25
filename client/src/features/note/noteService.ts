@@ -4,7 +4,7 @@ import protectedFetch from "../shared/protectedFetch";
 
 // POST /api/note
 const createNewNote = async (
-  contents: Note.NewNotePayload
+  contents: Note.NewNoteRequest
 ): Promise<Note.NewNoteResponse> => {
   return await protectedFetch<Note.NewNoteResponse>(() => {
     return fetch("/api/note", {

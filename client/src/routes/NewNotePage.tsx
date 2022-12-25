@@ -7,7 +7,7 @@ import { makeToast } from "../features/toast/toastSlice";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { NewNotePayload } from "shared";
+import { NewNoteRequest } from "shared";
 
 export default function NewNotePage() {
   useSetUsername();
@@ -17,7 +17,7 @@ export default function NewNotePage() {
 
   const { sortMode } = useSelector((state: RootState) => state.note);
   const [loading, setLoading] = React.useState(false);
-  const [inputs, setInputs] = React.useState<NewNotePayload>({
+  const [inputs, setInputs] = React.useState<NewNoteRequest>({
     title: "",
     text: "",
   });
