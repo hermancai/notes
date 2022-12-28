@@ -8,8 +8,6 @@ import jwt from "jsonwebtoken";
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   const headerToken = req.headers.authorization;
   if (headerToken === undefined || !headerToken.startsWith("Bearer")) {
-    console.log("missing access token", new Date().toISOString());
-
     return res.status(400).json({ message: "Error: Missing access token" });
   }
 
@@ -19,8 +17,6 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
       accessToken,
       process.env.ACCESS_TOKEN_SECRET!
     ) as TokenPayload;
-
-    console.log("valid access token", new Date().toISOString());
 
     return res.status(200).json({
       username: decoded.username,
@@ -41,8 +37,6 @@ const refreshAccessToken = async (
   const reqRefreshToken = req.cookies["refreshToken"] as string;
 
   if (!reqRefreshToken) {
-    console.log("refresh token not found in request", new Date().toISOString());
-
     return res.status(400).json({ message: "Error: Missing refresh token" });
   }
 
@@ -51,11 +45,6 @@ const refreshAccessToken = async (
     where: { token: reqRefreshToken },
   });
   if (!storedRefreshToken) {
-    console.log(
-      "refresh token does not exist in database",
-      new Date().toISOString()
-    );
-
     return res.status(400).json({ message: "Error: Refresh token not found" });
   }
 
@@ -71,8 +60,6 @@ const refreshAccessToken = async (
       process.env.ACCESS_TOKEN_SECRET!,
       { expiresIn: "15m" }
     );
-
-    console.log("send new access token", new Date().toISOString());
 
     res.status(200).json({
       accessToken,
