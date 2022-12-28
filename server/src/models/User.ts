@@ -7,7 +7,12 @@ import {
   PrimaryKey,
   AllowNull,
   Unique,
+  HasOne,
+  HasMany,
 } from "sequelize-typescript";
+import Token from "./Token";
+import Note from "./Note";
+import Image from "./Image";
 
 @Table
 class User extends Model {
@@ -30,6 +35,27 @@ class User extends Model {
   @CreatedAt
   @Column(DataType.DATE)
   createdAt!: Date;
+
+  @HasOne(() => Token, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+    hooks: true,
+  })
+  token!: Token;
+
+  @HasMany(() => Note, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+    hooks: true,
+  })
+  notes!: Note[];
+
+  @HasMany(() => Image, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+    hooks: true,
+  })
+  images!: Image[];
 }
 
 export default User;

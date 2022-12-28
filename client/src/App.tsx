@@ -1,23 +1,125 @@
-import { useState } from "react";
-import Button from "@mui/material/Button";
+import React from "react";
+import { RootState } from "./app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { setColorMode, getColorMode } from "./features/user/userSlice";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Root from "./routes/Root";
+import ErrorPage from "./ErrorPage";
+import LoginPage from "./routes/LoginPage";
+import HomePage from "./routes/HomePage";
+import AccountPage from "./routes/AccountPage";
+import ImagesPage from "./routes/ImagesPage";
+import NewNotePage from "./routes/NewNotePage";
+import UpdateNotePage from "./routes/UpdateNotePage";
+import { CssBaseline } from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { green } from "@mui/material/colors";
+import NewImagePage from "./routes/NewImagePage";
+import UpdateImagePage from "./routes/UpdateImagePage";
 
-const App = () => {
-  const [message, setMessage] = useState("");
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Root />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/notes/new",
+        element: <NewNotePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/notes/update",
+        element: <UpdateNotePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/account",
+        element: <AccountPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/images",
+        element: <ImagesPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/images/new",
+        element: <NewImagePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/images/update",
+        element: <UpdateImagePage />,
+        errorElement: <ErrorPage />,
+      },
+    ],
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+    errorElement: <ErrorPage />,
+  },
+]);
 
-  const onClick = async () => {
-    const res = await fetch("/get");
-    const resJSON: { message: string } = await res.json();
-    setMessage(resJSON.message);
-  };
+export const ColorModeContext = React.createContext({
+  toggleColorMode: () => {},
+});
+
+export default function App() {
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(getColorMode());
+  }, [dispatch]);
+
+  const mode = useSelector((state: RootState) => state.user.colorMode);
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        dispatch(setColorMode());
+      },
+    }),
+    [dispatch]
+  );
+
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: { mode, primary: { main: green[500] } },
+        components: {
+          MuiDialog: {
+            styleOverrides: {
+              paper: {
+                "@media (min-width: 0px)": { width: "90%" },
+                "@media (min-width: 600px)": { width: 400 },
+              },
+            },
+          },
+          MuiDialogActions: {
+            styleOverrides: {
+              root: {
+                justifyContent: "space-between",
+                padding: "0 1rem 1rem 1rem",
+                gap: "2rem",
+              },
+            },
+          },
+        },
+      }),
+    [mode]
+  );
 
   return (
-    <>
-      <Button onClick={onClick} variant="contained">
-        click
-      </Button>
-      <p>message: {message}</p>
-    </>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
-};
-
-export default App;
+}

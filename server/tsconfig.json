@@ -11,6 +11,14 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  }
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "@shared/*": [
+        "../shared/lib/*"
+      ]
+    },
+  },
+  "references": [{"path": "../shared"}],
+  "include": ["src"],
+  "files": ["src/custom.d.ts"]
 }
