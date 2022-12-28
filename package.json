@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-shared": "cd shared && tsc",
+    "build-shared": "cd shared && npx tsc",
     "build-client": "cd client && npx tsc",
     "build-server": "cd server && npx tsc",
     "build": "npm run build-shared && npm run build-server",
