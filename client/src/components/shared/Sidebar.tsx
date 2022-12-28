@@ -2,6 +2,7 @@ import * as React from "react";
 import { RootState } from "../../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchQuery } from "../../features/user/userSlice";
+import debounce from "lodash.debounce";
 import {
   AppBar,
   Box,
@@ -18,26 +19,48 @@ import {
   ClearRounded,
 } from "@mui/icons-material";
 
-export default function Sidebar(props: {
+interface SidebarProps {
   drawerWidth: number;
   children: React.ReactNode;
-}) {
+  mobileSidebarOpen: boolean;
+  openMobileSidebar: () => void;
+  closeMobileSidebar: () => void;
+}
+
+export default function Sidebar({
+  drawerWidth,
+  children,
+  mobileSidebarOpen,
+  openMobileSidebar,
+  closeMobileSidebar,
+}: SidebarProps) {
   const dispatch = useDispatch();
 
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  // For debouncing search when user types
+  const [liveSearchValue, setLiveSearchValue] = React.useState("");
   const { searchQuery } = useSelector((state: RootState) => state.user);
 
+  const debouncedUpdateSearchQuery = React.useMemo(
+    () =>
+      debounce(
+        (query: string) => {
+          dispatch(setSearchQuery(query));
+        },
+        500,
+        { leading: true }
+      ),
+    [dispatch]
+  );
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSearchQuery(e.target.value));
+    setLiveSearchValue(e.target.value);
+    debouncedUpdateSearchQuery(e.target.value);
   };
 
   const clearSearch = React.useCallback(() => {
+    setLiveSearchValue("");
     dispatch(setSearchQuery(""));
   }, [dispatch]);
-
-  const handleDrawerToggle = React.useCallback(() => {
-    setMobileOpen(!mobileOpen);
-  }, [mobileOpen]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -46,8 +69,8 @@ export default function Sidebar(props: {
         enableColorOnDark
         color="inherit"
         sx={{
-          width: { lg: `calc(100% - ${props.drawerWidth}px)` },
-          ml: { lg: `${props.drawerWidth}px` },
+          width: { lg: `calc(100% - ${drawerWidth}px)` },
+          ml: { lg: `${drawerWidth}px` },
           boxShadow: "none",
           borderBottom: "solid 1px",
           borderColor: "divider",
@@ -56,7 +79,7 @@ export default function Sidebar(props: {
       >
         <Toolbar
           sx={{
-            marginRight: { lg: `${props.drawerWidth}px` },
+            marginRight: { lg: `${drawerWidth}px` },
             padding: "0.75rem 1.5rem",
           }}
         >
@@ -65,7 +88,7 @@ export default function Sidebar(props: {
               color="inherit"
               aria-label="open drawer"
               edge="start"
-              onClick={handleDrawerToggle}
+              onClick={openMobileSidebar}
               sx={{
                 mr: 2,
                 display: { lg: "none" },
@@ -92,7 +115,7 @@ export default function Sidebar(props: {
                 inputProps={{ "aria-label": "search" }}
                 sx={{ width: "100%" }}
                 type="text"
-                value={searchQuery}
+                value={liveSearchValue}
                 onChange={handleSearchChange}
               />
               <Box
@@ -114,7 +137,7 @@ export default function Sidebar(props: {
       <Box
         component="nav"
         sx={{
-          width: { lg: props.drawerWidth },
+          width: { lg: drawerWidth },
           flexShrink: { lg: 0 },
         }}
         aria-label="mailbox folders"
@@ -122,8 +145,8 @@ export default function Sidebar(props: {
         <Drawer
           container={window.document.body}
           variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
+          open={mobileSidebarOpen}
+          onClose={closeMobileSidebar}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}
@@ -131,7 +154,7 @@ export default function Sidebar(props: {
             display: { xs: "block", lg: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: props.drawerWidth,
+              width: drawerWidth,
             },
           }}
         >
@@ -140,14 +163,14 @@ export default function Sidebar(props: {
               color="inherit"
               aria-label="close drawer"
               edge="end"
-              onClick={handleDrawerToggle}
+              onClick={closeMobileSidebar}
               sx={{ mr: "0.5rem", display: { lg: "none" } }}
             >
               <ChevronLeft />
             </IconButton>
           </Toolbar>
           <Divider />
-          {props.children}
+          {children}
         </Drawer>
         <Drawer
           variant="permanent"
@@ -155,14 +178,14 @@ export default function Sidebar(props: {
             display: { xs: "none", lg: "block" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: props.drawerWidth,
+              width: drawerWidth,
             },
           }}
           open
         >
           <Toolbar />
           <Divider />
-          {props.children}
+          {children}
         </Drawer>
       </Box>
     </Box>

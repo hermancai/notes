@@ -1,19 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { NoteInterfaces } from "../../interfaces/NoteInterfaces";
+import * as Note from "shared/lib/types/NoteInterfaces";
+import { SortModes } from "shared";
 import noteService from "./noteService";
 
 export interface NoteState {
-  allNotes: NoteInterfaces.Note[];
+  allNotes: Note.Note[];
   id?: number;
   title?: string;
   text?: string;
   loading: boolean;
   initialFetch: boolean;
-  sortMode: "Oldest" | "Newest" | "Last Updated";
+  sortMode: SortModes["sortMode"];
 }
 
-export interface UpdateNoteBody extends NoteInterfaces.NewNotePayload {
+export interface UpdateNoteBody extends Note.NewNoteRequest {
   id: number;
 }
 
@@ -26,7 +27,7 @@ const initialState: NoteState = {
 
 export const createNewNote = createAsyncThunk(
   "note/createNewNote",
-  async (contents: NoteInterfaces.NewNotePayload, thunkAPI) => {
+  async (contents: Note.NewNoteRequest, thunkAPI) => {
     return await noteService.createNewNote(contents);
   }
 );
@@ -57,7 +58,7 @@ export const noteSlice = createSlice({
   name: "note",
   initialState,
   reducers: {
-    setNote: (state, { payload }: PayloadAction<NoteInterfaces.Note>) => {
+    setNote: (state, { payload }: PayloadAction<Note.Note>) => {
       state.id = payload.id;
       state.title = payload.title;
       state.text = payload.text;
@@ -69,7 +70,7 @@ export const noteSlice = createSlice({
     },
     sortNoteList: (
       state,
-      { payload }: PayloadAction<NoteState["sortMode"]>
+      { payload }: PayloadAction<SortModes["sortMode"]>
     ) => {
       state.sortMode = payload;
       switch (payload) {
@@ -92,6 +93,7 @@ export const noteSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getNotes.pending, (state) => {
+        state.initialFetch = true;
         state.loading = true;
       })
       .addCase(getNotes.fulfilled, (state, { payload }) => {
@@ -105,7 +107,7 @@ export const noteSlice = createSlice({
       })
       .addCase(getNotes.rejected, (state) => {
         state.loading = false;
-        state.allNotes = [];
+        state.initialFetch = false;
       })
       .addCase(updateNote.pending, (state) => {
         state.loading = true;
@@ -123,9 +125,6 @@ export const noteSlice = createSlice({
       .addCase(updateNote.rejected, (state) => {
         state.loading = false;
       })
-      .addCase(deleteNote.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(deleteNote.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.id = undefined;
@@ -141,13 +140,9 @@ export const noteSlice = createSlice({
       })
       .addCase(createNewNote.fulfilled, (state, { payload }) => {
         state.loading = false;
-        payload.dataValues.createdAt = new Date(
-          payload.dataValues.createdAt
-        ).getTime();
-        payload.dataValues.updatedAt = new Date(
-          payload.dataValues.updatedAt
-        ).getTime();
-        state.allNotes.push(payload.dataValues);
+        payload.note.createdAt = new Date(payload.note.createdAt).getTime();
+        payload.note.updatedAt = new Date(payload.note.updatedAt).getTime();
+        state.allNotes.push(payload.note);
       })
       .addCase(createNewNote.rejected, (state) => {
         state.loading = false;

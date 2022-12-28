@@ -2,29 +2,29 @@ import React from "react";
 import { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import useSetUsername from "../hooks/useSetUsername";
-import { getNotes, sortNoteList, NoteState } from "../features/note/noteSlice";
+import { getNotes, sortNoteList } from "../features/note/noteSlice";
+import { SortModes } from "shared";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Typography, MenuItem, Menu } from "@mui/material";
-import { Add, KeyboardArrowDown } from "@mui/icons-material";
+import { Box, Button, Typography } from "@mui/material";
+import { AddRounded } from "@mui/icons-material";
 import NoteCard from "../components/notes/NoteCard";
-
-const sortOptions: Array<NoteState["sortMode"]> = [
-  "Newest",
-  "Oldest",
-  "Last Updated",
-];
+import SortDropdown from "../components/shared/SortDropdown";
 
 export default function HomePage() {
+  useSetUsername();
+
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { username } = useSelector((state: RootState) => state.user);
-
-  const { allNotes, loading, initialFetch, sortMode } = useSelector(
-    (state: RootState) => state.note
+  const { username, loading: userLoading } = useSelector(
+    (state: RootState) => state.user
   );
-
-  useSetUsername();
+  const {
+    allNotes,
+    loading: noteLoading,
+    initialFetch,
+    sortMode,
+  } = useSelector((state: RootState) => state.note);
 
   React.useEffect(() => {
     const getAllNotes = async () => {
@@ -41,30 +41,22 @@ export default function HomePage() {
     getAllNotes();
   }, [navigate, dispatch, initialFetch, username]);
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleClickSortMenu = (e: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(e.currentTarget);
+  const handleClickNewNote = () => {
+    navigate("/notes/new");
   };
 
-  const handleClickSortOption = (sortMode: NoteState["sortMode"]) => {
-    setAnchorEl(null);
+  const handleSortList = (sortMode: SortModes["sortMode"]) => {
     dispatch(sortNoteList(sortMode));
   };
 
-  const handleCloseSortMenu = () => {
-    setAnchorEl(null);
-  };
-
-  return loading ? null : (
+  return noteLoading || userLoading ? null : (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <Button
         variant="contained"
-        onClick={() => navigate("/notes/new")}
+        onClick={handleClickNewNote}
         sx={{ color: "white" }}
       >
-        <Add />
+        <AddRounded />
         New Note
       </Button>
       <Box
@@ -78,22 +70,7 @@ export default function HomePage() {
           {allNotes.length === 0 ? "Notes (0)" : `Notes (${allNotes.length}):`}
         </Typography>
         {allNotes.length < 2 ? null : (
-          <Box>
-            <Button variant="outlined" onClick={handleClickSortMenu}>
-              {sortMode} <KeyboardArrowDown />
-            </Button>
-            <Menu anchorEl={anchorEl} open={open} onClose={handleCloseSortMenu}>
-              {sortOptions.map((option: NoteState["sortMode"]) => (
-                <MenuItem
-                  key={option}
-                  selected={option === sortMode}
-                  onClick={() => handleClickSortOption(option)}
-                >
-                  {option}
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+          <SortDropdown sortMode={sortMode} handleSortList={handleSortList} />
         )}
       </Box>
       {allNotes.map((note) => {

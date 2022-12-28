@@ -2,11 +2,12 @@ import { Response, Request, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import User from "../models/User";
 import signupSchema from "../schemas/signupSchema";
-import { Credentials } from "../interfaces/interfaces";
+import { Credentials } from "shared";
 import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateTokens";
+import { deleteAllUserImages } from "./imageController";
 
 // @desc   Register new user in database
 // @route  POST /api/user/signup
@@ -15,23 +16,19 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
 
   // Check username and password exist
   if (!username || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Enter username and password" });
+    return res.status(400).json({ message: "Enter username and password" });
   }
 
   // Check valid username and password
   const { error } = signupSchema.validate({ username, password });
   if (error) {
-    return res
-      .status(400)
-      .json({ error: true, message: error.details[0].message });
+    return res.status(400).json({ message: error.details[0].message });
   }
 
   // Check username taken
   const existingUser = await User.findOne({ where: { username } });
   if (existingUser !== null) {
-    return res.status(400).json({ error: true, message: "Username is taken" });
+    return res.status(400).json({ message: "Username is taken" });
   }
 
   // Store user and password in database
@@ -39,16 +36,13 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
   const newUser = await User.create({ username, password: hashedPassword });
 
   if (newUser === null) {
-    return res.status(400).json({
-      error: true,
-      message: "Something went wrong while creating a new account",
+    return res.status(500).json({
+      message: "Error: Something went wrong while creating a new account",
     });
   }
 
   return res.status(200).json({
-    error: false,
-    message: "Account creation successful",
-    username: username,
+    message: "Success: Created account",
   });
 };
 
@@ -57,22 +51,18 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
 const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   const { username, password }: Credentials = req.body;
   if (!username || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Enter username and password" });
+    return res.status(400).json({ message: "Enter username and password" });
   }
 
   // Check username exists
   const user = await User.findOne({ where: { username } });
   if (user === null) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Username does not exist" });
+    return res.status(400).json({ message: "Username does not exist" });
   }
 
   // Compare given password with stored password
   if (!(await bcrypt.compare(password, user.password))) {
-    return res.status(400).json({ error: true, message: "Incorrect password" });
+    return res.status(400).json({ message: "Incorrect password" });
   }
 
   // Sign and send tokens
@@ -87,9 +77,8 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
     });
     res.status(200).json({
-      error: false,
-      message: "Login successful",
-      username: username,
+      message: "Success: Log in",
+      username,
       accessToken,
     });
   } catch (err) {
@@ -106,22 +95,24 @@ const deleteAccount = async (
   next: NextFunction
 ) => {
   if (req.user === "Guest") {
-    return res
-      .status(400)
-      .json({ error: true, message: "Deleting guest account not allowed" });
+    return res.status(400).json({ message: "Error: Cannot delete Guest" });
+  }
+
+  try {
+    await deleteAllUserImages(req.userId);
+  } catch (err) {
+    return res.status(500).json({ message: "Error: Delete images failed" });
   }
 
   // Remove user from database and remove cookie
   const user = await User.findOne({ where: { username: req.user } });
   if (!user) {
-    return res.status(400).json({ error: true, message: "User not found" });
+    return res.status(400).json({ message: "Error: User not found" });
   }
   await user.destroy();
   res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict" });
 
-  return res
-    .status(200)
-    .json({ error: false, message: "Account deleted successfully" });
+  return res.status(200).json({ message: "Success: Account deleted" });
 };
 
 export { signUpUser, loginUser, deleteAccount };

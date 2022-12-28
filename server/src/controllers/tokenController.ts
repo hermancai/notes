@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from "express";
 import Token from "../models/Token";
-import { TokenPayload } from "../interfaces/interfaces";
+import { TokenPayload } from "shared";
 import jwt from "jsonwebtoken";
 
 // @desc   Verify access token
@@ -8,11 +8,7 @@ import jwt from "jsonwebtoken";
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   const headerToken = req.headers.authorization;
   if (headerToken === undefined || !headerToken.startsWith("Bearer")) {
-    console.log("missing access token", new Date().toISOString());
-
-    return res
-      .status(400)
-      .json({ error: true, message: "Missing access token" });
+    return res.status(400).json({ message: "Error: Missing access token" });
   }
 
   try {
@@ -22,15 +18,11 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
       process.env.ACCESS_TOKEN_SECRET!
     ) as TokenPayload;
 
-    console.log("valid access token", new Date().toISOString());
-
     return res.status(200).json({
-      error: false,
-      message: "Valid access token",
       username: decoded.username,
-      accessToken: accessToken,
     });
   } catch (err) {
+    res.status(400);
     return next(err);
   }
 };
@@ -45,11 +37,7 @@ const refreshAccessToken = async (
   const reqRefreshToken = req.cookies["refreshToken"] as string;
 
   if (!reqRefreshToken) {
-    console.log("refresh token not found in request", new Date().toISOString());
-
-    return res
-      .status(400)
-      .json({ error: true, message: "Refresh token not found" });
+    return res.status(400).json({ message: "Error: Missing refresh token" });
   }
 
   // Look for matching refresh token in database
@@ -57,14 +45,7 @@ const refreshAccessToken = async (
     where: { token: reqRefreshToken },
   });
   if (!storedRefreshToken) {
-    console.log(
-      "refresh token does not exist in database",
-      new Date().toISOString()
-    );
-
-    return res
-      .status(400)
-      .json({ error: true, message: "Refresh token does not exist" });
+    return res.status(400).json({ message: "Error: Refresh token not found" });
   }
 
   // Send new access token
@@ -80,17 +61,12 @@ const refreshAccessToken = async (
       { expiresIn: "15m" }
     );
 
-    console.log("send new access token", new Date().toISOString());
-
     res.status(200).json({
-      error: false,
       accessToken,
-      message: "Renewed access token",
       username: decoded.username,
+      message: "Success: Renewed access token",
     });
   } catch (err) {
-    console.log("error sending new access token: ", err);
-
     return next(err);
   }
 };
@@ -101,16 +77,14 @@ const deleteToken = async (req: Request, res: Response, next: NextFunction) => {
   const reqRefreshToken = req.cookies["refreshToken"] as string;
 
   if (!reqRefreshToken) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Refresh token not found" });
+    return res.status(400).json({ message: "Error: Missing refresh token" });
   }
 
   // Remove refresh token from database and remove cookie
   try {
     await Token.destroy({ where: { token: reqRefreshToken } });
     res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict" });
-    return res.status(200).json({ error: false, message: "Logout successful" });
+    return res.status(200).json({ message: "Success: Log out" });
   } catch (err) {
     next(err);
   }

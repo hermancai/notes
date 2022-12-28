@@ -14,6 +14,8 @@ import UpdateNotePage from "./routes/UpdateNotePage";
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { green } from "@mui/material/colors";
+import NewImagePage from "./routes/NewImagePage";
+import UpdateImagePage from "./routes/UpdateImagePage";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +46,16 @@ const router = createBrowserRouter([
       {
         path: "/images",
         element: <ImagesPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/images/new",
+        element: <NewImagePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/images/update",
+        element: <UpdateImagePage />,
         errorElement: <ErrorPage />,
       },
     ],
@@ -79,6 +91,25 @@ export default function App() {
     () =>
       createTheme({
         palette: { mode, primary: { main: green[500] } },
+        components: {
+          MuiDialog: {
+            styleOverrides: {
+              paper: {
+                "@media (min-width: 0px)": { width: "90%" },
+                "@media (min-width: 600px)": { width: 400 },
+              },
+            },
+          },
+          MuiDialogActions: {
+            styleOverrides: {
+              root: {
+                justifyContent: "space-between",
+                padding: "0 1rem 1rem 1rem",
+                gap: "2rem",
+              },
+            },
+          },
+        },
       }),
     [mode]
   );

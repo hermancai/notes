@@ -8,14 +8,16 @@ import {
   sortNoteList,
 } from "../features/note/noteSlice";
 import { makeToast } from "../features/toast/toastSlice";
-import { NoteInterfaces } from "../interfaces/NoteInterfaces";
+import { NewNoteRequest } from "shared";
 import { Box, Button, TextField, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import DeleteNoteButton from "../components/notes/DeleteNoteButton";
 
 export default function UpdateNotePage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
+  const [loading, setLoading] = React.useState(false);
   const { id, title, text, sortMode } = useSelector(
     (state: RootState) => state.note
   );
@@ -26,7 +28,7 @@ export default function UpdateNotePage() {
     }
   }, [navigate, dispatch, id]);
 
-  const [inputs, setInputs] = React.useState<NoteInterfaces.NewNotePayload>({
+  const [inputs, setInputs] = React.useState<NewNoteRequest>({
     title: title || "",
     text: text || "",
   });
@@ -40,14 +42,18 @@ export default function UpdateNotePage() {
       return navigate("/");
     }
 
+    setLoading(true);
     try {
       await dispatch(updateNote({ ...inputs, id })).unwrap();
       dispatch(resetNote());
       dispatch(sortNoteList(sortMode));
       dispatch(makeToast("Updated note"));
       navigate("/");
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      const err = error as Error;
+      dispatch(makeToast(err.message));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,19 +77,24 @@ export default function UpdateNotePage() {
         name="text"
         multiline
         minRows={4}
+        spellCheck={false}
         variant="outlined"
         InputLabelProps={{ shrink: true }}
         onChange={handleChange}
         value={inputs.text}
       />
-      <Button
+      <LoadingButton
         variant="contained"
         onClick={handleSubmit}
-        disabled={inputs.title.trim() === ""}
-        sx={{ color: "white" }}
+        disabled={loading || inputs.title.trim() === ""}
+        sx={{
+          color: "white",
+          "& .MuiCircularProgress-root": { color: "success.main" },
+        }}
+        loading={loading}
       >
         Save
-      </Button>
+      </LoadingButton>
       <Button variant="outlined" color="error" onClick={() => navigate("/")}>
         Cancel
       </Button>
