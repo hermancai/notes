@@ -8,7 +8,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
 import ImageCard from "../components/images/ImageCard";
 import SortDropdown from "../components/shared/SortDropdown";
-import { SortModes } from "shared";
+import { SortModes } from "../types/UserInterfaces";
 
 export default function ImagesPage() {
   useSetUsername();

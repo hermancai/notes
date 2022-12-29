@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
-import { Note } from "shared";
+import { Note } from "../../types/NoteInterfaces";
 
 interface ButtonProps {
   id: Note["id"];

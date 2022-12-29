@@ -1,5 +1,5 @@
 import React from "react";
-import { SortModes } from "shared";
+import { SortModes } from "../../types/UserInterfaces";
 import { Box, Button, MenuItem, Menu } from "@mui/material";
 import { KeyboardArrowDown } from "@mui/icons-material";
 

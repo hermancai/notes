@@ -14,7 +14,7 @@ import {
   Input,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { SaveImageRequest } from "shared";
+import { SaveImageRequest } from "../types/ImageInterfaces";
 
 function InfoText(props: { showError: boolean; children: React.ReactNode }) {
   return (

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import * as Note from "shared/lib/types/NoteInterfaces";
-import { SortModes } from "shared";
+import * as Note from "../../types/NoteInterfaces";
+import { SortModes } from "../../types/UserInterfaces";
 import noteService from "./noteService";
 
 export interface NoteState {

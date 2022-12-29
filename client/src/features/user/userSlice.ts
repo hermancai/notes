@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import userService from "./userService";
-import { Credentials } from "shared";
+import { Credentials } from "../../types/UserInterfaces";
 
 export interface UserState {
   username?: string;

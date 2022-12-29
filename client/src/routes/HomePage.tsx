@@ -3,7 +3,7 @@ import { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import useSetUsername from "../hooks/useSetUsername";
 import { getNotes, sortNoteList } from "../features/note/noteSlice";
-import { SortModes } from "shared";
+import { SortModes } from "../types/UserInterfaces";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";

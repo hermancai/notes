@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { imageService } from "./imageService";
-import * as Image from "shared/lib/types/ImageInterfaces";
-import { SortModes } from "shared";
+import * as Image from "../../types/ImageInterfaces";
+import { SortModes } from "../../types/UserInterfaces";
 
 export interface ImageState {
   allImages: Image.PresignedImage[];

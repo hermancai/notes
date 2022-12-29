@@ -12,7 +12,7 @@ import {
   Skeleton,
 } from "@mui/material";
 import { OpenInNewRounded, CameraAltOutlined } from "@mui/icons-material";
-import { PresignedImage } from "shared";
+import { PresignedImage } from "../../types/ImageInterfaces";
 import DeleteImageButton from "../../components/images/DeleteImageButton";
 import { useNavigate } from "react-router-dom";
 import CollaspeCardContent from "../../components/shared/CollapseCardContent";

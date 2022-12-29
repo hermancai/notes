@@ -8,7 +8,7 @@ import {
   sortImageList,
 } from "../features/image/imageSlice";
 import { makeToast } from "../features/toast/toastSlice";
-import { PresignedImage } from "shared";
+import { PresignedImage } from "../types/ImageInterfaces";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import DeleteImageButton from "../components/images/DeleteImageButton";

@@ -1,5 +1,5 @@
 import React from "react";
-import { Note } from "shared";
+import { Note } from "../../types/NoteInterfaces";
 import DeleteNoteButton from "./DeleteNoteButton";
 import { Box, Button, Card, CardHeader } from "@mui/material";
 import { StickyNote2Outlined } from "@mui/icons-material";

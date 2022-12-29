@@ -1,3 +1,7 @@
+export interface SortModes {
+  sortMode: "Oldest" | "Newest" | "Last Updated";
+}
+
 export interface Credentials {
   username: string;
   password: string;
