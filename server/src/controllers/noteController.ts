@@ -1,6 +1,9 @@
 import { Response, Request, NextFunction } from "express";
 import Note from "../models/Note";
-import { UpdateNoteRequest, Note as NotePayload } from "shared";
+import {
+  UpdateNoteRequest,
+  Note as NotePayload,
+} from "../types/NoteInterfaces";
 
 // @desc   Create new note from user
 // @route  POST /api/note

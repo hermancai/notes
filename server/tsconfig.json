@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "commonjs",
+    "module": "CommonJS",
     "lib": ["es6", "dom"],
     "allowJs": true,
     "outDir": "build",
@@ -10,15 +10,11 @@
     "noImplicitAny": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "paths": {
-      "@shared/*": [
-        "../shared/lib/*"
-      ]
-    },
-  },
-  "references": [{"path": "../shared"}],
+    "typeRoots": ["./node_modules/@types", "./types"]
+  }, 
   "include": ["src"],
   "files": ["src/custom.d.ts"]
 }

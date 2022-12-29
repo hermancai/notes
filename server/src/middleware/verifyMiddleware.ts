@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { TokenPayload } from "shared";
+import { TokenPayload } from "../types/UserInterfaces";
 import jwt from "jsonwebtoken";
 
 // Set username and userId in request body after verifying access token

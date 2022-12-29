@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import Token from "../models/Token";
-import { TokenPayload } from "shared";
+import { TokenPayload } from "../types/UserInterfaces";
 
 const ACCESS_EXP = "15m";
 const REFRESH_EXP = "30d";

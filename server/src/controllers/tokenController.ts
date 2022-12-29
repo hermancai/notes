@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from "express";
 import Token from "../models/Token";
-import { TokenPayload } from "shared";
+import { TokenPayload } from "../types/UserInterfaces";
 import jwt from "jsonwebtoken";
 
 // @desc   Verify access token
