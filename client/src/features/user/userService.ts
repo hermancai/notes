@@ -1,5 +1,5 @@
-import { ServerResponse } from "shared";
-import * as User from "shared/lib/types/UserInterfaces";
+import { ServerResponse } from "../../types/SharedInterfaces";
+import * as User from "../../types/UserInterfaces";
 import refreshAccessToken from "../shared/refreshAccessToken";
 import protectedFetch from "../shared/protectedFetch";
 
@@ -9,12 +9,15 @@ const verifyAccessToken = async (): Promise<User.TokenResponse> => {
 
   // Send current access token for verification
   if (accessToken !== null) {
-    const verifyResponse = await fetch("/api/token", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-      },
-    });
+    const verifyResponse = await fetch(
+      `${process.env.REACT_APP_API_URL || ""}/api/token`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      }
+    );
 
     if (verifyResponse.status === 200) {
       return (await verifyResponse.json()) as User.TokenResponse;
@@ -28,13 +31,16 @@ const verifyAccessToken = async (): Promise<User.TokenResponse> => {
 const login = async (
   credentials: User.Credentials
 ): Promise<User.LoginResponse> => {
-  const response = await fetch("/api/user/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_API_URL || ""}/api/user/login`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    }
+  );
 
   const res = (await response.json()) as User.LoginResponse;
   if (response.status !== 200) {
@@ -52,13 +58,16 @@ const login = async (
 const signup = async (
   credentials: User.Credentials
 ): Promise<User.SignupResponse> => {
-  const response = await fetch("/api/user/signup", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_API_URL || ""}/api/user/signup`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    }
+  );
 
   const res = (await response.json()) as User.SignupResponse;
   if (response.status !== 200) {
@@ -72,10 +81,13 @@ const signup = async (
 
 // DELETE /api/token
 const logout = async (): Promise<ServerResponse> => {
-  const response = await fetch("/api/token", {
-    method: "DELETE",
-    credentials: "include",
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_API_URL || ""}/api/token`,
+    {
+      method: "DELETE",
+      credentials: "include",
+    }
+  );
   localStorage.removeItem("accessToken");
   return (await response.json()) as ServerResponse;
 };
@@ -83,7 +95,7 @@ const logout = async (): Promise<ServerResponse> => {
 // DELETE /api/user
 const deleteAccount = async (): Promise<ServerResponse> => {
   const res = await protectedFetch<ServerResponse>(() => {
-    return fetch("/api/user", {
+    return fetch(`${process.env.REACT_APP_API_URL || ""}/api/user`, {
       method: "DELETE",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("accessToken"),

@@ -1,11 +1,14 @@
-import { TokenResponse } from "shared";
+import { TokenResponse } from "../../types/UserInterfaces";
 
 // PUT /api/token
 const refreshAccessToken = async (): Promise<TokenResponse> => {
-  const response = await fetch("/api/token", {
-    method: "PUT",
-    credentials: "include",
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_API_URL || ""}/api/token`,
+    {
+      method: "PUT",
+      credentials: "include",
+    }
+  );
 
   const res = (await response.json()) as TokenResponse;
 

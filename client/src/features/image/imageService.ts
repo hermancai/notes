@@ -1,5 +1,5 @@
-import { ServerResponse } from "shared";
-import * as Image from "shared/lib/types/ImageInterfaces";
+import { ServerResponse } from "../../types/SharedInterfaces";
+import * as Image from "../../types/ImageInterfaces";
 import protectedFetch from "../shared/protectedFetch";
 
 // POST /api/image/getUploadPresign
@@ -8,14 +8,17 @@ const getUploadPresignedURL = async (
   fileSize: Blob["size"]
 ): Promise<Image.GetUploadURLResponse> => {
   return await protectedFetch<Image.GetUploadURLResponse>(() => {
-    return fetch("/api/image/getUploadPresign", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("accessToken"),
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ fileType, fileSize }),
-    });
+    return fetch(
+      `${process.env.REACT_APP_API_URL || ""}/api/image/getUploadPresign`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ fileType, fileSize }),
+      }
+    );
   });
 };
 
@@ -57,7 +60,7 @@ const uploadImage = async (
 
   // Save image data to own database
   return await protectedFetch<Image.SaveImageResponse>(() => {
-    return fetch("/api/image", {
+    return fetch(`${process.env.REACT_APP_API_URL || ""}/api/image`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -75,7 +78,7 @@ const uploadImage = async (
 // GET /api/image
 const getAllImages = async (): Promise<Image.GetAllImagesResponse> => {
   return await protectedFetch<Image.GetAllImagesResponse>(() => {
-    return fetch("/api/image", {
+    return fetch(`${process.env.REACT_APP_API_URL || ""}/api/image`, {
       method: "GET",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("accessToken"),
@@ -89,7 +92,7 @@ const getFullImageURL = async (
   body: Image.FullImageRequest
 ): Promise<Image.FullImageResponse["presignedURL"]> => {
   const res = await protectedFetch<Image.FullImageResponse>(() => {
-    return fetch("/api/image/full", {
+    return fetch(`${process.env.REACT_APP_API_URL || ""}/api/image/full`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -107,7 +110,7 @@ const deleteImage = async (
   fileName: Image.PresignedImage["fileName"]
 ): Promise<ServerResponse> => {
   return await protectedFetch<ServerResponse>(() => {
-    return fetch("/api/image", {
+    return fetch(`${process.env.REACT_APP_API_URL || ""}/api/image`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -123,7 +126,7 @@ const updateImage = async (
   body: Image.UpdateImageRequest
 ): Promise<Image.UpdateImageResponse> => {
   return await protectedFetch<Image.UpdateImageResponse>(() => {
-    return fetch("/api/image", {
+    return fetch(`${process.env.REACT_APP_API_URL || ""}/api/image`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

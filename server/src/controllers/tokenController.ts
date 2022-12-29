@@ -83,7 +83,11 @@ const deleteToken = async (req: Request, res: Response, next: NextFunction) => {
   // Remove refresh token from database and remove cookie
   try {
     await Token.destroy({ where: { token: reqRefreshToken } });
-    res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict" });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
     return res.status(200).json({ message: "Success: Log out" });
   } catch (err) {
     next(err);

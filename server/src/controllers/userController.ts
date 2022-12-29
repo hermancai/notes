@@ -73,7 +73,8 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "none",
+      secure: true,
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
     });
     res.status(200).json({
@@ -110,7 +111,11 @@ const deleteAccount = async (
     return res.status(400).json({ message: "Error: User not found" });
   }
   await user.destroy();
-  res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict" });
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+  });
 
   return res.status(200).json({ message: "Success: Account deleted" });
 };
