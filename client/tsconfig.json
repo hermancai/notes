@@ -17,13 +17,7 @@
     "jsx": "react-jsx",
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "strictNullChecks": true,
-    "paths": {
-      "@shared/*": [
-        "../shared/lib/*"
-      ]
-    }
+    "strictNullChecks": true
   },
-  "references": [{"path": "../shared"}],
   "include": ["src"]
 }
