@@ -1,7 +1,7 @@
 import { config } from "dotenv";
+import path from "path";
 import express from "express";
 import cookieParser from "cookie-parser";
-import cors from "cors";
 import connectToDatabase from "./config/dbConnect";
 import userRouter from "./routes/userRoute";
 import noteRouter from "./routes/noteRoute";
@@ -11,21 +11,15 @@ import errorHandler from "./middleware/errorHandler";
 
 config();
 
-const PORT = process.env.PORT || 5000;
-const CLIENT = process.env.CLIENT;
+const PORT = process.env.PORT || 3000;
 
 const app = express();
-
-app.use(
-  cors({
-    origin: CLIENT,
-    credentials: true,
-  })
-);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(express.static(path.resolve(__dirname, "../../client/build")));
 
 app.use("/api/user", userRouter);
 app.use("/api/token", refreshRouter);
@@ -33,6 +27,10 @@ app.use("/api/note", noteRouter);
 app.use("/api/image", imageRouter);
 
 connectToDatabase();
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../../client/build", "index.html"));
+});
 
 app.use(errorHandler);
 
