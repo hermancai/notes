@@ -12,15 +12,14 @@ import errorHandler from "./middleware/errorHandler";
 config();
 
 const PORT = process.env.PORT || 5000;
+const CLIENT = process.env.CLIENT;
 
 const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: CLIENT,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 
