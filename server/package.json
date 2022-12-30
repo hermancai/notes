@@ -22,6 +22,7 @@
     "joi": "^17.6.4",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.8.0",
+    "reflect-metadata": "^0.1.13",
     "sequelize": "^6.25.3",
     "sequelize-typescript": "^2.1.5",
     "ts-node": "^10.9.1",
