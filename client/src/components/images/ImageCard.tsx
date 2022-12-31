@@ -103,7 +103,7 @@ export default function ImageCard({ image }: ImageCardProps) {
         >
           <Skeleton
             variant="rectangular"
-            height="100%"
+            height="150px"
             width="100%"
             sx={{ position: "absolute", display: loading ? "block" : "none" }}
           />

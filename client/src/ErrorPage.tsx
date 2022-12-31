@@ -18,7 +18,6 @@ function HomeButton() {
 
 export default function ErrorPage() {
   const error = useRouteError() as ErrorInterface;
-  console.log(error);
 
   return (
     <Box sx={{ padding: "2rem" }}>
