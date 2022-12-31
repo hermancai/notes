@@ -73,7 +73,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "strict",
       secure: true,
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
     });
@@ -113,7 +113,7 @@ const deleteAccount = async (
   await user.destroy();
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    sameSite: "none",
+    sameSite: "strict",
     secure: true,
   });
 

@@ -26,13 +26,17 @@ app.use("/api/token", refreshRouter);
 app.use("/api/note", noteRouter);
 app.use("/api/image", imageRouter);
 
-connectToDatabase();
+app.get("/api/health", (req, res) => {
+  res.status(200).send();
+});
 
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../../client/build", "index.html"));
 });
 
 app.use(errorHandler);
+
+connectToDatabase();
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
