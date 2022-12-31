@@ -12,6 +12,7 @@ import {
   Theme,
   SxProps,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { green } from "@mui/material/colors";
 import { Credentials } from "../types/UserInterfaces";
 import { useNavigate } from "react-router-dom";
@@ -209,7 +210,7 @@ export default function LoginPage() {
             width: "50%",
           }}
         >
-          <Button
+          <LoadingButton
             variant="contained"
             onClick={showLogin ? handleLogin : handleSignup}
             fullWidth
@@ -217,11 +218,13 @@ export default function LoginPage() {
               boxShadow: "none",
               "&:hover": { boxShadow: "none" },
               color: "white",
+              "& .MuiCircularProgress-root": { color: "success.main" },
             }}
+            loading={loading}
             disabled={loading}
           >
             {showLogin ? "LOGIN" : "SIGN UP"}
-          </Button>
+          </LoadingButton>
           <Button
             variant="outlined"
             onClick={handleGuestLogin}

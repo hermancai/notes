@@ -5,10 +5,22 @@ import useSetUsername from "../hooks/useSetUsername";
 import { getNotes, sortNoteList } from "../features/note/noteSlice";
 import { SortModes } from "../types/UserInterfaces";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Skeleton } from "@mui/material";
 import { AddRounded } from "@mui/icons-material";
 import NoteCard from "../components/notes/NoteCard";
 import SortDropdown from "../components/shared/SortDropdown";
+
+function SkeletonNotes() {
+  return (
+    <>
+      <Skeleton variant="rounded" height="2rem" />
+      <Skeleton variant="text" width="4rem" sx={{ fontSize: "2rem" }} />
+      <Skeleton variant="rounded" height="4rem" />
+      <Skeleton variant="rounded" height="4rem" />
+      <Skeleton variant="rounded" height="4rem" />
+    </>
+  );
+}
 
 export default function HomePage() {
   useSetUsername();
@@ -49,33 +61,44 @@ export default function HomePage() {
     dispatch(sortNoteList(sortMode));
   };
 
-  return noteLoading || userLoading ? null : (
+  return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-      <Button
-        variant="contained"
-        onClick={handleClickNewNote}
-        sx={{ color: "white" }}
-      >
-        <AddRounded />
-        New Note
-      </Button>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Typography sx={{ fontSize: "1.25rem", color: "text.secondary" }}>
-          {allNotes.length === 0 ? "Notes (0)" : `Notes (${allNotes.length}):`}
-        </Typography>
-        {allNotes.length < 2 ? null : (
-          <SortDropdown sortMode={sortMode} handleSortList={handleSortList} />
-        )}
-      </Box>
-      {allNotes.map((note) => {
-        return <NoteCard note={note} key={note.id} />;
-      })}
+      {noteLoading || userLoading ? (
+        <SkeletonNotes />
+      ) : (
+        <>
+          <Button
+            variant="contained"
+            onClick={handleClickNewNote}
+            sx={{ color: "white" }}
+          >
+            <AddRounded />
+            New Note
+          </Button>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography sx={{ fontSize: "1.25rem", color: "text.secondary" }}>
+              {allNotes.length === 0
+                ? "Notes (0)"
+                : `Notes (${allNotes.length}):`}
+            </Typography>
+            {allNotes.length < 2 ? null : (
+              <SortDropdown
+                sortMode={sortMode}
+                handleSortList={handleSortList}
+              />
+            )}
+          </Box>
+          {allNotes.map((note) => {
+            return <NoteCard note={note} key={note.id} />;
+          })}
+        </>
+      )}
     </Box>
   );
 }
