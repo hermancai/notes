@@ -1,7 +1,5 @@
 # Note and Image Storage
 
-Site: https://note-storage.up.railway.app/
-
 Language: Typescript
 
 Frontend: React, Redux, Material UI
